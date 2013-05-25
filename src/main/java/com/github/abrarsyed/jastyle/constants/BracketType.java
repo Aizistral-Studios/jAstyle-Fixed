@@ -1,7 +1,11 @@
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *   jAstyle library includes in most of its parts translated C++ code originally
+ *   developed by Jim Pattee and Tal Davidson for the Artistic Style project.
  *
  *	 Copyright (C) 2009 by Hector Suarez Barenca http://barenca.net
+ *   Copyright (C) 2006-2008 by Jim Pattee <jimp03@email.com>
+ *   Copyright (C) 1998-2002 by Tal Davidson
  *   <http://www.gnu.org/licenses/lgpl-3.0.html>
  *
  *   This file is a part of jAstyle library - an indentation and
@@ -24,23 +28,16 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  */
 
-package com.github.stephenc.jastyle;
+package com.github.abrarsyed.jastyle.constants;
 
-import java.io.Serializable;
-import java.util.Comparator;
-
-/**
- * Sort comparison function. Compares the value of pointers in the vectors.
- */
-class SortOnName implements Serializable, Comparator<String> {
-    /**
-     *
-     */
-    private static final long serialVersionUID = 5872384371573752223L;
-
-    @Override
-    public int compare(String o1, String o2) {
-        return o1.compareTo(o2);
-    }
-
+public interface BracketType
+{
+	public final static int	NULL_TYPE	= 0,
+										NAMESPACE_TYPE = 1,        // also a DEFINITION_TYPE
+			CLASS_TYPE = 2,            // also a DEFINITION_TYPE
+			INTERFACE_TYPE = 4,        // also a DEFINITION_TYPE
+			DEFINITION_TYPE = 8,
+			COMMAND_TYPE = 16,
+			ARRAY_TYPE = 32,          // arrays and enums
+			SINGLE_LINE_TYPE = 64;
 }

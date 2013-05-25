@@ -8,18 +8,18 @@
     <version>5</version>
   </parent>
 
-  <groupId>com.github.stephenc.jastyle</groupId>
+  <groupId>com.github.AbrarSyed.jstyle</groupId>
   <artifactId>jastyle</artifactId>
-  <version>0.5-SNAPSHOT</version>
+  <version>0.1-SNAPSHOT</version>
   <name>jAstyle</name>
   <description>Java Artistic Style Library.</description>
-  <url>http://stephenc.github.com/jastyle</url>
+  <url>https://github.com/AbrarSyed/jastyle</url>
   <inceptionYear>2009</inceptionYear>
 
   <scm>
-    <connection>scm:git:git://github.com/stephenc/jastyle.git</connection>
-    <developerConnection>scm:git:git@github.com:stephenc/jastyle.git</developerConnection>
-    <url>http://github.com/stephenc/jastyle/tree/master/</url>
+    <connection>scm:git:git://github.com/AbrarSyed/jastyle.git</connection>
+    <developerConnection>scm:git:git@github.com:AbrarSyed/jastyle.git</developerConnection>
+    <url>https://github.com/AbrarSyed/jastyle</url>
   </scm>
 
   <licenses>
@@ -32,7 +32,7 @@
 
   <issueManagement>
     <system>github</system>
-    <url>http://github.com/stephenc/jastyle/issues</url>
+    <url>http://github.com/AbrarSyed/jastyle/issues</url>
   </issueManagement>
 
   <distributionManagement>
@@ -55,6 +55,14 @@
       <url>http://barenca.net</url>
       <roles>
         <role>developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>AbrarSyed</id>
+      <name>Abrar Syed</name>
+      <roles>
+        <role>developer</role>
+		<role>packager</role>
       </roles>
     </developer>
   </developers>
@@ -114,36 +122,8 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <artifactId>maven-clean-plugin</artifactId>
-          <version>2.4</version>
-        </plugin>
-        <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>2.3</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <version>2.5</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-install-plugin</artifactId>
-          <version>2.3</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>2.3</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-release-plugin</artifactId>
-          <version>2.1</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>2.4.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-site-plugin</artifactId>
-          <version>2.1</version>
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
@@ -167,7 +147,7 @@
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
-              <mainClass>com.github.stephenc.jastyle.Main</mainClass>
+              <mainClass>com.github.abrarsyed.jastyle.Main</mainClass>
             </manifest>
           </archive>
         </configuration>
@@ -195,10 +175,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-changelog-plugin</artifactId>
         <version>2.2</version>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </reporting>

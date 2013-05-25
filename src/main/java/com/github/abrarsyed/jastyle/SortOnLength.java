@@ -1,11 +1,6 @@
 /**
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *   jAstyle library includes in most of its parts translated C++ code originally
- *   developed by Jim Pattee and Tal Davidson for the Artistic Style project.
- *
  *	 Copyright (C) 2009 by Hector Suarez Barenca http://barenca.net
- *   Copyright (C) 2006-2008 by Jim Pattee <jimp03@email.com>
- *   Copyright (C) 1998-2002 by Tal Davidson
  *   <http://www.gnu.org/licenses/lgpl-3.0.html>
  *
  *   This file is a part of jAstyle library - an indentation and
@@ -28,19 +23,25 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  */
 
-package com.github.stephenc.jastyle;
+package com.github.abrarsyed.jastyle;
 
-public interface ASSourceIterator {
-    public boolean hasMoreLines();
+import java.io.Serializable;
+import java.util.Comparator;
 
-    public StringBuffer nextLine(boolean emptyLineWasDeleted);
+/**
+ * Sort comparison function. Compares the length of the value of pointers in the
+ * vectors. The LONGEST Strings will be first in the vector.
+ */
+class SortOnLength implements Serializable, Comparator<String>
+{
+	/**
+     *
+     */
+	private static final long	serialVersionUID	= 4170501851833867985L;
 
-    public StringBuffer nextLine();
-
-    public StringBuffer peekNextLine();
-
-    // save the last input line after input has reached EOF
-    public String getOutputEOL();
-
-    public void peekReset();
+	@Override
+	public int compare(String a, String b)
+	{
+		return a.length() - b.length();
+	}
 }
