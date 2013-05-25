@@ -1,8 +1,12 @@
 .project
 .classpath
 .settings
+.gradle
 *.iml
 *.ipr
 *.iws
-target/
+target
+build
+bin
+
 

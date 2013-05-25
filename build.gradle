@@ -1,0 +1,109 @@
+apply plugin: "java"
+apply plugin: "maven"
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'signing'
+
+group = "com.github.abrarsyed"
+version = 1.0
+archivesBaseName = 'jAstyle'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+	testCompile 'junit:junit:3.8.1'
+}
+
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+	classifier = 'javadoc'
+	from 'build/docs/javadoc'
+}
+ 
+task sourcesJar(type: Jar) {
+	from sourceSets.main.allSource
+	classifier = 'sources'
+}
+
+artifacts {
+	archives jar
+	archives javadocJar
+	archives sourcesJar
+}
+
+signing {
+	sign configurations.archives
+}
+
+jar {
+	from 'LICENSE'
+	from 'README'
+	zipTree(file('src/main/resources/com'))
+	
+	// manifest
+	manifest { attributes 'Main-Class' : 'com.github.abrarsyed.jastyle.Main' }
+}
+
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			beforeDeployment { MavenDeployment deployment -> signPom(deployment) }
+ 
+			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+			  authentication(userName: sonatypeUsername, password: sonatypePassword)
+			}
+ 
+			pom.project {
+			   name 'jAstyle'
+			   packaging 'jar'
+			   description 'Java Artistic Style Library'
+			   url 'https://github.com/AbrarSyed/jastyle'
+ 
+			   scm {
+				   url 'https://github.com/AbrarSyed/jastyle'
+				   connection 'scm:git:git://github.com/AbrarSyed/jastyle.git'
+				   developerConnection 'scm:git:git@github.com:AbrarSyed/jastyle.git'
+			   }
+			   
+			   issueManagement {
+				   system 'github'
+				   url 'http://github.com/AbrarSyed/jastyle/issues'
+			   }
+ 
+			   licenses {
+				   license {
+					   name 'GNU Lesser General Public License (LGPL), Version 3'
+					   url 'http://www.fsf.org/licensing/licenses/lgpl.txt'
+					   distribution 'repo'
+				   }
+			   }
+ 
+			   developers {
+				   developer {
+					   id 'stephenc'
+					   name 'Stephen Connolly'
+					   roles {
+						   role 'packager'
+					   }
+				   }
+				   developer {
+					   name 'Hector Suarez Barenca'
+					   roles {
+						   role 'developer'
+					   }
+				   }
+				   developer {
+					   id 'AbrarSyed'
+					   name 'Abrar Syed'
+					   roles {
+						   role 'packager'
+						   role 'developer'
+					   }
+				   }
+			   }
+		   }
+		}
+	}
+}
