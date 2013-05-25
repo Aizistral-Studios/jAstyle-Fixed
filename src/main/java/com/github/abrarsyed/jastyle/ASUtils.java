@@ -3,7 +3,8 @@
  *   jAstyle library includes in most of its parts translated C++ code originally
  *   developed by Jim Pattee and Tal Davidson for the Artistic Style project.
  *
- *	 Copyright (C) 2009 by Hector Suarez Barenca http://barenca.net
+ *   Copyright (C) 2009 by Hector Suarez Barenca http://barenca.net
+ *   Copyright (C) 2013 by Abrar Syed <sacabrarsyed@gmail.com>
  *   Copyright (C) 2006-2008 by Jim Pattee <jimp03@email.com>
  *   Copyright (C) 1998-2002 by Tal Davidson
  *   <http://www.gnu.org/licenses/lgpl-3.0.html>
