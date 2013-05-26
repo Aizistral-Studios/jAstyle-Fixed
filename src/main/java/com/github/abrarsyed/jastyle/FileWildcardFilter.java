@@ -49,35 +49,41 @@ public class FileWildcardFilter implements FilenameFilter
 	{
 		StringBuilder buffer = new StringBuilder();
 
-		char[] chars = wild.toCharArray();
-
-		for (int i = 0; i < chars.length; ++i)
+		for (char c : wild.toCharArray())
 		{
-			if (chars[i] == '*')
+			// replace * with .*
+			if (c == '*')
 			{
 				buffer.append(".*");
 			}
-			else if (chars[i] == '?')
+			
+			// replace ? with .
+			else if (c == '?')
 			{
 				buffer.append(".");
 			}
-			else if ("+()^$.{}[]|\\".indexOf(chars[i]) != -1)
+			
+			// replace misc regex with escaped versions
+			else if ("+()^$.{}[]|\\".indexOf(c) != -1)
 			{
-				buffer.append('\\').append(chars[i]);
+				buffer.append('\\').append(c);
 			}
+			
+			// seems to be just a normal char
 			else
 			{
-				buffer.append(chars[i]);
+				buffer.append(c);
 			}
 		}
 
+		// return the built buffer
 		return buffer.toString();
-
 	}
 
 	@Override
 	public boolean accept(File dir, String name)
 	{
+		// accept anything with 
 		return p.matcher(name).matches();
 	}
 

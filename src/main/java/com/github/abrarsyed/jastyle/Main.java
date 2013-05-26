@@ -36,6 +36,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -51,6 +52,7 @@ public class Main
 	private final static String	TEMP_SUFFIX		= ".tmp";
 	private final static String	JASTYLE_VERSION	= findVersion("version.txt");
 	private boolean				modeManuallySet	= false;						// file mode is set by an option
+	private boolean				recurseFiles	= false;						// recurse mode set by an option
 
 	private final static void printVersion()
 	{
@@ -477,8 +479,10 @@ public class Main
 		{
 			formatter.setOperatorPaddingMode(true);
 		}
+		
+		//  CONSOLE OPTIONS ONLY!!
+		//  TODO re-enable options
 		//
-		// // Options used by only console
 		// else if ( arg.equals("n") || arg.equals("suffix=none") )
 		// {
 		// g_console.noBackup = true;
@@ -500,10 +504,10 @@ public class Main
 		// g_console.excludeHitsVector.push_back(false);
 		// }
 		// }
-		// else if ( arg.equalsIgnoreCase("r") || arg.equals("recursive") )
-		// {
-		// g_console.isRecursive = true;
-		// }
+		else if ( arg.equalsIgnoreCase("r") || arg.equals("recursive") )
+		{
+			recurseFiles = true;
+		}
 		// else if ( arg.equals("Z") || arg.equals("preserve-date") )
 		// {
 		// g_console.preserveDate = true;
@@ -907,7 +911,7 @@ public class Main
 		{
 			for (String arg : args)
 			{
-				if (arg.equals("--options=none"))
+				if (arg.equals(OPTIONS+"=none"))
 				{
 					shouldParseOptionsFile = false;
 				}
@@ -1057,7 +1061,6 @@ public class Main
 	 * <pre>
 	 * --suffix=####
 	 * --suffix=none / -n
-	 * --recursive / -r / -R
 	 * --exclude=####
 	 * --errors-to-stdout / -X
 	 * --preserve-date / -Z
@@ -1075,17 +1078,23 @@ public class Main
 			printHelp();
 			System.exit(EXIT_SUCCESS);
 		}
-		String fileSeparator = System.getProperty("file.separator");
 		String dir;
 		String filename;
 		Main console = new Main();
 		ASFormatter formatter = new ASFormatter();
+		
+		ArrayList<File> files = new ArrayList<File>();
 		List<String> filenames = console.processOptions(args, formatter);
+		
+		FilenameFilter filter = null;
+		File temp;
+		
+		// collect potential files
 		for (String filepath : filenames)
 		{
-			int index = filepath.lastIndexOf(fileSeparator);
+			int index = filepath.lastIndexOf(File.separatorChar);
 			
-			// parse directory name, or single file name
+			// no slash? directory is here.
 			if (index < 0)
 			{
 				dir = ".";
@@ -1093,40 +1102,110 @@ public class Main
 			}
 			else
 			{
-				if (filepath.length() <= index)
+				// slash index is somehow larger than string??? this isnt possible.....
+				if (index >= filepath.length())
 				{
 					System.err.println("The filename " + filepath + " is invalid");
 					System.exit(EXIT_FAILURE);
 				}
+				
+				// split the dir and the file name into different strings for parsing later
 				dir = filepath.substring(0, index);
 				filename = filepath.substring(index + 1);
 			}
 
-			
-			File file;
-			File[] files;
+			// filename with wildcard
 			if (filename.indexOf('*') != -1 || filename.indexOf('?') != -1)
 			{
-				file = new File(dir);
-				files = file.listFiles(new FileWildcardFilter(filename));
+				// set teh filter
+				filter = new FileWildcardFilter(filename);
+				
+				// set teh searching file to the directory
+				temp = new File(dir);
 			}
+			
+			// only possible with a trailing slash
+			// pointing to a directory no?
+			else if (filename.isEmpty())
+			{
+				temp = new File(dir);
+			}
+			
+			// straight up filename
 			else
 			{
-				files = new File[] { new File(dir, filename) };
+				temp = new File(dir, filename);
 			}
-			if (files != null)
+			
+			// collect the files
+			files.addAll(collectFiles(temp, filter, console.recurseFiles));
+			
+			// clear filter status.
+			filter = null;
+		}
+		
+		// format collected files
+		Reader reader = null;;
+		for (File currFile : files)
+		{
+			System.out.println("Converting " + currFile.getAbsolutePath() + " ...\n");
+			try
 			{
-				for (File currFile : files)
+				reader = new BufferedReader(new FileReader(currFile.getAbsolutePath()));
+
+				console.formatFile(currFile.getAbsolutePath(), formatter);
+			}
+			catch(Throwable t)
+			{
+				System.out.println("Error formatting file " + currFile.getAbsolutePath() + " ...\n");
+			}
+			finally
+			{
+				if (reader != null)
 				{
-					System.out.println("Converting " + currFile.getAbsolutePath() + " ...\n");
-					Reader reader = new BufferedReader(new FileReader(currFile.getAbsolutePath()));
-
-					console.formatFile(currFile.getAbsolutePath(), formatter);
 					reader.close();
-
 				}
 			}
 		}
 
+	}
+	
+	/**
+	 * 
+	 * @param dir Directory to search in
+	 * @param filter Filter to apply to files. May be null to accept all the file names.
+	 * @param recurse If subdirectopries should be recursed through or not.
+	 * @return ArrayList of accepted files. Will never be null, only an empty list.
+	 */
+	public static ArrayList<File> collectFiles(File dir, FilenameFilter filter, boolean recurse)
+	{
+		ArrayList<File> files = new ArrayList<File>();
+		
+		// check if supplied directory is a file itself.
+		if (dir.isFile() && (filter == null || filter.accept(dir, dir.getName())))
+		{
+			files.add(dir);
+			return files;
+		}
+		
+		// otherwsie.. recurse and search for files.
+		for (File file : dir.listFiles())
+		{
+			// if its a file, AND .....
+			// if the filter is null, add it.
+			// if filter accepts the file add it.
+			if (file.isFile() && (filter == null || filter.accept(dir, file.getName())))
+			{
+					files.add(file);
+			}
+			
+			// its a directory and recursing is enabled.. recurse.
+			if (file.isDirectory() && recurse)
+			{
+				files.addAll(collectFiles(file, filter, recurse));
+			}
+		}
+		
+		return files;
 	}
 }
