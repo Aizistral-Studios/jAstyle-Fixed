@@ -49,7 +49,7 @@ class ASUtils
 	 *            object.
 	 * @return
 	 */
-	public static int findLastNotOf(StringBuffer in, String chars)
+	public static int findLastNotOf(StringBuilder in, String chars)
 	{
 		return findLastNotOf(in, chars, 0);
 	}
@@ -65,7 +65,7 @@ class ASUtils
 	 *            that the entire string is considered.
 	 * @return
 	 */
-	public static int findLastNotOf(StringBuffer in, String chars, int end)
+	public static int findLastNotOf(StringBuilder in, String chars, int end)
 	{
 		for (int index = in.length() - 1; index >= end; index--)
 		{
@@ -76,12 +76,12 @@ class ASUtils
 		return -1;
 	}
 
-	public static int findFirstNotOf(StringBuffer in, String chars)
+	public static int findFirstNotOf(StringBuilder in, String chars)
 	{
 		return findFirstNotOf(in, chars, 0);
 	}
 
-	public static int findFirstNotOf(StringBuffer in, String chars, int start)
+	public static int findFirstNotOf(StringBuilder in, String chars, int start)
 	{
 		for (int index = start; index < in.length(); index++)
 		{
@@ -100,7 +100,7 @@ class ASUtils
 	 */
 	public static String repeat(int times, char ch)
 	{
-		StringBuffer sb = new StringBuffer(times);
+		StringBuilder sb = new StringBuilder(times);
 		for (int i = 0; i < times; i++)
 		{
 			sb.append(ch);

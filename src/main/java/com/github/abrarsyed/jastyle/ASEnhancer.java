@@ -110,7 +110,7 @@ public class ASEnhancer extends AbstractASBase
 	 * function. indents event tables unindents the case blocks
 	 * @param line the original formatted line will be updated if necessary.
 	 */
-	public void enhance(StringBuffer line)
+	public void enhance(StringBuilder line)
 	{
 		boolean isSpecialChar = false;
 		int lineLength = line.length();
@@ -398,7 +398,7 @@ public class ASEnhancer extends AbstractASBase
 	 * @param unindent the number of tabsets to insert.
 	 * @return the number of characters inserted.
 	 */
-	int indentLine(StringBuffer line, int indent)
+	int indentLine(StringBuilder line, int indent)
 	{
 		if (line.length() == 0 && !emptyLineFill)
 			return 0;
@@ -430,7 +430,7 @@ public class ASEnhancer extends AbstractASBase
 	 * @param unindent the number of tabsets to erase.
 	 * @return the number of characters erased.
 	 */
-	int unindentLine(StringBuffer line, int unindent)
+	int unindentLine(StringBuilder line, int unindent)
 	{
 		int whitespace = ASUtils.findFirstNotOf(line, " \t", 0);
 

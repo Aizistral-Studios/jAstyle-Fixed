@@ -40,7 +40,7 @@ public class ASStreamIterator implements ASSourceIterator
 {
 	private boolean			peekSet	= true;
 	private ExtendedReader	inStream;		// pointer to the input stream
-	private StringBuffer	buffer;		// current input line
+	private StringBuilder	buffer;		// current input line
 	private int				eolWindows;	// number of Windows line endings (CRLF)
 	private int				eolLinux;		// number of Linux line endings (LF)
 	private int				eolMacOld;		// number of old Mac line endings (CR)
@@ -54,7 +54,7 @@ public class ASStreamIterator implements ASSourceIterator
 	}
 
 	@Override
-	public StringBuffer nextLine()
+	public StringBuilder nextLine()
 	{
 		return nextLine(false);
 	}
@@ -66,12 +66,12 @@ public class ASStreamIterator implements ASSourceIterator
 	 *         characters
 	 */
 	@Override
-	public StringBuffer nextLine(boolean emptyLineWasDeleted)
+	public StringBuilder nextLine(boolean emptyLineWasDeleted)
 	{
 		try
 		{
 			// read the next record
-			buffer = new StringBuffer();
+			buffer = new StringBuilder();
 			int ch = inStream.read();
 			while (ch > 0 && ch != '\n' && ch != '\r')
 			{
@@ -150,9 +150,9 @@ public class ASStreamIterator implements ASSourceIterator
 	// when finished peeking you MUST call peekReset()
 	// call this function from ASFormatter ONLY
 	@Override
-	public StringBuffer peekNextLine()
+	public StringBuilder peekNextLine()
 	{
-		StringBuffer nextLine = new StringBuffer();
+		StringBuilder nextLine = new StringBuilder();
 		try
 		{
 			if (peekSet)

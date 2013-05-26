@@ -65,9 +65,9 @@ public class ASFormatter extends ASBeautifier
 	private Stack<String>		preBracketHeaderStack;
 	private Stack<Integer>		bracketTypeStack;
 	private Stack<Integer>		parenStack;
-	private StringBuffer		readyFormattedLine;
-	private StringBuffer		currentLine;
-	private StringBuffer		formattedLine;
+	private StringBuilder		readyFormattedLine;
+	private StringBuilder		currentLine;
+	private StringBuilder		formattedLine;
 	private String				currentHeader;
 	private char				currentChar;
 	private char				previousChar;
@@ -321,9 +321,9 @@ public class ASFormatter extends ASBeautifier
 		bracketTypeStack.push(BracketType.NULL_TYPE);
 
 		currentHeader = null;
-		currentLine = new StringBuffer();
-		readyFormattedLine = new StringBuffer();
-		formattedLine = new StringBuffer();
+		currentLine = new StringBuilder();
+		readyFormattedLine = new StringBuilder();
+		formattedLine = new StringBuilder();
 		currentChar = ' ';
 		previousChar = ' ';
 		previousCommandChar = ' ';
@@ -400,7 +400,7 @@ public class ASFormatter extends ASBeautifier
 	 */
 
 	@Override
-	public StringBuffer nextLine()
+	public StringBuilder nextLine()
 	{
 		String newHeader;
 		boolean isInVirginLine = isVirgin;
@@ -564,7 +564,7 @@ public class ASFormatter extends ASBeautifier
 					if (lineIsLineCommentOnly && !isImmediatelyPostEmptyLine && !(previousCommandChar == '{') && !isImmediatelyPostLineComment)
 					{
 
-						checkForFollowingHeader(new StringBuffer(currentLine.substring(charNum - 1)));
+						checkForFollowingHeader(new StringBuilder(currentLine.substring(charNum - 1)));
 					}
 				}
 
@@ -602,7 +602,7 @@ public class ASFormatter extends ASBeautifier
 					// comment
 					if (doesLineStartComment && !isImmediatelyPostEmptyLine && !(previousCommandChar == '{') && !isImmediatelyPostLineComment)
 					{
-						checkForFollowingHeader(new StringBuffer(currentLine.substring(charNum - 1)));
+						checkForFollowingHeader(new StringBuilder(currentLine.substring(charNum - 1)));
 					}
 				}
 
@@ -1315,14 +1315,14 @@ public class ASFormatter extends ASBeautifier
 
 		// return a beautified (i.e. correctly indented) line.
 
-		StringBuffer beautifiedLine;
+		StringBuilder beautifiedLine;
 		int readyFormattedLineLength = readyFormattedLine.toString().trim().length();
 
 		if (prependEmptyLine // prepend a blank line before this formatted line
 				&& readyFormattedLineLength > 0 && previousReadyFormattedLineLength > 0)
 		{
 			isLineReady = true; // signal a waiting readyFormattedLine
-			beautifiedLine = beautify(new StringBuffer());
+			beautifiedLine = beautify(new StringBuilder());
 			previousReadyFormattedLineLength = 0;
 		}
 		else
@@ -1338,7 +1338,7 @@ public class ASFormatter extends ASBeautifier
 			{
 				appendOpeningBracket = false;
 				isLineReady = true; // signal a waiting readyFormattedLine
-				readyFormattedLine = new StringBuffer("{");
+				readyFormattedLine = new StringBuilder("{");
 				isPrependPostBlockEmptyLineRequested = false; // next line
 				// should not be
 				// empty
@@ -2065,7 +2065,7 @@ public class ASFormatter extends ASBeautifier
 	private boolean isNextWordSharpNonParenHeader(int startChar)
 	{
 		// look ahead to find the next non-comment text
-		StringBuffer nextText = peekNextText(new StringBuffer(currentLine.substring(startChar)));
+		StringBuilder nextText = peekNextText(new StringBuilder(currentLine.substring(startChar)));
 		if (nextText.length() == 0 || !isCharPotentialHeader(nextText, 0))
 			return false;
 		if (findKeyword(nextText, 0, ASResource.AS_GET) || findKeyword(nextText, 0, ASResource.AS_SET) || findKeyword(nextText, 0, ASResource.AS_ADD) || findKeyword(nextText, 0, ASResource.AS_REMOVE))
@@ -2082,7 +2082,7 @@ public class ASFormatter extends ASBeautifier
 	 */
 	private boolean isNextCharOpeningBracket(int startChar)
 	{
-		StringBuffer nextText = peekNextText(new StringBuffer(currentLine.substring(startChar)));
+		StringBuilder nextText = peekNextText(new StringBuilder(currentLine.substring(startChar)));
 		return nextText.charAt(0) == '{';
 	}
 
@@ -2092,7 +2092,7 @@ public class ASFormatter extends ASBeautifier
 	 * @param firstLine the first line to check
 	 * @return the next non-whitespace subString.
 	 */
-	private StringBuffer peekNextText(StringBuffer firstLine)
+	private StringBuilder peekNextText(StringBuilder firstLine)
 	{
 		return peekNextText(firstLine, false);
 	}
@@ -2103,11 +2103,11 @@ public class ASFormatter extends ASBeautifier
 	 * @param the first line to check
 	 * @return the next non-whitespace subString.
 	 */
-	private StringBuffer peekNextText(StringBuffer firstLine, boolean endOnEmptyLine /* false */)
+	private StringBuilder peekNextText(StringBuilder firstLine, boolean endOnEmptyLine /* false */)
 	{
 		boolean isFirstLine = true;
 		boolean needReset = false;
-		StringBuffer nextLine = firstLine;
+		StringBuilder nextLine = firstLine;
 		int firstChar = -1;
 
 		// find the first non-blank text, bypassing all comments.
@@ -2172,11 +2172,11 @@ public class ASFormatter extends ASBeautifier
 		}
 		if (firstChar == -1)
 		{
-			nextLine = new StringBuffer("");
+			nextLine = new StringBuilder("");
 		}
 		else
 		{
-			nextLine = new StringBuffer(nextLine.substring(firstChar));
+			nextLine = new StringBuilder(nextLine.substring(firstChar));
 		}
 		return nextLine;
 	}
@@ -2349,7 +2349,7 @@ public class ASFormatter extends ASBeautifier
 					// if previous word is a header, it will be a paren header
 					String prevWord = formattedLine.substring(start, end + 1);
 					String prevWordH = null;
-					if (prevWord.length() > 0 && isCharPotentialHeader(new StringBuffer(prevWord), 0))
+					if (prevWord.length() > 0 && isCharPotentialHeader(new StringBuilder(prevWord), 0))
 					{
 						prevWordH = findHeader(formattedLine, start, headers);
 					}
@@ -2893,10 +2893,10 @@ public class ASFormatter extends ASBeautifier
 	 * follows, the comments are kept as part of the header block. firstLine
 	 * must contain the start of the coment.
 	 */
-	private void checkForFollowingHeader(StringBuffer firstLine)
+	private void checkForFollowingHeader(StringBuilder firstLine)
 	{
 		// look ahead to find the next non-comment text
-		StringBuffer nextText = peekNextText(firstLine, true);
+		StringBuilder nextText = peekNextText(firstLine, true);
 		if (nextText.length() == 0 || !isCharPotentialHeader(nextText, 0))
 			return;
 
@@ -2962,7 +2962,7 @@ public class ASFormatter extends ASBeautifier
 	private boolean commentAndHeaderFollows()
 	{
 		// is the next line a comment
-		StringBuffer nextLine = sourceIterator.peekNextLine();
+		StringBuilder nextLine = sourceIterator.peekNextLine();
 		int firstChar = ASUtils.findFirstNotOf(nextLine, ASUtils.WHITE_SPACE, 0);
 		if (firstChar == -1 || !(nextLine.indexOf("//", firstChar) == firstChar || nextLine.indexOf("/*", firstChar) == firstChar))
 		{
@@ -2972,7 +2972,7 @@ public class ASFormatter extends ASBeautifier
 
 		// if next line is a comment, find the next non-comment text
 		// peekNextText will do the peekReset
-		StringBuffer nextText = peekNextText(nextLine, true);
+		StringBuilder nextText = peekNextText(nextLine, true);
 		if (nextText.length() == 0 || !isCharPotentialHeader(nextText, 0))
 			return false;
 

@@ -77,7 +77,7 @@ public class AbstractASBase
 	}
 
 	// check if a specific character can be part of a header
-	protected boolean isCharPotentialHeader(StringBuffer line, final int i)
+	protected boolean isCharPotentialHeader(StringBuilder line, final int i)
 	{
 		assert !isWhiteSpace(line.charAt(i)) : "White spaces not permitted at position " + i;
 		char prevCh = ' ';
@@ -104,7 +104,7 @@ public class AbstractASBase
 	}
 
 	// peek at the next unread character.
-	protected char peekNextChar(StringBuffer line, int start)
+	protected char peekNextChar(StringBuilder line, int start)
 	{
 		final int peekNum = ASUtils.findFirstNotOf(line, " \t", start + 1);
 		if (peekNum == -1)
@@ -113,7 +113,7 @@ public class AbstractASBase
 	}
 
 	// check if a specific line position contains a keyword.
-	protected boolean findKeyword(StringBuffer line, int i, String keyword)
+	protected boolean findKeyword(StringBuilder line, int i, String keyword)
 	{
 		assert isCharPotentialHeader(line, i) : line + " is not a potential header";
 		// check the word
@@ -136,7 +136,7 @@ public class AbstractASBase
 
 	// get the current word on a line
 	// i must point to the beginning of the word
-	protected String getCurrentWord(StringBuffer line, int charNum)
+	protected String getCurrentWord(StringBuilder line, int charNum)
 	{
 		final int lineLength = line.length();
 		int i;

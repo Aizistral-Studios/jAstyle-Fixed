@@ -623,7 +623,7 @@ public class ASBeautifier extends AbstractASBase
 	 * get the next indented line.
 	 * @return indented line.
 	 */
-	public StringBuffer nextLine()
+	public StringBuilder nextLine()
 	{
 		return beautify(sourceIterator.nextLine());
 	}
@@ -634,9 +634,9 @@ public class ASBeautifier extends AbstractASBase
 	 * @param originalLine the original unindented line.
 	 * @return the indented line.
 	 */
-	protected StringBuffer beautify(StringBuffer originalLine)
+	protected StringBuilder beautify(StringBuilder originalLine)
 	{
-		StringBuffer line = null;
+		StringBuilder line = null;
 		boolean isInLineComment = false;
 		boolean lineStartsInComment = false;
 		boolean isInClass = false;
@@ -656,7 +656,7 @@ public class ASBeautifier extends AbstractASBase
 		int lineOpeningBlocksNum = 0;
 		int lineClosingBlocksNum = 0;
 
-		StringBuffer outBuffer = new StringBuffer(); // the newly idented line
+		StringBuilder outBuffer = new StringBuilder(); // the newly idented line
 		// is bufferd here
 		String lastLineHeader = "";
 
@@ -676,7 +676,7 @@ public class ASBeautifier extends AbstractASBase
 			// alone
 			if (!(originalLine.length() == 1 && originalLine.charAt(0) == ' '))
 			{
-				line = new StringBuffer(originalLine);
+				line = new StringBuilder(originalLine);
 			}
 		}
 		else if (!isInComment)
@@ -695,16 +695,16 @@ public class ASBeautifier extends AbstractASBase
 					leadingWhiteSpaces++;
 				}
 			}
-			line = new StringBuffer(originalLine.toString().trim());
+			line = new StringBuilder(originalLine.toString().trim());
 		}
 		else
 		{
 			// convert leading tabs to spaces
-			StringBuffer spaceTabs = new StringBuffer();
+			StringBuilder spaceTabs = new StringBuilder();
 
 			spaceTabs.append(ASUtils.repeat(indentLength, ' '));
 
-			StringBuffer newLine = new StringBuffer(originalLine.length() + 16);
+			StringBuilder newLine = new StringBuilder(originalLine.length() + 16);
 			newLine.append(originalLine);
 			int strlen = newLine.length();
 
@@ -731,7 +731,7 @@ public class ASBeautifier extends AbstractASBase
 				strlen--;
 			}
 
-			line = new StringBuffer(newLine.substring(trimSize, strlen));
+			line = new StringBuilder(newLine.substring(trimSize, strlen));
 			int spacesToDelete;
 			final int trimEnd = ASUtils.findLastNotOf(line, ASUtils.WHITE_SPACE);
 			if (trimEnd == -1)
@@ -1955,7 +1955,7 @@ public class ASBeautifier extends AbstractASBase
 			tabCount += spaceTabCount / indentLength;
 			spaceTabCount = spaceTabCount % indentLength;
 		}
-		outBuffer = new StringBuffer(preLineWS(spaceTabCount, tabCount).append(outBuffer));
+		outBuffer = new StringBuilder(preLineWS(spaceTabCount, tabCount).append(outBuffer));
 
 		if (lastLineHeader != null)
 		{
@@ -1965,10 +1965,10 @@ public class ASBeautifier extends AbstractASBase
 		return outBuffer;
 	}
 
-	private StringBuffer preLineWS(final int spaceTabCount, int tabCount)
+	private StringBuilder preLineWS(final int spaceTabCount, int tabCount)
 	{
 		int stc = spaceTabCount;
-		StringBuffer ws = new StringBuffer();
+		StringBuilder ws = new StringBuilder();
 
 		for (int i = 0; i < tabCount; i++)
 		{
@@ -2093,7 +2093,7 @@ public class ASBeautifier extends AbstractASBase
 	}
 
 	// check if a specific line position contains a header.
-	protected String findHeader(StringBuffer line, int i, List<String> possibleHeaders)
+	protected String findHeader(StringBuilder line, int i, List<String> possibleHeaders)
 	{
 		assert isCharPotentialHeader(line, i) : line + " is not a potential header";
 		// check the word
@@ -2158,7 +2158,7 @@ public class ASBeautifier extends AbstractASBase
 	 * @return the next unread character.
 	 */
 	@Override
-	public char peekNextChar(StringBuffer line, int i)
+	public char peekNextChar(StringBuilder line, int i)
 	{
 		char ch = ' ';
 		int peekNum = ASUtils.findFirstNotOf(line, ASUtils.WHITE_SPACE, i + 1);

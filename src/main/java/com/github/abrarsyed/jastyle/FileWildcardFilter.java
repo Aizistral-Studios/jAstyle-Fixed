@@ -47,7 +47,7 @@ public class FileWildcardFilter implements FilenameFilter
 	 */
 	private String replaceWildcards(String wild)
 	{
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 
 		char[] chars = wild.toCharArray();
 

@@ -550,7 +550,7 @@ public class Main
 			}
 			else if (arg.charAt(0) == '-')
 			{
-				StringBuffer subArg = new StringBuffer();
+				StringBuilder subArg = new StringBuilder();
 				for (int i = 1; i < arg.length(); ++i)
 				{
 					if (Character.isLetter(arg.charAt(i)) && i > 1)
@@ -1084,6 +1084,8 @@ public class Main
 		for (String filepath : filenames)
 		{
 			int index = filepath.lastIndexOf(fileSeparator);
+			
+			// parse directory name, or single file name
 			if (index < 0)
 			{
 				dir = ".";
@@ -1100,6 +1102,7 @@ public class Main
 				filename = filepath.substring(index + 1);
 			}
 
+			
 			File file;
 			File[] files;
 			if (filename.indexOf('*') != -1 || filename.indexOf('?') != -1)

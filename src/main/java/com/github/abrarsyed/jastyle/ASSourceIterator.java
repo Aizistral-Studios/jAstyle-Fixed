@@ -35,11 +35,11 @@ public interface ASSourceIterator
 {
 	public boolean hasMoreLines();
 
-	public StringBuffer nextLine(boolean emptyLineWasDeleted);
+	public StringBuilder nextLine(boolean emptyLineWasDeleted);
 
-	public StringBuffer nextLine();
+	public StringBuilder nextLine();
 
-	public StringBuffer peekNextLine();
+	public StringBuilder peekNextLine();
 
 	// save the last input line after input has reached EOF
 	public String getOutputEOL();
