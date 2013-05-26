@@ -77,8 +77,7 @@ public class ASEnhancer extends AbstractASBase
 	 * <p/>
 	 * init() is called each time an ASFormatter object is initialized.
 	 */
-	void init(int fileType, int _indentLength, String _indentString,
-			boolean _caseIndent, boolean _emptyLineFill)
+	void init(int fileType, int _indentLength, String _indentString, boolean _caseIndent, boolean _emptyLineFill)
 	{
 		// formatting variables from ASFormatter and ASBeautifier
 		init(fileType);
@@ -155,8 +154,7 @@ public class ASEnhancer extends AbstractASBase
 				isSpecialChar = false;
 				continue;
 			}
-			if (!isInComment
-					&& line.indexOf("\\\\", i) == i)
+			if (!isInComment && line.indexOf("\\\\", i) == i)
 			{
 				i++;
 				continue;
@@ -198,15 +196,13 @@ public class ASEnhancer extends AbstractASBase
 				}
 				break; // finished with the line
 			}
-			else if (!isInComment
-					&& line.indexOf("/*", i) == i)
+			else if (!isInComment && line.indexOf("/*", i) == i)
 			{
 				isInComment = true;
 				i++;
 				continue;
 			}
-			else if (isInComment
-					&& line.indexOf("*/", i) == i)
+			else if (isInComment && line.indexOf("*/", i) == i)
 			{
 				isInComment = false;
 				i++;
@@ -239,15 +235,13 @@ public class ASEnhancer extends AbstractASBase
 			// check for event table begin
 			if (isPotentialKeyword && !isJavaStyle())
 			{
-				if (findKeyword(line, i, "BEGIN_EVENT_TABLE")
-						|| findKeyword(line, i, "BEGIN_MESSAGE_MAP"))
+				if (findKeyword(line, i, "BEGIN_EVENT_TABLE") || findKeyword(line, i, "BEGIN_MESSAGE_MAP"))
 				{
 					nextLineIsEventTable = true;
 				}
 
 				// check for event table end
-				if (findKeyword(line, i, "END_EVENT_TABLE")
-						|| findKeyword(line, i, "END_MESSAGE_MAP"))
+				if (findKeyword(line, i, "END_EVENT_TABLE") || findKeyword(line, i, "END_MESSAGE_MAP"))
 				{
 					isInEventTable = false;
 				}
@@ -304,9 +298,7 @@ public class ASEnhancer extends AbstractASBase
 
 			// look for case or default header
 
-			if (isPotentialKeyword
-					&& (findKeyword(line, i, "case") || findKeyword(line, i,
-							"default")))
+			if (isPotentialKeyword && (findKeyword(line, i, "case") || findKeyword(line, i, "default")))
 			{
 				if (sw.isUnindentCase()) // if unindented last case
 				{
@@ -369,9 +361,7 @@ public class ASEnhancer extends AbstractASBase
 				{
 					if (line.charAt(i) == '{') // if bracket found
 					{
-						sw
-								.setSwitchBracketCount(sw
-										.getSwitchBracketCount() + 1);
+						sw.setSwitchBracketCount(sw.getSwitchBracketCount() + 1);
 						unindentNextLine = true; // start unindenting on next
 						// line
 						continue;

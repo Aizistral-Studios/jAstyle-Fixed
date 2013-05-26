@@ -76,8 +76,7 @@ public class ExtendedReader extends Reader
 	 * @see java.io.FilterReader#read(char[], int, int)
 	 */
 	@Override
-	public synchronized int read(char[] cbuf, int off, int len)
-			throws IOException
+	public synchronized int read(char[] cbuf, int off, int len) throws IOException
 	{
 		int offset = off;
 		if (len <= 0)

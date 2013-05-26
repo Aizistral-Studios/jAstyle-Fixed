@@ -157,8 +157,7 @@ public class ASResource
 	 * and ASBeautifier.cpp
 	 * @param assignmentOperators a reference to the vector to be built.
 	 */
-	public static void buildAssignmentOperators(
-			List<String> assignmentOperators)
+	public static void buildAssignmentOperators(List<String> assignmentOperators)
 	{
 		assignmentOperators.add(AS_ASSIGN);
 		assignmentOperators.add(AS_PLUS_ASSIGN);
@@ -198,8 +197,7 @@ public class ASResource
 	 * ASBeautifier.cpp
 	 * @param headers a reference to the vector to be built.
 	 */
-	public static void buildHeaders(List<String> headers, int fileType,
-			boolean beautifier)
+	public static void buildHeaders(List<String> headers, int fileType, boolean beautifier)
 	{
 		headers.add(AS_IF);
 		headers.add(AS_ELSE);
@@ -252,8 +250,7 @@ public class ASResource
 	 * Build the vector of indentable headers. Used by ONLY ASBeautifier.cpp
 	 * @param indentableHeaders a reference to the vector to be built.
 	 */
-	public static void buildIndentableHeaders(
-			List<String> indentableHeaders)
+	public static void buildIndentableHeaders(List<String> indentableHeaders)
 	{
 		indentableHeaders.add(AS_RETURN);
 		indentableHeaders.add(AS_COUT);
@@ -268,8 +265,7 @@ public class ASResource
 	 * ASBeautifier.cpp
 	 * @param nonAssignmentOperators a reference to the vector to be built.
 	 */
-	public static void buildNonAssignmentOperators(
-			List<String> nonAssignmentOperators)
+	public static void buildNonAssignmentOperators(List<String> nonAssignmentOperators)
 	{
 		nonAssignmentOperators.add(AS_EQUAL);
 		nonAssignmentOperators.add(AS_PLUS_PLUS);
@@ -293,8 +289,7 @@ public class ASResource
 	 * ASFormatter.cpp and ASBeautifier.cpp
 	 * @param nonParenHeaders a reference to the vector to be built.
 	 */
-	public static void buildNonParenHeaders(List<String> nonParenHeaders,
-			int fileType, boolean beautifier)
+	public static void buildNonParenHeaders(List<String> nonParenHeaders, int fileType, boolean beautifier)
 	{
 		nonParenHeaders.add(AS_ELSE);
 		nonParenHeaders.add(AS_DO);
@@ -392,8 +387,7 @@ public class ASResource
 	 * NOTE: Cannot be both a header and a preBlockStatement.
 	 * @param preBlockStatements a reference to the vector to be built.
 	 */
-	public static void buildPreBlockStatements(
-			List<String> preBlockStatements, int fileType)
+	public static void buildPreBlockStatements(List<String> preBlockStatements, int fileType)
 	{
 		preBlockStatements.add(AS_CLASS);
 		if (fileType == FileType.C_TYPE)
@@ -420,8 +414,7 @@ public class ASResource
 	 * Build the vector of pre-command headers. Used by ONLY ASFormatter.cpp
 	 * @param preCommandHeaders a reference to the vector to be built.
 	 */
-	public static void buildPreCommandHeaders(
-			List<String> preCommandHeaders, int fileType)
+	public static void buildPreCommandHeaders(List<String> preCommandHeaders, int fileType)
 	{
 		if (fileType == FileType.C_TYPE)
 		{
@@ -445,8 +438,7 @@ public class ASResource
 	 * add 'extern' here. Do not want an extra indent.
 	 * @param preDefinitionHeaders a reference to the vector to be built.
 	 */
-	public static void buildPreDefinitionHeaders(
-			List<String> preDefinitionHeaders, int fileType)
+	public static void buildPreDefinitionHeaders(List<String> preDefinitionHeaders, int fileType)
 	{
 		preDefinitionHeaders.add(AS_CLASS);
 		if (fileType == FileType.C_TYPE)

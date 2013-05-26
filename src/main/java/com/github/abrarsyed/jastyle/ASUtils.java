@@ -37,8 +37,7 @@ class ASUtils
 
 	public static boolean isPunct(char c)
 	{
-		return '!' <= c && c <= '/' || ':' <= c && c <= '@'
-				|| '[' <= c && c <= '`' || '{' <= c && c <= '~';
+		return '!' <= c && c <= '/' || ':' <= c && c <= '@' || '[' <= c && c <= '`' || '{' <= c && c <= '~';
 
 	}
 
@@ -82,8 +81,7 @@ class ASUtils
 		return findFirstNotOf(in, chars, 0);
 	}
 
-	public static int findFirstNotOf(StringBuffer in, String chars,
-			int start)
+	public static int findFirstNotOf(StringBuffer in, String chars, int start)
 	{
 		for (int index = start; index < in.length(); index++)
 		{

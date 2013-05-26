@@ -108,22 +108,19 @@ public class Main
 	{
 		boolean retVal = arg.startsWith(option);
 		// if comparing for short option, 2nd char of arg must be numeric
-		if (retVal && option.length() == 1 && arg.length() > 1
-				&& !Character.isDigit(arg.charAt(1)))
+		if (retVal && option.length() == 1 && arg.length() > 1 && !Character.isDigit(arg.charAt(1)))
 		{
 			retVal = false;
 		}
 		return retVal;
 	}
 
-	private boolean isParamOption(final String arg, final String option1,
-			final String option2)
+	private boolean isParamOption(final String arg, final String option1, final String option2)
 	{
 		return isParamOption(arg, option1) || isParamOption(arg, option2);
 	}
 
-	private boolean parseOption(ASFormatter formatter, final String arg,
-			String errorInfo)
+	private boolean parseOption(ASFormatter formatter, final String arg, String errorInfo)
 	{
 		if (arg.equals("style=allman") || arg.equals("style=ansi") || arg.equals("style=bsd"))
 		{
@@ -222,9 +219,7 @@ public class Main
 		{
 			int spaceNum = 4;
 
-			final String spaceNumParam = isParamOption(arg, "t") ? arg
-					.substring("t".length()) : arg.substring("indent=tab="
-					.length());
+			final String spaceNumParam = isParamOption(arg, "t") ? arg.substring("t".length()) : arg.substring("indent=tab=".length());
 			if (spaceNumParam.length() > 0)
 			{
 				spaceNum = Integer.parseInt(spaceNumParam);
@@ -245,9 +240,7 @@ public class Main
 		else if (isParamOption(arg, "T", "indent=force-tab="))
 		{
 			int spaceNum = 4;
-			final String spaceNumParam = isParamOption(arg, "T") ? arg
-					.substring("T".length()) : arg
-					.substring("indent=force-tab=".length());
+			final String spaceNumParam = isParamOption(arg, "T") ? arg.substring("T".length()) : arg.substring("indent=force-tab=".length());
 			if (spaceNumParam.length() > 0)
 			{
 				spaceNum = Integer.parseInt(spaceNumParam);
@@ -268,9 +261,7 @@ public class Main
 		else if (isParamOption(arg, "s", "indent=spaces="))
 		{
 			int spaceNum = 4;
-			final String spaceNumParam = isParamOption(arg, "s") ? arg
-					.substring("s".length()) : arg.substring("indent=spaces="
-					.length());
+			final String spaceNumParam = isParamOption(arg, "s") ? arg.substring("s".length()) : arg.substring("indent=spaces=".length());
 			if (spaceNumParam.length() > 0)
 			{
 				spaceNum = Integer.parseInt(spaceNumParam);
@@ -291,9 +282,7 @@ public class Main
 		else if (isParamOption(arg, "m", "min-conditional-indent="))
 		{
 			int minIndent = 8;
-			final String minIndentParam = isParamOption(arg, "m") ? arg
-					.substring("m".length()) : arg
-					.substring("min-conditional-indent=".length());
+			final String minIndentParam = isParamOption(arg, "m") ? arg.substring("m".length()) : arg.substring("min-conditional-indent=".length());
 			if (minIndentParam.length() > 0)
 			{
 				minIndent = Integer.parseInt(minIndentParam);
@@ -310,9 +299,7 @@ public class Main
 		else if (isParamOption(arg, "M", "max-instatement-indent="))
 		{
 			int maxIndent = 40;
-			final String maxIndentParam = isParamOption(arg, "M") ? arg
-					.substring("M".length()) : arg
-					.substring("max-instatement-indent=".length());
+			final String maxIndentParam = isParamOption(arg, "M") ? arg.substring("M".length()) : arg.substring("max-instatement-indent=".length());
 			if (maxIndentParam.length() > 0)
 			{
 				maxIndent = Integer.parseInt(maxIndentParam);
@@ -443,9 +430,7 @@ public class Main
 		{
 			// the 'T' option will already have been processed
 			int spaceNum = 4;
-			final String spaceNumParam = isParamOption(arg, "T") ? arg
-					.substring("T".length()) : arg
-					.substring("force-indent=tab=".length());
+			final String spaceNumParam = isParamOption(arg, "T") ? arg.substring("T".length()) : arg.substring("force-indent=tab=".length());
 			if (spaceNumParam.length() > 0)
 			{
 				spaceNum = Integer.parseInt(spaceNumParam);
@@ -553,8 +538,7 @@ public class Main
 	 * file) or an optionsVector (command line)
 	 * @return true if no errors, false if errors
 	 */
-	boolean parseOptions(ASFormatter formatter, List<String> options,
-			final String errorInfo)
+	boolean parseOptions(ASFormatter formatter, List<String> options, final String errorInfo)
 	{
 		boolean ok = true;
 
@@ -571,8 +555,7 @@ public class Main
 				{
 					if (Character.isLetter(arg.charAt(i)) && i > 1)
 					{
-						ok &= parseOption(formatter, subArg.toString(),
-								errorInfo);
+						ok &= parseOption(formatter, subArg.toString(), errorInfo);
 						subArg.delete(0, subArg.length());
 					}
 					subArg.append(arg.charAt(i));
@@ -589,8 +572,7 @@ public class Main
 
 	public void error(final String why, String what)
 	{
-		System.out.println(why + ' ' + what + '\n'
-				+ "JArtistic Style has terminated!");
+		System.out.println(why + ' ' + what + '\n' + "JArtistic Style has terminated!");
 		System.exit(1);
 	}
 
@@ -600,8 +582,7 @@ public class Main
 	 * @param formatter The formatter object.
 	 * @return true if the file was formatted, false if it was not (no changes).
 	 */
-	public void formatFile(String fileName, ASFormatter formatter)
-			throws IOException
+	public void formatFile(String fileName, ASFormatter formatter) throws IOException
 	{
 		// open input file
 		Reader in = new BufferedReader(new FileReader(fileName));
@@ -611,8 +592,7 @@ public class Main
 		File file = new File(tmpFileName);
 		// remove the pre-existing temp file, if present
 		file.delete();
-		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(
-				tmpFileName)));
+		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(tmpFileName)));
 
 		// Unless a specific language mode has been set, set the language mode
 		// according to the file's suffix.
@@ -882,8 +862,7 @@ public class Main
 	 * @param formatter Formatter to be used
 	 * @throws IOException
 	 */
-	public void processOptions(String args, ASFormatter formatter)
-			throws IOException
+	public void processOptions(String args, ASFormatter formatter) throws IOException
 	{
 		processOptions(args.split("\\s+"), formatter, false);
 	}
@@ -898,8 +877,7 @@ public class Main
 	 * @param formatter The ASFormatter to use
 	 * @throws IOException
 	 */
-	public List<String> processOptions(String[] args, ASFormatter formatter)
-			throws IOException
+	public List<String> processOptions(String[] args, ASFormatter formatter) throws IOException
 	{
 		return processOptions(args, formatter, true);
 	}
@@ -913,8 +891,7 @@ public class Main
 	 * @return List List with the filenames to be processed
 	 * @throws IOException
 	 */
-	private List<String> processOptions(String args[], ASFormatter formatter,
-			boolean shouldParseOptionsFile) throws IOException
+	private List<String> processOptions(String args[], ASFormatter formatter, boolean shouldParseOptionsFile) throws IOException
 	{
 		boolean ok = true;
 
@@ -938,8 +915,7 @@ public class Main
 				{
 					optionsFileName = arg.substring(OPTIONS.length());
 				}
-				else if (arg.equals("-h") || arg.equals("--help")
-						|| arg.equals("-?"))
+				else if (arg.equals("-h") || arg.equals("--help") || arg.equals("-?"))
 				{
 					printHelp();
 					System.exit(EXIT_SUCCESS);
@@ -978,8 +954,7 @@ public class Main
 				List<String> fileOptions = importOptions(optionsFileName);
 				if (fileOptions != null && fileOptions.size() > 0)
 				{
-					ok = parseOptions(formatter, fileOptions,
-							"Invalid option in default options file: ");
+					ok = parseOptions(formatter, fileOptions, "Invalid option in default options file: ");
 				}
 			}
 
@@ -987,18 +962,15 @@ public class Main
 
 		if (!ok)
 		{
-			System.out
-					.println("For help on options, type 'java -jar jastyle.jar -h' ");
+			System.out.println("For help on options, type 'java -jar jastyle.jar -h' ");
 			System.exit(EXIT_FAILURE);
 		}
 
 		// parse the command line options vector for errors
-		ok = parseOptions(formatter, optionsVector,
-				"Invalid command line option: ");
+		ok = parseOptions(formatter, optionsVector, "Invalid command line option: ");
 		if (!ok)
 		{
-			System.out
-					.println("For help on options, type 'java -jar jastyle.jar -h' \n");
+			System.out.println("For help on options, type 'java -jar jastyle.jar -h' \n");
 			System.exit(EXIT_FAILURE);
 		}
 		return fileNameVector;
@@ -1064,11 +1036,14 @@ public class Main
 			line = reader.readLine();
 			if (line != null)
 			{
-				String cleanLine = line.trim();
-				if (!cleanLine.isEmpty() && !cleanLine.startsWith("#"))
+				line = line.trim();
+
+				if (line.isEmpty() || line.startsWith("#"))
 				{
-					fileOptions.add(cleanLine);
+					continue;
 				}
+
+				fileOptions.add(line);
 			}
 		} while (line != null);
 		reader.close();
@@ -1118,8 +1093,7 @@ public class Main
 			{
 				if (filepath.length() <= index)
 				{
-					System.err.println("The filename " + filepath
-							+ " is invalid");
+					System.err.println("The filename " + filepath + " is invalid");
 					System.exit(EXIT_FAILURE);
 				}
 				dir = filepath.substring(0, index);
@@ -1141,10 +1115,8 @@ public class Main
 			{
 				for (File currFile : files)
 				{
-					System.out.println("Converting "
-							+ currFile.getAbsolutePath() + " ...\n");
-					Reader reader = new BufferedReader(new FileReader(currFile
-							.getAbsolutePath()));
+					System.out.println("Converting " + currFile.getAbsolutePath() + " ...\n");
+					Reader reader = new BufferedReader(new FileReader(currFile.getAbsolutePath()));
 
 					console.formatFile(currFile.getAbsolutePath(), formatter);
 					reader.close();

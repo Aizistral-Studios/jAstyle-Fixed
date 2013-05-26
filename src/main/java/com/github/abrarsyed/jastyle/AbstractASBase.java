@@ -68,8 +68,7 @@ public class AbstractASBase
 		if (ch > 127)
 			return false;
 
-		return java.lang.Character.isLetterOrDigit(ch) || ch == '.'
-				|| ch == '_' || isJavaStyle() && ch == '$' || isSharpStyle() && ch == '@'; // may
+		return java.lang.Character.isLetterOrDigit(ch) || ch == '.' || ch == '_' || isJavaStyle() && ch == '$' || isSharpStyle() && ch == '@'; // may
 		// be
 		// used
 		// as
@@ -95,9 +94,7 @@ public class AbstractASBase
 		assert !isWhiteSpace(ch) : "White spaces not permitted as a Potential Operator";
 		if (ch > 127)
 			return false;
-		return ASUtils.isPunct(ch) && ch != '{' && ch != '}' && ch != '('
-				&& ch != ')' && ch != '[' && ch != ']' && ch != ';'
-				&& ch != ',' && ch != '#' && ch != '\\' && ch != '\'' && ch != '\"';
+		return ASUtils.isPunct(ch) && ch != '{' && ch != '}' && ch != '(' && ch != ')' && ch != '[' && ch != ']' && ch != ';' && ch != ',' && ch != '#' && ch != '\\' && ch != '\'' && ch != '\"';
 	}
 
 	// check if a specific character is a whitespace character

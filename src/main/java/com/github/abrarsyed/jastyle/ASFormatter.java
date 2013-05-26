@@ -42,8 +42,7 @@ public class ASFormatter extends ASBeautifier
 {
 	public static enum FormatStyle
 	{
-		STYLE_NONE, STYLE_ALLMAN, STYLE_JAVA, STYLE_KandR, STYLE_STROUSTRUP, STYLE_WHITESMITH, STYLE_BANNER,
-		STYLE_GNU, STYLE_LINUX
+		STYLE_NONE, STYLE_ALLMAN, STYLE_JAVA, STYLE_KandR, STYLE_STROUSTRUP, STYLE_WHITESMITH, STYLE_BANNER, STYLE_GNU, STYLE_LINUX
 	}
 
 	public enum BracketMode
@@ -209,8 +208,7 @@ public class ASFormatter extends ASBeautifier
 
 		ASResource.buildHeaders(headers, getFileType(), false);
 		ASResource.buildNonParenHeaders(nonParenHeaders, getFileType(), false);
-		ASResource.buildPreDefinitionHeaders(preDefinitionHeaders,
-				getFileType());
+		ASResource.buildPreDefinitionHeaders(preDefinitionHeaders, getFileType());
 		ASResource.buildPreCommandHeaders(preCommandHeaders, getFileType());
 		if (operators.size() == 0)
 		{
@@ -313,8 +311,7 @@ public class ASFormatter extends ASBeautifier
 		fixOptionVariableConflicts();
 
 		super.init(si);
-		enhancer.init(getFileType(), getIndentLength(), getIndentString(),
-				isCaseIndent(), isEmptyLineFill());
+		enhancer.init(getFileType(), getIndentLength(), getIndentString(), isCaseIndent(), isEmptyLineFill());
 		sourceIterator = si;
 
 		preBracketHeaderStack = new Stack<String>();
@@ -469,9 +466,7 @@ public class ASFormatter extends ASBeautifier
 					isImmediatelyPostComment = true;
 					appendSequence(ASResource.AS_CLOSE_COMMENT, true);
 					goForward(1);
-					if (doesLineStartComment
-							&& ASUtils.findFirstNotOf(currentLine, ASUtils.WHITE_SPACE,
-									charNum + 1) == -1)
+					if (doesLineStartComment && ASUtils.findFirstNotOf(currentLine, ASUtils.WHITE_SPACE, charNum + 1) == -1)
 					{
 						lineEndsInCommentOnly = true;
 					}
@@ -566,13 +561,10 @@ public class ASFormatter extends ASBeautifier
 					// for speed, do not check if previous line is empty,
 					// if previous line is '{', or if previous line is a line
 					// comment
-					if (lineIsLineCommentOnly && !isImmediatelyPostEmptyLine
-							&& !(previousCommandChar == '{')
-							&& !isImmediatelyPostLineComment)
+					if (lineIsLineCommentOnly && !isImmediatelyPostEmptyLine && !(previousCommandChar == '{') && !isImmediatelyPostLineComment)
 					{
 
-						checkForFollowingHeader(new StringBuffer(currentLine
-								.substring(charNum - 1)));
+						checkForFollowingHeader(new StringBuffer(currentLine.substring(charNum - 1)));
 					}
 				}
 
@@ -608,12 +600,9 @@ public class ASFormatter extends ASBeautifier
 					// for speed, do not check if previous line is empty,
 					// if previous line is '{', or if previous line is a line
 					// comment
-					if (doesLineStartComment && !isImmediatelyPostEmptyLine
-							&& !(previousCommandChar == '{')
-							&& !isImmediatelyPostLineComment)
+					if (doesLineStartComment && !isImmediatelyPostEmptyLine && !(previousCommandChar == '{') && !isImmediatelyPostLineComment)
 					{
-						checkForFollowingHeader(new StringBuffer(currentLine
-								.substring(charNum - 1)));
+						checkForFollowingHeader(new StringBuffer(currentLine.substring(charNum - 1)));
 					}
 				}
 
@@ -638,10 +627,7 @@ public class ASFormatter extends ASBeautifier
 			// treat these preprocessor statements as a line comment
 			else if (currentChar == '#')
 			{
-				if (isSequenceReached("#region")
-						|| isSequenceReached("#endregion")
-						|| isSequenceReached("#error")
-						|| isSequenceReached("#warning"))
+				if (isSequenceReached("#region") || isSequenceReached("#endregion") || isSequenceReached("#error") || isSequenceReached("#warning"))
 				{
 					isInLineComment = true;
 					appendCurrentChar();
@@ -714,10 +700,7 @@ public class ASFormatter extends ASBeautifier
 				// )
 				// But treat else if() as a special case which should not be
 				// broken!
-				if (shouldBreakOneLineStatements
-						&& (shouldBreakOneLineBlocks || !isBracketType(
-								bracketTypeStack.peek(),
-								BracketType.SINGLE_LINE_TYPE)))
+				if (shouldBreakOneLineStatements && (shouldBreakOneLineBlocks || !isBracketType(bracketTypeStack.peek(), BracketType.SINGLE_LINE_TYPE)))
 				{
 					// if may break 'else if()'s, then simply break the line
 					if (shouldBreakElseIfs)
@@ -733,32 +716,24 @@ public class ASFormatter extends ASBeautifier
 				if (parenStack.peek() == 0 && currentChar != ';') // allow ;;
 				{
 					// does a one-line statement have ending comments?
-					if (isBracketType(bracketTypeStack.peek(),
-							BracketType.SINGLE_LINE_TYPE))
+					if (isBracketType(bracketTypeStack.peek(), BracketType.SINGLE_LINE_TYPE))
 					{
-						int blockEnd = currentLine
-								.lastIndexOf(ASResource.AS_CLOSE_BRACKET);
+						int blockEnd = currentLine.lastIndexOf(ASResource.AS_CLOSE_BRACKET);
 						assert blockEnd != -1;
 						// move ending comments to this formattedLine
 						if (isBeforeLineEndComment(blockEnd))
 						{
-							int commentStart = ASUtils.findFirstNotOf(
-									currentLine, ASUtils.WHITE_SPACE, blockEnd + 1);
+							int commentStart = ASUtils.findFirstNotOf(currentLine, ASUtils.WHITE_SPACE, blockEnd + 1);
 							assert commentStart != -1;
-							assert currentLine.indexOf(
-									"//", commentStart) == commentStart || currentLine.indexOf("/*", commentStart)
-										== commentStart;
-							int commentLength = currentLine.length()
-									- commentStart;
+							assert currentLine.indexOf("//", commentStart) == commentStart || currentLine.indexOf("/*", commentStart) == commentStart;
+							int commentLength = currentLine.length() - commentStart;
 							int tabCount = getIndentLength();
 							appendSpacePad();
 							formattedLine.append(ASUtils.repeat(tabCount, ' '));
 
-							formattedLine.append(currentLine.substring(commentStart,
-									commentStart + commentLength));
+							formattedLine.append(currentLine.substring(commentStart, commentStart + commentLength));
 
-							currentLine.delete(commentStart, commentStart
-									+ commentLength);
+							currentLine.delete(commentStart, commentStart + commentLength);
 						}
 					}
 					shouldReparseCurrentChar = true;
@@ -818,8 +793,7 @@ public class ASFormatter extends ASBeautifier
 					{
 						continue;
 					}
-					else if (!isLegalNameChar(currentChar)
-							&& !isWhiteSpace(currentChar))
+					else if (!isLegalNameChar(currentChar) && !isWhiteSpace(currentChar))
 					{
 						// this is not a template -> leave...
 						isInTemplate = false;
@@ -829,22 +803,18 @@ public class ASFormatter extends ASBeautifier
 			}
 
 			// handle parenthesies
-			if (currentChar == '(' || currentChar == '['
-					|| isInTemplate && currentChar == '<')
+			if (currentChar == '(' || currentChar == '[' || isInTemplate && currentChar == '<')
 			{
-				parenStack.set(parenStack.size() - 1, Integer
-						.valueOf(parenStack.peek().intValue() + 1));
+				parenStack.set(parenStack.size() - 1, Integer.valueOf(parenStack.peek().intValue() + 1));
 
 				if (currentChar == '[')
 				{
 					isInBlParen = true;
 				}
 			}
-			else if (currentChar == ')' || currentChar == ']'
-					|| isInTemplate && currentChar == '>')
+			else if (currentChar == ')' || currentChar == ']' || isInTemplate && currentChar == '>')
 			{
-				parenStack.set(parenStack.size() - 1, Integer
-						.valueOf(parenStack.peek().intValue() - 1));
+				parenStack.set(parenStack.size() - 1, Integer.valueOf(parenStack.peek().intValue() - 1));
 
 				if (isInTemplate && currentChar == '>')
 				{
@@ -892,17 +862,12 @@ public class ASFormatter extends ASBeautifier
 					preBracketHeaderStack.add(currentHeader);
 					currentHeader = null;
 
-					isPreviousBracketBlockRelated = !isBracketType(
-							newBracketType, BracketType.ARRAY_TYPE);
+					isPreviousBracketBlockRelated = !isBracketType(newBracketType, BracketType.ARRAY_TYPE);
 				}
 
 				// this must be done before the bracketTypeStack is popped
 				int bracketType = bracketTypeStack.peek();
-				boolean isOpeningArrayBracket = isBracketType(bracketType,
-						BracketType.ARRAY_TYPE)
-						&& bracketTypeStack.size() >= 2 && !isBracketType(
-								bracketTypeStack.get(bracketTypeStack.size() - 2),
-								BracketType.ARRAY_TYPE);
+				boolean isOpeningArrayBracket = isBracketType(bracketType, BracketType.ARRAY_TYPE) && bracketTypeStack.size() >= 2 && !isBracketType(bracketTypeStack.get(bracketTypeStack.size() - 2), BracketType.ARRAY_TYPE);
 
 				if (currentChar == '}')
 				{
@@ -918,8 +883,7 @@ public class ASFormatter extends ASBeautifier
 					{
 						previousBracketType = bracketTypeStack.peek();
 						bracketTypeStack.pop();
-						isPreviousBracketBlockRelated = !isBracketType(
-								bracketType, BracketType.ARRAY_TYPE);
+						isPreviousBracketBlockRelated = !isBracketType(bracketType, BracketType.ARRAY_TYPE);
 					}
 					else
 					{
@@ -950,27 +914,16 @@ public class ASFormatter extends ASBeautifier
 				continue;
 			}
 
-			if ((previousCommandChar == '{' && isPreviousBracketBlockRelated || previousCommandChar == '}'
-					&& !isImmediatelyPostEmptyBlock
-					&& isPreviousBracketBlockRelated
-					&& !isPreviousCharPostComment // Fixes wrongly appended
+			if ((previousCommandChar == '{' && isPreviousBracketBlockRelated || previousCommandChar == '}' && !isImmediatelyPostEmptyBlock && isPreviousBracketBlockRelated && !isPreviousCharPostComment // Fixes wrongly appended
 					// newlines after '}'
 					// immediately after
 					// comments
-					&& peekNextChar() != ' ' && !isBracketType(
-							previousBracketType, BracketType.DEFINITION_TYPE) && !isBracketType(
-							bracketTypeStack.peek(), BracketType.DEFINITION_TYPE))
-					&& (shouldBreakOneLineBlocks || !isBracketType(
-							bracketTypeStack.peek(),
-							BracketType.SINGLE_LINE_TYPE)))
+					&& peekNextChar() != ' ' && !isBracketType(previousBracketType, BracketType.DEFINITION_TYPE) && !isBracketType(bracketTypeStack.peek(), BracketType.DEFINITION_TYPE)) && (shouldBreakOneLineBlocks || !isBracketType(bracketTypeStack.peek(), BracketType.SINGLE_LINE_TYPE)))
 			{
 				isCharImmediatelyPostOpenBlock = previousCommandChar == '{';
 				isCharImmediatelyPostCloseBlock = previousCommandChar == '}';
 
-				if (isCharImmediatelyPostOpenBlock
-						|| isCharImmediatelyPostCloseBlock
-						&& shouldBreakOneLineStatements
-						&& isLegalNameChar(currentChar) && currentChar != '.' && !isCharImmediatelyPostComment)
+				if (isCharImmediatelyPostOpenBlock || isCharImmediatelyPostCloseBlock && shouldBreakOneLineStatements && isLegalNameChar(currentChar) && currentChar != '.' && !isCharImmediatelyPostComment)
 				{
 					previousCommandChar = ' ';
 					isInLineBreak = true;
@@ -981,8 +934,7 @@ public class ASFormatter extends ASBeautifier
 			isImmediatelyPostEmptyBlock = false;
 
 			// look for headers
-			boolean isPotentialHeader = isCharPotentialHeader(currentLine,
-					charNum);
+			boolean isPotentialHeader = isCharPotentialHeader(currentLine, charNum);
 
 			if (isPotentialHeader && !isInTemplate)
 			{
@@ -990,8 +942,7 @@ public class ASFormatter extends ASBeautifier
 
 				if (newHeader != null)
 				{
-					char peekChar = peekNextChar(currentLine,
-							charNum + newHeader.length() - 1);
+					char peekChar = peekNextChar(currentLine, charNum + newHeader.length() - 1);
 
 					// is not a header if part of a definition
 					if (peekChar == ',' || peekChar == ')')
@@ -1000,10 +951,7 @@ public class ASFormatter extends ASBeautifier
 					}
 					// the following accessor definitions are NOT headers
 					// goto default; is NOT a header
-					else if ((newHeader.equals(ASResource.AS_GET)
-							|| newHeader.equals(ASResource.AS_SET) || newHeader
-								.equals(ASResource.AS_DEFAULT))
-							&& peekChar == ';')
+					else if ((newHeader.equals(ASResource.AS_GET) || newHeader.equals(ASResource.AS_SET) || newHeader.equals(ASResource.AS_DEFAULT)) && peekChar == ';')
 					{
 						newHeader = null;
 					}
@@ -1018,22 +966,7 @@ public class ASFormatter extends ASBeautifier
 					// try..catch..finally
 					if (currentHeader != null)
 					{
-						if (newHeader.equals(ASResource.AS_ELSE) && currentHeader
-								.equals(ASResource.AS_IF)
-								|| newHeader.equals(ASResource.AS_WHILE) && currentHeader
-										.equals(ASResource.AS_DO)
-								|| newHeader.equals(ASResource.AS_CATCH) && currentHeader
-										.equals(ASResource.AS_TRY)
-								|| newHeader.equals(ASResource.AS_CATCH) && currentHeader
-										.equals(ASResource.AS_CATCH)
-								|| newHeader.equals(ASResource.AS_FINALLY) && currentHeader
-										.equals(ASResource.AS_TRY)
-								|| newHeader.equals(ASResource.AS_FINALLY) && currentHeader
-										.equals(ASResource.AS_CATCH)
-								|| newHeader.equals(ASResource.AS_SET) && currentHeader
-										.equals(ASResource.AS_GET)
-								|| newHeader.equals(ASResource.AS_REMOVE) && currentHeader
-										.equals(ASResource.AS_ADD))
+						if (newHeader.equals(ASResource.AS_ELSE) && currentHeader.equals(ASResource.AS_IF) || newHeader.equals(ASResource.AS_WHILE) && currentHeader.equals(ASResource.AS_DO) || newHeader.equals(ASResource.AS_CATCH) && currentHeader.equals(ASResource.AS_TRY) || newHeader.equals(ASResource.AS_CATCH) && currentHeader.equals(ASResource.AS_CATCH) || newHeader.equals(ASResource.AS_FINALLY) && currentHeader.equals(ASResource.AS_TRY) || newHeader.equals(ASResource.AS_FINALLY) && currentHeader.equals(ASResource.AS_CATCH) || newHeader.equals(ASResource.AS_SET) && currentHeader.equals(ASResource.AS_GET) || newHeader.equals(ASResource.AS_REMOVE) && currentHeader.equals(ASResource.AS_ADD))
 						{
 							foundClosingHeader = true;
 						}
@@ -1043,11 +976,7 @@ public class ASFormatter extends ASBeautifier
 					currentHeader = newHeader;
 					needHeaderOpeningBracket = true;
 
-					if (foundClosingHeader
-							&& previousNonWSChar == '}'
-							&& (shouldBreakOneLineBlocks || !isBracketType(
-									bracketTypeStack.peek(),
-									BracketType.SINGLE_LINE_TYPE)))
+					if (foundClosingHeader && previousNonWSChar == '}' && (shouldBreakOneLineBlocks || !isBracketType(bracketTypeStack.peek(), BracketType.SINGLE_LINE_TYPE)))
 					{
 						if (bracketFormatMode.equals(BracketMode.BREAK_MODE))
 						{
@@ -1055,8 +984,7 @@ public class ASFormatter extends ASBeautifier
 						}
 						else if (bracketFormatMode == BracketMode.NONE_MODE)
 						{
-							if (shouldBreakClosingHeaderBrackets
-									|| isBracketIndent() || isBlockIndent())
+							if (shouldBreakClosingHeaderBrackets || isBracketIndent() || isBlockIndent())
 							{
 								isInLineBreak = true;
 							}
@@ -1064,8 +992,7 @@ public class ASFormatter extends ASBeautifier
 							{
 								appendSpacePad();
 								// is closing bracket broken?
-								int i = ASUtils.findFirstNotOf(currentLine,
-										ASUtils.WHITE_SPACE, 0);
+								int i = ASUtils.findFirstNotOf(currentLine, ASUtils.WHITE_SPACE, 0);
 								if (i != -1 && currentLine.charAt(i) == '}')
 								{
 									isInLineBreak = false;
@@ -1081,8 +1008,7 @@ public class ASFormatter extends ASBeautifier
 						// STROUSTRUP_MODE
 						else
 						{
-							if (shouldBreakClosingHeaderBrackets
-									|| isBracketIndent() || isBlockIndent())
+							if (shouldBreakClosingHeaderBrackets || isBracketIndent() || isBlockIndent())
 							{
 								isInLineBreak = true;
 							}
@@ -1090,8 +1016,7 @@ public class ASFormatter extends ASBeautifier
 							{
 								spacePadNum = 0; // don't count as padding
 
-								int firstChar = ASUtils.findFirstNotOf(
-										formattedLine, ASUtils.WHITE_SPACE, 0);
+								int firstChar = ASUtils.findFirstNotOf(formattedLine, ASUtils.WHITE_SPACE, 0);
 								if (firstChar != -1) // if a blank line does not
 								// preceed this
 								{
@@ -1111,16 +1036,12 @@ public class ASFormatter extends ASBeautifier
 					isNonParenHeader = nonParenHeaders.contains(newHeader);
 
 					// join 'else if' statements
-					if (previousHeader != null && currentHeader.equals(ASResource.AS_IF)
-							&& previousHeader.equals(ASResource.AS_ELSE)
-							&& isInLineBreak && !shouldBreakElseIfs)
+					if (previousHeader != null && currentHeader.equals(ASResource.AS_IF) && previousHeader.equals(ASResource.AS_ELSE) && isInLineBreak && !shouldBreakElseIfs)
 					{
 						// 'else' must be last thing on the line, but must not
 						// be #else
-						int start = formattedLine.length() >= 6 ? formattedLine
-								.length() - 6 : 0;
-						if (formattedLine.indexOf("else", start) != -1
-								&& formattedLine.indexOf("#else", start) == -1)
+						int start = formattedLine.length() >= 6 ? formattedLine.length() - 6 : 0;
+						if (formattedLine.indexOf("else", start) != -1 && formattedLine.indexOf("#else", start) == -1)
 						{
 							appendSpacePad();
 							isInLineBreak = false;
@@ -1134,10 +1055,7 @@ public class ASFormatter extends ASBeautifier
 					// this checks currentLine, appendSpacePad() checks
 					// formattedLine
 					// in C# 'catch' can be either a paren or non-paren header
-					if ((!isNonParenHeader || currentHeader
-							.equals(ASResource.AS_CATCH) && peekNextChar() == '(')
-							&& !isWhiteSpace(currentLine
-									.charAt(charNum + 1)))
+					if ((!isNonParenHeader || currentHeader.equals(ASResource.AS_CATCH) && peekNextChar() == '(') && !isWhiteSpace(currentLine.charAt(charNum + 1)))
 					{
 						appendSpacePad();
 					}
@@ -1146,8 +1064,7 @@ public class ASFormatter extends ASBeautifier
 					// *** But treat a closing while() (as in do...while)
 					// as if it were NOT a header since a closing while()
 					// should never have a block after it!
-					if (!(foundClosingHeader && currentHeader
-							.equals(ASResource.AS_WHILE)))
+					if (!(foundClosingHeader && currentHeader.equals(ASResource.AS_WHILE)))
 					{
 						isInHeader = true;
 						// in C# 'catch' can be a paren or non-paren header
@@ -1158,30 +1075,19 @@ public class ASFormatter extends ASBeautifier
 						}
 					}
 
-					if (shouldBreakBlocks
-							&& (shouldBreakOneLineBlocks || !isBracketType(
-									bracketTypeStack.peek(),
-									BracketType.SINGLE_LINE_TYPE)))
+					if (shouldBreakBlocks && (shouldBreakOneLineBlocks || !isBracketType(bracketTypeStack.peek(), BracketType.SINGLE_LINE_TYPE)))
 					{
-						if (previousHeader == null && !foundClosingHeader
-								&& !isCharImmediatelyPostOpenBlock
-								&& !isImmediatelyPostCommentOnly)
+						if (previousHeader == null && !foundClosingHeader && !isCharImmediatelyPostOpenBlock && !isImmediatelyPostCommentOnly)
 						{
 							isPrependPostBlockEmptyLineRequested = true;
 						}
 
-						if (currentHeader.equals(ASResource.AS_ELSE)
-								|| currentHeader.equals(ASResource.AS_CATCH)
-								|| currentHeader.equals(ASResource.AS_FINALLY)
-								|| foundClosingHeader)
+						if (currentHeader.equals(ASResource.AS_ELSE) || currentHeader.equals(ASResource.AS_CATCH) || currentHeader.equals(ASResource.AS_FINALLY) || foundClosingHeader)
 						{
 							isPrependPostBlockEmptyLineRequested = false;
 						}
 
-						if (shouldBreakClosingHeaderBlocks
-								&& isCharImmediatelyPostCloseBlock
-								&& !isImmediatelyPostCommentOnly
-								&& !currentHeader.equals(ASResource.AS_WHILE)) // closing
+						if (shouldBreakClosingHeaderBlocks && isCharImmediatelyPostCloseBlock && !isImmediatelyPostCommentOnly && !currentHeader.equals(ASResource.AS_WHILE)) // closing
 						// do-while
 						// block
 						{
@@ -1192,8 +1098,7 @@ public class ASFormatter extends ASBeautifier
 
 					continue;
 				}
-				else if ((newHeader = findHeader(preDefinitionHeaders)) != null
-						&& parenStack.peek() == 0)
+				else if ((newHeader = findHeader(preDefinitionHeaders)) != null && parenStack.peek() == 0)
 				{
 					if (newHeader.equals(ASResource.AS_NAMESPACE))
 					{
@@ -1246,26 +1151,20 @@ public class ASFormatter extends ASBeautifier
 
 			if (previousNonWSChar == '}' || currentChar == ';')
 			{
-				if (shouldBreakOneLineStatements
-						&& currentChar == ';'
-						&& (shouldBreakOneLineBlocks || !isBracketType(
-								bracketTypeStack.peek(),
-								BracketType.SINGLE_LINE_TYPE)))
+				if (shouldBreakOneLineStatements && currentChar == ';' && (shouldBreakOneLineBlocks || !isBracketType(bracketTypeStack.peek(), BracketType.SINGLE_LINE_TYPE)))
 				{
 					passedSemicolon = true;
 				}
 
 				// append post block empty line for unbracketed header
-				if (shouldBreakBlocks && currentChar == ';'
-						&& currentHeader != null && parenStack.peek() == 0)
+				if (shouldBreakBlocks && currentChar == ';' && currentHeader != null && parenStack.peek() == 0)
 				{
 					isAppendPostBlockEmptyLineRequested = true;
 				}
 
 				// end of block if a closing bracket was found
 				// or an opening bracket was not found (';' closes)
-				if (currentChar != ';'
-						|| needHeaderOpeningBracket && parenStack.peek() == 0)
+				if (currentChar != ';' || needHeaderOpeningBracket && parenStack.peek() == 0)
 				{
 					currentHeader = null;
 				}
@@ -1317,9 +1216,7 @@ public class ASFormatter extends ASBeautifier
 
 			if (isPotentialHeader && !isInTemplate)
 			{
-				if (findKeyword(currentLine, charNum, ASResource.AS_CASE)
-						|| findKeyword(currentLine, charNum,
-								ASResource.AS_DEFAULT))
+				if (findKeyword(currentLine, charNum, ASResource.AS_CASE) || findKeyword(currentLine, charNum, ASResource.AS_DEFAULT))
 				{
 					isInCase = true;
 				}
@@ -1339,9 +1236,7 @@ public class ASFormatter extends ASBeautifier
 					isImmediatelyPostOperator = true;
 				}
 
-				if (isJavaStyle()
-						&& findKeyword(currentLine, charNum,
-								ASResource.AS_STATIC) && isNextCharOpeningBracket(charNum + 6))
+				if (isJavaStyle() && findKeyword(currentLine, charNum, ASResource.AS_STATIC) && isNextCharOpeningBracket(charNum + 6))
 				{
 					isJavaStaticConstructor = true;
 				}
@@ -1367,9 +1262,7 @@ public class ASFormatter extends ASBeautifier
 				if (newHeader != null)
 				{
 					// correct mistake of two >> closing a template
-					if (isInTemplate
-							&& (newHeader.equals(ASResource.AS_GR_GR) || newHeader
-									.equals(ASResource.AS_GR_GR_GR)))
+					if (isInTemplate && (newHeader.equals(ASResource.AS_GR_GR) || newHeader.equals(ASResource.AS_GR_GR_GR)))
 					{
 						newHeader = ASResource.AS_GR;
 					}
@@ -1381,9 +1274,7 @@ public class ASFormatter extends ASBeautifier
 						if (assignmentOperators.contains(newHeader))
 						{
 							char peekedChar = peekNextChar();
-							isInPotentialCalculation = !(newHeader
-									.equals(ASResource.AS_EQUAL) && peekedChar == '*') && !(newHeader
-									.equals(ASResource.AS_EQUAL) && peekedChar == '&');
+							isInPotentialCalculation = !(newHeader.equals(ASResource.AS_EQUAL) && peekedChar == '*') && !(newHeader.equals(ASResource.AS_EQUAL) && peekedChar == '&');
 						}
 					}
 				}
@@ -1396,18 +1287,14 @@ public class ASFormatter extends ASBeautifier
 			}
 
 			// pad commas and semi-colons
-			if (currentChar == ';'
-					|| currentChar == ',' && shouldPadOperators)
+			if (currentChar == ';' || currentChar == ',' && shouldPadOperators)
 			{
 				char nextChar = ' ';
 				if (charNum + 1 < currentLine.length())
 				{
 					nextChar = currentLine.charAt(charNum + 1);
 				}
-				if (!isWhiteSpace(nextChar) && nextChar != '}'
-						&& nextChar != ')' && nextChar != ']'
-						&& nextChar != '>' && nextChar != ';'
-						&& !isBeforeComment()
+				if (!isWhiteSpace(nextChar) && nextChar != '}' && nextChar != ')' && nextChar != ']' && nextChar != '>' && nextChar != ';' && !isBeforeComment()
 				/* && !(isBracketType(bracketTypeStack.peek(), ARRAY_TYPE)) */)
 				{
 					appendCurrentChar();
@@ -1416,8 +1303,7 @@ public class ASFormatter extends ASBeautifier
 				}
 			}
 
-			if ((shouldPadParensOutside || shouldPadParensInside || shouldUnPadParens)
-					&& (currentChar == '(' || currentChar == ')'))
+			if ((shouldPadParensOutside || shouldPadParensInside || shouldUnPadParens) && (currentChar == '(' || currentChar == ')'))
 			{
 				padParens();
 				continue;
@@ -1430,12 +1316,10 @@ public class ASFormatter extends ASBeautifier
 		// return a beautified (i.e. correctly indented) line.
 
 		StringBuffer beautifiedLine;
-		int readyFormattedLineLength = readyFormattedLine.toString().trim()
-				.length();
+		int readyFormattedLineLength = readyFormattedLine.toString().trim().length();
 
 		if (prependEmptyLine // prepend a blank line before this formatted line
-				&& readyFormattedLineLength > 0
-				&& previousReadyFormattedLineLength > 0)
+				&& readyFormattedLineLength > 0 && previousReadyFormattedLineLength > 0)
 		{
 			isLineReady = true; // signal a waiting readyFormattedLine
 			beautifiedLine = beautify(new StringBuffer());
@@ -1667,8 +1551,7 @@ public class ASFormatter extends ASBeautifier
 		if (peekNum == -1)
 			return foundComment;
 
-		foundComment = currentLine.indexOf("/*", peekNum) == peekNum || currentLine.indexOf("//",
-				peekNum) == peekNum;
+		foundComment = currentLine.indexOf("/*", peekNum) == peekNum || currentLine.indexOf("//", peekNum) == peekNum;
 
 		return foundComment;
 	}
@@ -1718,17 +1601,13 @@ public class ASFormatter extends ASBeautifier
 		if (!isWhiteSpace(currentChar))
 		{
 			previousNonWSChar = currentChar;
-			if (!isInComment && !isInLineComment && !isInQuote
-					&& !isImmediatelyPostComment
-					&& !isImmediatelyPostLineComment
-					&& !isSequenceReached("/*") && !isSequenceReached("//"))
+			if (!isInComment && !isInLineComment && !isInQuote && !isImmediatelyPostComment && !isImmediatelyPostLineComment && !isSequenceReached("/*") && !isSequenceReached("//"))
 			{
 				previousCommandChar = currentChar;
 			}
 		}
 
-		if (charNum + 1 < currentLine.length()
-				&& (!isWhiteSpace(peekNextChar()) || isInComment || isInLineComment))
+		if (charNum + 1 < currentLine.length() && (!isWhiteSpace(peekNextChar()) || isInComment || isInLineComment))
 		{
 			currentChar = currentLine.charAt(++charNum);
 
@@ -1772,8 +1651,7 @@ public class ASFormatter extends ASBeautifier
 			spacePadNum = 0;
 			inLineNumber++;
 			isInCase = false;
-			isInQuoteContinuation = isInVerbatimQuote
-					| haveLineContinuationChar;
+			isInQuoteContinuation = isInVerbatimQuote | haveLineContinuationChar;
 			haveLineContinuationChar = false;
 			isImmediatelyPostEmptyLine = lineIsEmpty;
 			previousChar = ' ';
@@ -1797,8 +1675,7 @@ public class ASFormatter extends ASBeautifier
 			// check if is in preprocessor before line trimming
 			// a blank line after a \ will remove the flag
 			isImmediatelyPostPreprocessor = isInPreprocessor;
-			if (previousNonWSChar != '\\'
-					|| ASUtils.findFirstNotOf(currentLine, ASUtils.WHITE_SPACE, 0) == -1)
+			if (previousNonWSChar != '\\' || ASUtils.findFirstNotOf(currentLine, ASUtils.WHITE_SPACE, 0) == -1)
 			{
 				isInPreprocessor = false;
 			}
@@ -1814,16 +1691,11 @@ public class ASFormatter extends ASBeautifier
 			// check for an empty line inside a command bracket.
 			// if yes then read the next line (calls getNextLine recursively).
 			// must be after trimNewLine.
-			if (shouldDeleteEmptyLines
-					&& lineIsEmpty
-					&& isBracketType(bracketTypeStack.get(bracketTypeStack
-							.size() - 1), BracketType.COMMAND_TYPE))
+			if (shouldDeleteEmptyLines && lineIsEmpty && isBracketType(bracketTypeStack.get(bracketTypeStack.size() - 1), BracketType.COMMAND_TYPE))
 			{
 				// but do NOT delete an empty line between comments if blocks
 				// are being broken
-				if (!(shouldBreakBlocks || shouldBreakClosingHeaderBlocks)
-						|| !isImmediatelyPostCommentOnly
-						|| !commentAndHeaderFollows())
+				if (!(shouldBreakBlocks || shouldBreakClosingHeaderBlocks) || !isImmediatelyPostCommentOnly || !commentAndHeaderFollows())
 				{
 					isInPreprocessor = isImmediatelyPostPreprocessor; // restore
 					// isInPreprocessor
@@ -1855,19 +1727,16 @@ public class ASFormatter extends ASBeautifier
 		if (isInComment || isInPreprocessor || isInQuoteContinuation)
 			return;
 
-		while (isWhiteSpace(currentLine.charAt(charNum))
-				&& charNum + 1 < len)
+		while (isWhiteSpace(currentLine.charAt(charNum)) && charNum + 1 < len)
 		{
 			if (currentLine.charAt(charNum) == '\t')
 			{
-				tabIncrementIn += indent - 1
-						- (tabIncrementIn + charNum) % indent;
+				tabIncrementIn += indent - 1 - (tabIncrementIn + charNum) % indent;
 			}
 			++charNum;
 		}
 
-		isImmediatelyPostCommentOnly = lineIsLineCommentOnly
-				|| lineEndsInCommentOnly;
+		isImmediatelyPostCommentOnly = lineIsLineCommentOnly || lineEndsInCommentOnly;
 		lineIsLineCommentOnly = false;
 		lineEndsInCommentOnly = false;
 		doesLineStartComment = false;
@@ -1882,8 +1751,7 @@ public class ASFormatter extends ASBeautifier
 		{
 			lineIsLineCommentOnly = true;
 		}
-		if (isWhiteSpace(currentLine.charAt(charNum))
-				&& !(charNum + 1 < currentLine.length()))
+		if (isWhiteSpace(currentLine.charAt(charNum)) && !(charNum + 1 < currentLine.length()))
 		{
 			lineIsEmpty = true;
 		}
@@ -1940,8 +1808,7 @@ public class ASFormatter extends ASBeautifier
 	private void appendSpaceAfter()
 	{
 		int len = currentLine.length();
-		if (charNum + 1 < len
-				&& !isWhiteSpace(currentLine.charAt(charNum + 1)))
+		if (charNum + 1 < len && !isWhiteSpace(currentLine.charAt(charNum + 1)))
 		{
 			formattedLine.append(' ');
 			spacePadNum++;
@@ -2012,25 +1879,17 @@ public class ASFormatter extends ASBeautifier
 		}
 		else
 		{
-			boolean isCommandType = foundPreCommandHeader
-					|| currentHeader != null && isNonParenHeader
-					|| previousCommandChar == ')'
-					|| previousCommandChar == ':' && !foundQuestionMark
-					|| previousCommandChar == ';'
-					|| (previousCommandChar == '{' || previousCommandChar == '}') && isPreviousBracketBlockRelated
-					|| isJavaStaticConstructor;
+			boolean isCommandType = foundPreCommandHeader || currentHeader != null && isNonParenHeader || previousCommandChar == ')' || previousCommandChar == ':' && !foundQuestionMark || previousCommandChar == ';' || (previousCommandChar == '{' || previousCommandChar == '}') && isPreviousBracketBlockRelated || isJavaStaticConstructor;
 
 			// C# methods containing 'get', 'set', 'add', and 'remove' do NOT
 			// end with parens
-			if (!isCommandType && isSharpStyle()
-					&& isNextWordSharpNonParenHeader(charNum + 1))
+			if (!isCommandType && isSharpStyle() && isNextWordSharpNonParenHeader(charNum + 1))
 			{
 				isCommandType = true;
 				isSharpAccessor = true;
 			}
 
-			returnVal = isCommandType ? BracketType.COMMAND_TYPE
-					: BracketType.ARRAY_TYPE;
+			returnVal = isCommandType ? BracketType.COMMAND_TYPE : BracketType.ARRAY_TYPE;
 		}
 
 		if (isOneLineBlockReached())
@@ -2052,16 +1911,12 @@ public class ASFormatter extends ASBeautifier
 		assert currentChar == '*' || currentChar == '&';
 
 		boolean isPR;
-		isPR = !isInPotentialCalculation
-				|| isBracketType(bracketTypeStack.peek(),
-						BracketType.DEFINITION_TYPE) || !isLegalNameChar(previousNonWSChar)
-				&& previousNonWSChar != ')' && previousNonWSChar != ']';
+		isPR = !isInPotentialCalculation || isBracketType(bracketTypeStack.peek(), BracketType.DEFINITION_TYPE) || !isLegalNameChar(previousNonWSChar) && previousNonWSChar != ')' && previousNonWSChar != ']';
 
 		if (!isPR)
 		{
 			char nextChar = peekNextChar();
-			isPR |= !isWhiteSpace(nextChar) && nextChar != '-'
-					&& nextChar != '(' && nextChar != '[' && !isLegalNameChar(nextChar);
+			isPR |= !isWhiteSpace(nextChar) && nextChar != '-' && nextChar != '(' && nextChar != '[' && !isLegalNameChar(nextChar);
 		}
 
 		return isPR;
@@ -2076,10 +1931,7 @@ public class ASFormatter extends ASBeautifier
 	{
 		assert currentChar == '+' || currentChar == '-';
 
-		return (isCharImmediatelyPostReturn || !isLegalNameChar(previousCommandChar))
-				&& previousCommandChar != '.'
-				&& previousCommandChar != '\"'
-				&& previousCommandChar != '\'' && previousCommandChar != ')' && previousCommandChar != ']';
+		return (isCharImmediatelyPostReturn || !isLegalNameChar(previousCommandChar)) && previousCommandChar != '.' && previousCommandChar != '\"' && previousCommandChar != '\'' && previousCommandChar != ')' && previousCommandChar != ']';
 	}
 
 	/**
@@ -2096,14 +1948,10 @@ public class ASFormatter extends ASBeautifier
 		int formattedLineLength = formattedLine.length();
 		if (formattedLineLength >= 2)
 		{
-			char prevPrevFormattedChar = formattedLine
-					.charAt(formattedLineLength - 2);
-			char prevFormattedChar = formattedLine
-					.charAt(formattedLineLength - 1);
+			char prevPrevFormattedChar = formattedLine.charAt(formattedLineLength - 2);
+			char prevFormattedChar = formattedLine.charAt(formattedLineLength - 1);
 
-			return (prevFormattedChar == 'e' || prevFormattedChar == 'E') && (prevPrevFormattedChar == '.' ||
-					Character
-							.isDigit(prevPrevFormattedChar));
+			return (prevFormattedChar == 'e' || prevFormattedChar == 'E') && (prevPrevFormattedChar == '.' || Character.isDigit(prevPrevFormattedChar));
 		}
 		else
 			return false;
@@ -2217,14 +2065,10 @@ public class ASFormatter extends ASBeautifier
 	private boolean isNextWordSharpNonParenHeader(int startChar)
 	{
 		// look ahead to find the next non-comment text
-		StringBuffer nextText = peekNextText(new StringBuffer(currentLine
-				.substring(startChar)));
+		StringBuffer nextText = peekNextText(new StringBuffer(currentLine.substring(startChar)));
 		if (nextText.length() == 0 || !isCharPotentialHeader(nextText, 0))
 			return false;
-		if (findKeyword(nextText, 0, ASResource.AS_GET)
-				|| findKeyword(nextText, 0, ASResource.AS_SET)
-				|| findKeyword(nextText, 0, ASResource.AS_ADD)
-				|| findKeyword(nextText, 0, ASResource.AS_REMOVE))
+		if (findKeyword(nextText, 0, ASResource.AS_GET) || findKeyword(nextText, 0, ASResource.AS_SET) || findKeyword(nextText, 0, ASResource.AS_ADD) || findKeyword(nextText, 0, ASResource.AS_REMOVE))
 			return true;
 		return false;
 	}
@@ -2238,8 +2082,7 @@ public class ASFormatter extends ASBeautifier
 	 */
 	private boolean isNextCharOpeningBracket(int startChar)
 	{
-		StringBuffer nextText = peekNextText(new StringBuffer(currentLine
-				.substring(startChar)));
+		StringBuffer nextText = peekNextText(new StringBuffer(currentLine.substring(startChar)));
 		return nextText.charAt(0) == '{';
 	}
 
@@ -2374,8 +2217,7 @@ public class ASFormatter extends ASBeautifier
 		else if (spacePadNum > 0)
 		{
 			int adjust = spacePadNum;
-			if (ASUtils.findLastNotOf(formattedLine, " ") < len - adjust - 1
-					&& formattedLine.charAt(len - 1) != '\t') // don't adjust a
+			if (ASUtils.findLastNotOf(formattedLine, " ") < len - adjust - 1 && formattedLine.charAt(len - 1) != '\t') // don't adjust a
 			// tab
 			{
 				formattedLine.setLength(len - adjust);
@@ -2397,9 +2239,7 @@ public class ASFormatter extends ASBeautifier
 			appendCurrentChar(); // don't attach
 			return;
 		}
-		assert formattedLine.indexOf(
-				"//", (int) formattedLineCommentNum) == (int) formattedLineCommentNum || formattedLine
-				.indexOf("/*", (int) formattedLineCommentNum) == (int) formattedLineCommentNum;
+		assert formattedLine.indexOf("//", (int) formattedLineCommentNum) == (int) formattedLineCommentNum || formattedLine.indexOf("/*", (int) formattedLineCommentNum) == (int) formattedLineCommentNum;
 
 		// find the previous non space char
 		int end = (int) formattedLineCommentNum;
@@ -2435,41 +2275,18 @@ public class ASFormatter extends ASBeautifier
 	{
 		assert newOperator != null;
 
-		boolean shouldPad = !newOperator.equals(ASResource.AS_COLON_COLON)
-				&& !newOperator.equals(ASResource.AS_PAREN_PAREN)
-				&& !newOperator.equals(ASResource.AS_BLPAREN_BLPAREN)
-				&& !newOperator.equals(ASResource.AS_PLUS_PLUS)
-				&& !newOperator.equals(ASResource.AS_MINUS_MINUS)
-				&& !newOperator.equals(ASResource.AS_NOT)
-				&& !newOperator.equals(ASResource.AS_BIT_NOT)
-				&& !newOperator.equals(ASResource.AS_ARROW)
-				&& !(newOperator.equals(ASResource.AS_MINUS) && isInExponent())
-				&& !((newOperator.equals(ASResource.AS_PLUS) || newOperator
-						.equals(ASResource.AS_MINUS)) // check for unary plus or
-				// minus
-				&& (previousNonWSChar == '(' || previousNonWSChar == '=' || previousNonWSChar == ','))
-				&& !(newOperator.equals(ASResource.AS_PLUS) && isInExponent())
-				&& !isCharImmediatelyPostOperator
-				&& !((newOperator.equals(ASResource.AS_MULT) || newOperator
-						.equals(ASResource.AS_BIT_AND)) && isPointerOrReference())
-				&& !(newOperator.equals(ASResource.AS_MULT) && (previousNonWSChar == '.' || previousNonWSChar == '>'))
-				// check
-				// for
-				// ->
-				&& !((isInTemplate || isCharImmediatelyPostTemplate) && (newOperator
-						.equals(ASResource.AS_LS) || newOperator
-						.equals(ASResource.AS_GR)))
-				&& !(newOperator.equals(ASResource.AS_GCC_MIN_ASSIGN) && peekNextChar(currentLine, charNum + 1) == '>')
-				&& !(newOperator.equals(ASResource.AS_GR) && previousNonWSChar == '?') && !isInCase;
+		boolean shouldPad = !newOperator.equals(ASResource.AS_COLON_COLON) && !newOperator.equals(ASResource.AS_PAREN_PAREN) && !newOperator.equals(ASResource.AS_BLPAREN_BLPAREN) && !newOperator.equals(ASResource.AS_PLUS_PLUS) && !newOperator.equals(ASResource.AS_MINUS_MINUS) && !newOperator.equals(ASResource.AS_NOT) && !newOperator.equals(ASResource.AS_BIT_NOT) && !newOperator.equals(ASResource.AS_ARROW) && !(newOperator.equals(ASResource.AS_MINUS) && isInExponent()) && !((newOperator.equals(ASResource.AS_PLUS) || newOperator.equals(ASResource.AS_MINUS)) // check for unary plus or
+		// minus
+		&& (previousNonWSChar == '(' || previousNonWSChar == '=' || previousNonWSChar == ',')) && !(newOperator.equals(ASResource.AS_PLUS) && isInExponent()) && !isCharImmediatelyPostOperator && !((newOperator.equals(ASResource.AS_MULT) || newOperator.equals(ASResource.AS_BIT_AND)) && isPointerOrReference()) && !(newOperator.equals(ASResource.AS_MULT) && (previousNonWSChar == '.' || previousNonWSChar == '>'))
+		// check
+		// for
+		// ->
+		&& !((isInTemplate || isCharImmediatelyPostTemplate) && (newOperator.equals(ASResource.AS_LS) || newOperator.equals(ASResource.AS_GR))) && !(newOperator.equals(ASResource.AS_GCC_MIN_ASSIGN) && peekNextChar(currentLine, charNum + 1) == '>') && !(newOperator.equals(ASResource.AS_GR) && previousNonWSChar == '?') && !isInCase;
 
 		// pad before operator
-		if (shouldPad
-				&& !isInBlParen
-				&& !(newOperator.equals(ASResource.AS_COLON) && !foundQuestionMark)
-				&& !(newOperator.equals(ASResource.AS_QUESTION)
-						&& isSharpStyle() // check for C# nullable type (e.g.
-				// int?)
-						&& currentLine.indexOf(":", charNum + 1) == -1))
+		if (shouldPad && !isInBlParen && !(newOperator.equals(ASResource.AS_COLON) && !foundQuestionMark) && !(newOperator.equals(ASResource.AS_QUESTION) && isSharpStyle() // check for C# nullable type (e.g.
+		// int?)
+		&& currentLine.indexOf(":", charNum + 1) == -1))
 		{
 			appendSpacePad();
 		}
@@ -2478,25 +2295,16 @@ public class ASFormatter extends ASBeautifier
 
 		// since this block handles '()' and '[]',
 		// the parenStack must be updated here accordingly!
-		if (newOperator.equals(ASResource.AS_PAREN_PAREN)
-				|| newOperator.equals(ASResource.AS_BLPAREN_BLPAREN))
+		if (newOperator.equals(ASResource.AS_PAREN_PAREN) || newOperator.equals(ASResource.AS_BLPAREN_BLPAREN))
 		{
 			parenStack.set(parenStack.size() - 1, parenStack.peek() - 1);
 		}
 		currentChar = newOperator.charAt(newOperator.length() - 1);
 		// pad after operator
 		// but do not pad after a '-' that is a unary-minus.
-		if (shouldPad && currentLine.length() < charNum + 1
-				&& !isInBlParen
-				&& !isBeforeComment()
-				&& !(newOperator.equals(ASResource.AS_PLUS) && isUnaryOperator())
-				&& !(newOperator.equals(ASResource.AS_MINUS) && isUnaryOperator())
-				&& !(currentLine.charAt(charNum + 1) == ';')
-				&& !(currentLine.indexOf("::", charNum + 1) == charNum + 1)
-				&& !(newOperator.equals(ASResource.AS_QUESTION)
-						&& isSharpStyle() // check for C# nullable type (e.g.
-				// int?)
-						&& currentLine.charAt(charNum + 1) == '['))
+		if (shouldPad && currentLine.length() < charNum + 1 && !isInBlParen && !isBeforeComment() && !(newOperator.equals(ASResource.AS_PLUS) && isUnaryOperator()) && !(newOperator.equals(ASResource.AS_MINUS) && isUnaryOperator()) && !(currentLine.charAt(charNum + 1) == ';') && !(currentLine.indexOf("::", charNum + 1) == charNum + 1) && !(newOperator.equals(ASResource.AS_QUESTION) && isSharpStyle() // check for C# nullable type (e.g.
+		// int?)
+		&& currentLine.charAt(charNum + 1) == '['))
 		{
 			appendSpaceAfter();
 		}
@@ -2539,14 +2347,11 @@ public class ASFormatter extends ASBeautifier
 					}
 					start++;
 					// if previous word is a header, it will be a paren header
-					String prevWord = formattedLine
-							.substring(start, end + 1);
+					String prevWord = formattedLine.substring(start, end + 1);
 					String prevWordH = null;
-					if (prevWord.length() > 0
-							&& isCharPotentialHeader(new StringBuffer(prevWord), 0))
+					if (prevWord.length() > 0 && isCharPotentialHeader(new StringBuffer(prevWord), 0))
 					{
-						prevWordH = findHeader(formattedLine, start,
-								headers);
+						prevWordH = findHeader(formattedLine, start, headers);
 					}
 					if (prevWordH != null)
 					{
@@ -2560,21 +2365,9 @@ public class ASFormatter extends ASBeautifier
 						prevIsParenHeader = true;
 					}
 					// don't unpad variables
-					else if (prevWord.equals("boolean")
-							|| prevWord.equals("int")
-							|| prevWord.equals("void")
-							|| prevWord.equals("void*")
-							|| prevWord.length() >= 6 // check end of word for
+					else if (prevWord.equals("boolean") || prevWord.equals("int") || prevWord.equals("void") || prevWord.equals("void*") || prevWord.length() >= 6 // check end of word for
 							// _t
-							&& prevWord.indexOf(
-									"_t", prevWord.length() - 2) == prevWord.length() - 2
-							|| prevWord.equals("BOOL")
-							|| prevWord.equals("DWORD")
-							|| prevWord.equals("HWND")
-							|| prevWord.equals("INT")
-							|| prevWord.equals("LPSTR")
-							|| prevWord.equals("VOID")
-							|| prevWord.equals("LPVOID"))
+							&& prevWord.indexOf("_t", prevWord.length() - 2) == prevWord.length() - 2 || prevWord.equals("BOOL") || prevWord.equals("DWORD") || prevWord.equals("HWND") || prevWord.equals("INT") || prevWord.equals("LPSTR") || prevWord.equals("VOID") || prevWord.equals("LPVOID"))
 					{
 						prevIsParenHeader = true;
 					}
@@ -2586,17 +2379,7 @@ public class ASFormatter extends ASBeautifier
 				}
 				else if (lastChar == '|' // check for ||
 						|| lastChar == '&' // check for &&
-						|| lastChar == ','
-						|| lastChar == '>' && !foundCastOperator
-						|| lastChar == '<'
-						|| lastChar == '?'
-						|| lastChar == ':'
-						|| lastChar == ';'
-						|| lastChar == '='
-						|| lastChar == '+'
-						|| lastChar == '-'
-						|| lastChar == '*' && isInPotentialCalculation
-						|| lastChar == '/' || lastChar == '%')
+						|| lastChar == ',' || lastChar == '>' && !foundCastOperator || lastChar == '<' || lastChar == '?' || lastChar == ':' || lastChar == ';' || lastChar == '=' || lastChar == '+' || lastChar == '-' || lastChar == '*' && isInPotentialCalculation || lastChar == '/' || lastChar == '%')
 				{
 					spacesOutsideToDelete--;
 				}
@@ -2634,13 +2417,11 @@ public class ASFormatter extends ASBeautifier
 				}
 				if (spacesInsideToDelete > 0)
 				{
-					currentLine.delete(charNum + 1, charNum + 1
-							+ spacesInsideToDelete);
+					currentLine.delete(charNum + 1, charNum + 1 + spacesInsideToDelete);
 					spacePadNum -= spacesInsideToDelete;
 				}
 				// convert tab to space if requested
-				if (shouldConvertTabs && currentLine.length() > charNum
-						&& currentLine.charAt(charNum + 1) == '\t')
+				if (shouldConvertTabs && currentLine.length() > charNum && currentLine.charAt(charNum + 1) == '\t')
 				{
 					currentLine.setCharAt(charNum + 1, ' ');
 				}
@@ -2700,8 +2481,7 @@ public class ASFormatter extends ASBeautifier
 				int j = ASUtils.findFirstNotOf(currentLine, ASUtils.WHITE_SPACE, charNum + 1);
 				if (j != -1)
 				{
-					if (currentLine.charAt(j) == '['
-							|| currentLine.charAt(j) == ']')
+					if (currentLine.charAt(j) == '[' || currentLine.charAt(j) == ']')
 					{
 						spacesOutsideToDelete = j - charNum - 1;
 					}
@@ -2713,8 +2493,7 @@ public class ASFormatter extends ASBeautifier
 
 				if (spacesOutsideToDelete > 0)
 				{
-					currentLine.delete(charNum + 1, charNum + 1
-							+ spacesOutsideToDelete);
+					currentLine.delete(charNum + 1, charNum + 1 + spacesOutsideToDelete);
 					spacePadNum -= spacesOutsideToDelete;
 				}
 			}
@@ -2723,8 +2502,7 @@ public class ASFormatter extends ASBeautifier
 			char peekedCharOutside = peekNextChar();
 			if (shouldPadParensOutside)
 			{
-				if (peekedCharOutside != ';' && peekedCharOutside != ','
-						&& peekedCharOutside != '.' && peekedCharOutside != '-') // check
+				if (peekedCharOutside != ';' && peekedCharOutside != ',' && peekedCharOutside != '.' && peekedCharOutside != '-') // check
 				// for
 				// ->
 				{
@@ -2775,15 +2553,13 @@ public class ASFormatter extends ASBeautifier
 			{
 				breakBracket = true;
 			}
-			else if (bracketFormatMode == BracketMode.LINUX_MODE
-					|| bracketFormatMode == BracketMode.STROUSTRUP_MODE)
+			else if (bracketFormatMode == BracketMode.LINUX_MODE || bracketFormatMode == BracketMode.STROUSTRUP_MODE)
 			{
 				// first entry in bracketTypeStack is NULL_TYPE
 				int bracketTypeStackEnd = bracketTypeStack.size() - 1;
 
 				// break a class if Linux
-				if (isBracketType(bracketTypeStack.get(bracketTypeStackEnd),
-						BracketType.CLASS_TYPE))
+				if (isBracketType(bracketTypeStack.get(bracketTypeStackEnd), BracketType.CLASS_TYPE))
 				{
 					if (bracketFormatMode == BracketMode.LINUX_MODE)
 					{
@@ -2791,11 +2567,7 @@ public class ASFormatter extends ASBeautifier
 					}
 				}
 				// break a namespace or interface if Linux
-				else if (isBracketType(bracketTypeStack
-						.get(bracketTypeStackEnd), BracketType.NAMESPACE_TYPE)
-						|| isBracketType(bracketTypeStack
-								.get(bracketTypeStackEnd),
-								BracketType.INTERFACE_TYPE))
+				else if (isBracketType(bracketTypeStack.get(bracketTypeStackEnd), BracketType.NAMESPACE_TYPE) || isBracketType(bracketTypeStack.get(bracketTypeStackEnd), BracketType.INTERFACE_TYPE))
 				{
 					if (bracketFormatMode == BracketMode.LINUX_MODE)
 					{
@@ -2803,23 +2575,16 @@ public class ASFormatter extends ASBeautifier
 					}
 				}
 				// break the first bracket if a function
-				else if (bracketTypeStackEnd == 1
-						&& isBracketType(bracketTypeStack
-								.get(bracketTypeStackEnd),
-								BracketType.COMMAND_TYPE))
+				else if (bracketTypeStackEnd == 1 && isBracketType(bracketTypeStack.get(bracketTypeStackEnd), BracketType.COMMAND_TYPE))
 				{
 					breakBracket = true;
 				}
 				else if (bracketTypeStackEnd > 1)
 				{
 					// break the first bracket after a namespace if a function
-					if (isBracketType(bracketTypeStack
-							.get(bracketTypeStackEnd - 1),
-							BracketType.NAMESPACE_TYPE))
+					if (isBracketType(bracketTypeStack.get(bracketTypeStackEnd - 1), BracketType.NAMESPACE_TYPE))
 					{
-						if (isBracketType(bracketTypeStack
-								.get(bracketTypeStackEnd),
-								BracketType.COMMAND_TYPE))
+						if (isBracketType(bracketTypeStack.get(bracketTypeStackEnd), BracketType.COMMAND_TYPE))
 						{
 							breakBracket = true;
 						}
@@ -2828,12 +2593,7 @@ public class ASFormatter extends ASBeautifier
 					// if a function
 					else if (!isCStyle())
 					{
-						if (isBracketType(bracketTypeStack
-								.get(bracketTypeStackEnd - 1),
-								BracketType.CLASS_TYPE)
-								&& isBracketType(bracketTypeStack
-										.get(bracketTypeStackEnd),
-										BracketType.COMMAND_TYPE))
+						if (isBracketType(bracketTypeStack.get(bracketTypeStackEnd - 1), BracketType.CLASS_TYPE) && isBracketType(bracketTypeStack.get(bracketTypeStackEnd), BracketType.COMMAND_TYPE))
 						{
 							breakBracket = true;
 						}
@@ -2843,9 +2603,7 @@ public class ASFormatter extends ASBeautifier
 
 			if (breakBracket)
 			{
-				if (isBeforeComment()
-						&& (shouldBreakOneLineBlocks || !isBracketType(
-								bracketType, BracketType.SINGLE_LINE_TYPE)))
+				if (isBeforeComment() && (shouldBreakOneLineBlocks || !isBracketType(bracketType, BracketType.SINGLE_LINE_TYPE)))
 				{
 					// if comment is at line end leave the comment on this line
 					if (isBeforeLineEndComment(charNum) && !lineBeginsWith('{'))
@@ -2860,8 +2618,7 @@ public class ASFormatter extends ASBeautifier
 						breakLine();
 					}
 				}
-				else if (!isBracketType(bracketType,
-						BracketType.SINGLE_LINE_TYPE))
+				else if (!isBracketType(bracketType, BracketType.SINGLE_LINE_TYPE))
 				{
 					breakLine();
 				}
@@ -2880,13 +2637,9 @@ public class ASFormatter extends ASBeautifier
 			// attach bracket
 			{
 				// are there comments before the bracket?
-				if (isCharImmediatelyPostComment
-						|| isCharImmediatelyPostLineComment)
+				if (isCharImmediatelyPostComment || isCharImmediatelyPostLineComment)
 				{
-					if ((shouldBreakOneLineBlocks || !isBracketType(
-							bracketType, BracketType.SINGLE_LINE_TYPE))
-							&& peekNextChar() != '}'
-							&& previousCommandChar != '{' // don't attach { {
+					if ((shouldBreakOneLineBlocks || !isBracketType(bracketType, BracketType.SINGLE_LINE_TYPE)) && peekNextChar() != '}' && previousCommandChar != '{' // don't attach { {
 							&& previousCommandChar != '}' // don't attach } {
 							&& previousCommandChar != ';') // don't attach ; {
 					{
@@ -2897,9 +2650,7 @@ public class ASFormatter extends ASBeautifier
 						appendCurrentChar(); // don't attach
 					}
 				}
-				else if (previousCommandChar == '{'
-						|| previousCommandChar == '}'
-						|| previousCommandChar == ';') // '}' , ';' chars added
+				else if (previousCommandChar == '{' || previousCommandChar == '}' || previousCommandChar == ';') // '}' , ';' chars added
 				// for proper handling
 				// of '{' immediately
 				// after a '}' or ';'
@@ -2909,16 +2660,12 @@ public class ASFormatter extends ASBeautifier
 				else
 				{
 					// if a blank line preceeds this don't attach
-					int firstChar = ASUtils.findFirstNotOf(formattedLine,
-							ASUtils.WHITE_SPACE, 0);
+					int firstChar = ASUtils.findFirstNotOf(formattedLine, ASUtils.WHITE_SPACE, 0);
 					if (firstChar == -1)
 					{
 						appendCurrentChar(); // don't attach
 					}
-					else if ((shouldBreakOneLineBlocks
-							|| !isBracketType(bracketType,
-									BracketType.SINGLE_LINE_TYPE) || peekNextChar() == '}')
-							&& !(isImmediatelyPostPreprocessor && lineBeginsWith('{')))
+					else if ((shouldBreakOneLineBlocks || !isBracketType(bracketType, BracketType.SINGLE_LINE_TYPE) || peekNextChar() == '}') && !(isImmediatelyPostPreprocessor && lineBeginsWith('{')))
 					{
 						appendSpacePad();
 						appendCurrentChar(false); // OK to attach
@@ -2952,8 +2699,7 @@ public class ASFormatter extends ASBeautifier
 					// an
 					// empty
 					// block
-					&& (shouldBreakOneLineBlocks || !isBracketType(bracketType,
-							BracketType.SINGLE_LINE_TYPE)) // astyle is allowed
+					&& (shouldBreakOneLineBlocks || !isBracketType(bracketType, BracketType.SINGLE_LINE_TYPE)) // astyle is allowed
 					// to break on line
 					// blocks
 					&& !isImmediatelyPostEmptyBlock) // this '}' does not
@@ -2966,8 +2712,8 @@ public class ASFormatter extends ASBeautifier
 			else
 			{
 				if (!isCharImmediatelyPostComment
-						// && !bracketFormatMode == NONE_MODE
-						&& !isImmediatelyPostEmptyBlock)
+				// && !bracketFormatMode == NONE_MODE
+				&& !isImmediatelyPostEmptyBlock)
 				{
 					isInLineBreak = false;
 				}
@@ -2981,8 +2727,7 @@ public class ASFormatter extends ASBeautifier
 				appendSpaceAfter();
 			}
 
-			if (shouldBreakBlocks && currentHeader != null
-					&& parenStack.peek() == 0)
+			if (shouldBreakBlocks && currentHeader != null && parenStack.peek() == 0)
 			{
 				isAppendPostBlockEmptyLineRequested = true;
 			}
@@ -3008,9 +2753,7 @@ public class ASFormatter extends ASBeautifier
 			// is this the first opening bracket in the array?
 			if (isOpeningArrayBracket)
 			{
-				if (bracketFormatMode == BracketMode.ATTACH_MODE
-						|| bracketFormatMode == BracketMode.LINUX_MODE
-						|| bracketFormatMode == BracketMode.STROUSTRUP_MODE)
+				if (bracketFormatMode == BracketMode.ATTACH_MODE || bracketFormatMode == BracketMode.LINUX_MODE || bracketFormatMode == BracketMode.STROUSTRUP_MODE)
 				{
 					// don't attach to a preprocessor directive
 					if (isImmediatelyPostPreprocessor && lineBeginsWith('{'))
@@ -3019,16 +2762,14 @@ public class ASFormatter extends ASBeautifier
 						appendCurrentChar(); // don't attach
 					}
 					// are there comments before the bracket?
-					else if (isCharImmediatelyPostComment
-							|| isCharImmediatelyPostLineComment)
+					else if (isCharImmediatelyPostComment || isCharImmediatelyPostLineComment)
 					{
 						appendCharInsideComments();
 					}
 					else
 					{
 						// if a blank line preceeds this don't attach
-						int firstChar = ASUtils.findFirstNotOf(formattedLine,
-								ASUtils.WHITE_SPACE, 0);
+						int firstChar = ASUtils.findFirstNotOf(formattedLine, ASUtils.WHITE_SPACE, 0);
 						if (firstChar == -1)
 						{
 							appendCurrentChar(); // don't attach
@@ -3093,8 +2834,7 @@ public class ASFormatter extends ASBeautifier
 			// if an opening bracket ends the line there will be no inStatement
 			// indent
 			char nextChar = peekNextChar();
-			if (isWhiteSpace(nextChar)
-					|| isBeforeLineEndComment(charNum) || nextChar == '{')
+			if (isWhiteSpace(nextChar) || isBeforeLineEndComment(charNum) || nextChar == '{')
 			{
 				isNonInStatementArray = true;
 			}
@@ -3108,8 +2848,7 @@ public class ASFormatter extends ASBeautifier
 		else if (currentChar == '}')
 		{
 			// does this close the first opening bracket in the array?
-			if (isOpeningArrayBracket
-					&& !isBracketType(bracketType, BracketType.SINGLE_LINE_TYPE))
+			if (isOpeningArrayBracket && !isBracketType(bracketType, BracketType.SINGLE_LINE_TYPE))
 			{
 				breakLine();
 				appendCurrentChar();
@@ -3167,9 +2906,7 @@ public class ASFormatter extends ASBeautifier
 			return;
 
 		// may need to break if a header follows
-		boolean isClosingHeader = newHeader.equals(ASResource.AS_ELSE)
-				|| newHeader.equals(ASResource.AS_CATCH) || newHeader
-						.equals(ASResource.AS_FINALLY);
+		boolean isClosingHeader = newHeader.equals(ASResource.AS_ELSE) || newHeader.equals(ASResource.AS_CATCH) || newHeader.equals(ASResource.AS_FINALLY);
 
 		// if a closing header, reset break unless break is requested
 		if (isClosingHeader)
@@ -3206,8 +2943,7 @@ public class ASFormatter extends ASBeautifier
 		{
 			// delete stack entries added in #if
 			// should be replaced by #else
-			int addedPreproc = bracketTypeStack.size()
-					- preprocBracketTypeStackSize;
+			int addedPreproc = bracketTypeStack.size() - preprocBracketTypeStackSize;
 			if (addedPreproc > 0)
 			{
 				for (int i = 0; i < addedPreproc; i++)
@@ -3228,9 +2964,7 @@ public class ASFormatter extends ASBeautifier
 		// is the next line a comment
 		StringBuffer nextLine = sourceIterator.peekNextLine();
 		int firstChar = ASUtils.findFirstNotOf(nextLine, ASUtils.WHITE_SPACE, 0);
-		if (firstChar == -1
-				|| !(nextLine.indexOf("//", firstChar) == firstChar || nextLine
-						.indexOf("/*", firstChar) == firstChar))
+		if (firstChar == -1 || !(nextLine.indexOf("//", firstChar) == firstChar || nextLine.indexOf("/*", firstChar) == firstChar))
 		{
 			sourceIterator.peekReset();
 			return false;
@@ -3247,9 +2981,7 @@ public class ASFormatter extends ASBeautifier
 		if (newHeader == null)
 			return false;
 
-		boolean isClosingHeader = newHeader.equals(ASResource.AS_ELSE)
-				|| newHeader.equals(ASResource.AS_CATCH) || newHeader
-						.equals(ASResource.AS_FINALLY);
+		boolean isClosingHeader = newHeader.equals(ASResource.AS_ELSE) || newHeader.equals(ASResource.AS_CATCH) || newHeader.equals(ASResource.AS_FINALLY);
 
 		if (isClosingHeader && !shouldBreakClosingHeaderBlocks)
 			return false;

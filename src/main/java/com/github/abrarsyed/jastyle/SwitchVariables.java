@@ -47,8 +47,7 @@ class SwitchVariables
 	 * @param unindentDepth
 	 * @param unindentCase
 	 */
-	public SwitchVariables(int switchBracketCount, int unindentDepth,
-			boolean unindentCase)
+	public SwitchVariables(int switchBracketCount, int unindentDepth, boolean unindentCase)
 	{
 		super();
 		this.switchBracketCount = switchBracketCount;
