@@ -1,45 +1,55 @@
-apply plugin: "java"
-apply plugin: "maven"
-//apply plugin: "maven-publish"  expiramental
+apply plugin: 'java'
+apply plugin: 'maven'
+//apply plugin: 'maven-publish'   expiramental
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'signing'
 
-group = "com.github.abrarsyed"
-version = 1.0
+group = 'com.github.abrarsyed'
+version = '1.0-SNAPSHOT'
 archivesBaseName = 'jAstyle'
 
-repositories {
-    mavenCentral()
+repositories
+{
+	 mavenCentral()
 }
 
-dependencies {
+configurations {
+	 deployJars
+}
+
+dependencies
+{
 	testCompile 'junit:junit:4.5'
+
+	deployJars 'org.apache.maven.wagon:wagon-http:2.2'
 }
 
 /*
- * espiramental maven-publish plugin
+ * maven-publish not implemented yet.
 publications {
 	mavenJava(MavenPublication) {
 		artifact jar
 		artifact javadocJar
-		artifact sourcesjar
-	  }
+		artifact sourcesjard
+	}
 	repositories {
 		maven {
-			url "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-		}
+			 url "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+			 
+			  }
 	}
 }
 */
 
-jar {
+jar
+{
 	metaInf {
 		from 'LICENSE'
 		from 'README'
 	}
 	from sourceSets.main.resources
-	
+
 	// manifest
 	manifest { attributes 'Main-Class' : 'com.github.abrarsyed.jastyle.Main' }
 }
@@ -48,7 +58,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 	classifier = 'javadoc'
 	from 'build/docs/javadoc'
 }
- 
+
 task sourcesJar(type: Jar) {
 	from sourceSets.main.allSource
 	classifier = 'sources'
@@ -61,67 +71,71 @@ artifacts {
 }
 
 signing {
-	sign configurations.archives
+	
+	 sign configurations.archives
 }
 
 uploadArchives {
 	repositories {
 		mavenDeployer {
-			beforeDeployment { MavenDeployment deployment -> signPom(deployment) }
- 
+			configuration = configurations.deployJars
+			beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
 			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-			  authentication(userName: sonatypeUsername, password: sonatypePassword)
+				authentication(userName: sonatypeUsername, password: sonatypePassword)
 			}
- 
-			pom.project {
-			   name 'jAstyle'
-			   packaging 'jar'
-			   description 'Java Artistic Style Library'
-			   url 'https://github.com/AbrarSyed/jastyle'
- 
-			   scm {
-				   url 'https://github.com/AbrarSyed/jastyle'
-				   connection 'scm:git:git://github.com/AbrarSyed/jastyle.git'
-				   developerConnection 'scm:git:git@github.com:AbrarSyed/jastyle.git'
-			   }
-			   
-			   issueManagement {
-				   system 'github'
-				   url 'http://github.com/AbrarSyed/jastyle/issues'
-			   }
- 
-			   licenses {
-				   license {
-					   name 'GNU Lesser General Public License (LGPL), Version 3'
-					   url 'http://www.fsf.org/licensing/licenses/lgpl.txt'
-					   distribution 'repo'
-				   }
-			   }
- 
-			   developers {
-				   developer {
-					   id 'stephenc'
-					   name 'Stephen Connolly'
-					   roles {
-						   role 'packager'
-					   }
-				   }
-				   developer {
-					   name 'Hector Suarez Barenca'
-					   roles {
-						   role 'developer'
-					   }
-				   }
-				   developer {
-					   id 'AbrarSyed'
-					   name 'Abrar Syed'
-					   roles {
-						   role 'packager'
-						   role 'developer'
-					   }
-				   }
-			   }
-		   }
+
+			pom
+			{
+				groupId = group
+				version = version
+				artifactId = archivesBaseName
+				project {
+					name 'jAstyle'
+					packaging 'jar'
+					description 'Java Artistic Style Library'
+					url 'https://github.com/AbrarSyed/jastyle'
+
+					scm {
+						url 'https://github.com/AbrarSyed/jastyle'
+						connection 'scm:git:git://github.com/AbrarSyed/jastyle.git'
+						developerConnection 'scm:git:git@github.com:AbrarSyed/jastyle.git'
+					}
+
+					issueManagement {
+						system 'github'
+						url 'http://github.com/AbrarSyed/jastyle/issues'
+					}
+
+					licenses {
+						license {
+							name 'GNU Lesser General Public License (LGPL), Version 3'
+							url 'http://www.fsf.org/licensing/licenses/lgpl.txt'
+							distribution 'repo'
+						}
+					}
+
+					developers {
+						developer {
+							id 'stephenc'
+							name 'Stephen Connolly'
+							roles { role 'packager' }
+						}
+						developer {
+							name 'Hector Suarez Barenca'
+							roles { role 'developer' }
+						}
+						developer {
+							id 'AbrarSyed'
+							name 'Abrar Syed'
+							roles {
+								role 'packager'
+								role 'developer'
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 }
