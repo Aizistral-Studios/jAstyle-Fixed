@@ -62,7 +62,6 @@ Predefined Style Options:
 
     --style=gnu  OR  -A7
     GNU style formatting/indenting.
-
     Broken brackets, indented blocks, indent is 2 spaces.
 
     --style=linux  OR  -A8
