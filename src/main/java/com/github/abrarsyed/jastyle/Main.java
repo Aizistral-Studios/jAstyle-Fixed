@@ -1054,8 +1054,7 @@ public class Main
 	 * @return
 	 * @throws IOException
 	 */
-	private final static List<String> importOptions(String filename)
-			throws IOException
+	private final static List<String> importOptions(String filename) throws IOException
 	{
 		String line = null;
 		List<String> fileOptions = new ArrayList<String>();
@@ -1066,7 +1065,7 @@ public class Main
 			if (line != null)
 			{
 				String cleanLine = line.trim();
-				if (cleanLine.charAt(0) != '#' && cleanLine.length() > 0)
+				if (!cleanLine.isEmpty() && !cleanLine.startsWith("#"))
 				{
 					fileOptions.add(cleanLine);
 				}
