@@ -9,17 +9,24 @@ group = 'com.github.abrarsyed'
 version = '1.0-SNAPSHOT'
 archivesBaseName = 'jAstyle'
 
-repositories
-{
+repositories {
 	 mavenCentral()
 }
 
 configurations {
 	 deployJars
+	 provided	
+	  
+	 eclipse.classpath.plusConfigurations += provided
+	 sourceSets.main.compileClasspath += provided
+	 sourceSets.test.compileClasspath += provided
 }
 
 dependencies
 {
+	compile 'net.sf.jopt-simple:jopt-simple:4.4'
+	provided 'org.projectlombok:lombok:0.11.8'
+	
 	testCompile 'junit:junit:4.5'
 
 	deployJars 'org.apache.maven.wagon:wagon-http:2.2'
@@ -42,8 +49,7 @@ publications {
 }
 */
 
-jar
-{
+jar {
 	metaInf {
 		from 'LICENSE'
 		from 'README'
@@ -78,15 +84,17 @@ signing {
 uploadArchives {
 	repositories {
 		mavenDeployer {
+			
 			configuration = configurations.deployJars
-			beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+			beforeDeployment { MavenDeployment deployment ->
+				 signing.signPom(deployment)
+			}
 
 			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
 				authentication(userName: sonatypeUsername, password: sonatypePassword)
 			}
 
-			pom
-			{
+			pom {
 				groupId = group
 				version = version
 				artifactId = archivesBaseName
@@ -119,11 +127,15 @@ uploadArchives {
 						developer {
 							id 'stephenc'
 							name 'Stephen Connolly'
-							roles { role 'packager' }
+							roles {
+								role 'packager'
+							}
 						}
 						developer {
 							name 'Hector Suarez Barenca'
-							roles { role 'developer' }
+							roles {
+								role 'developer'
+							}
 						}
 						developer {
 							id 'AbrarSyed'

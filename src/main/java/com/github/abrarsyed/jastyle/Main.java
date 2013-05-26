@@ -1188,7 +1188,7 @@ public class Main
 			return files;
 		}
 		
-		// otherwsie.. recurse and search for files.
+		// otherwise.. recurse and search for files.
 		for (File file : dir.listFiles())
 		{
 			// if its a file, AND .....
