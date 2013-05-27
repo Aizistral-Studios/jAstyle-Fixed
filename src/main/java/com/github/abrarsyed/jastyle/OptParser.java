@@ -1,6 +1,5 @@
-package com.github.abrarsyed.jastyle.OptParser;
+package com.github.abrarsyed.jastyle;
 
-import com.github.abrarsyed.jastyle.ASFormatter;
 import com.github.abrarsyed.jastyle.constants.FormatStyle;
 
 public class OptParser
