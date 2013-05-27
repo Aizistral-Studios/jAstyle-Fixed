@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.abrarsyed.jastyle.ASFormatter.BracketMode;
+import com.github.abrarsyed.jastyle.constants.FormatStyle;
 
 public class Main
 {
@@ -124,37 +125,38 @@ public class Main
 
 	private boolean parseOption(ASFormatter formatter, final String arg, String errorInfo)
 	{
+		// TODO copy
 		if (arg.equals("style=allman") || arg.equals("style=ansi") || arg.equals("style=bsd"))
 		{
-			formatter.setFormattingStyle(ASFormatter.FormatStyle.STYLE_ALLMAN);
+			formatter.setFormattingStyle(FormatStyle.ALLMAN);
 		}
 		else if (arg.equals("style=java"))
 		{
-			formatter.setFormattingStyle(ASFormatter.FormatStyle.STYLE_JAVA);
+			formatter.setFormattingStyle(FormatStyle.JAVA);
 		}
 		else if (arg.equals("style=k&r") || arg.equals("style=k/r"))
 		{
-			formatter.setFormattingStyle(ASFormatter.FormatStyle.STYLE_KandR);
+			formatter.setFormattingStyle(FormatStyle.KandR);
 		}
 		else if (arg.equals("style=stroustrup"))
 		{
-			formatter.setFormattingStyle(ASFormatter.FormatStyle.STYLE_STROUSTRUP);
+			formatter.setFormattingStyle(FormatStyle.STROUSTRUP);
 		}
 		else if (arg.equals("style=whitesmith"))
 		{
-			formatter.setFormattingStyle(ASFormatter.FormatStyle.STYLE_WHITESMITH);
+			formatter.setFormattingStyle(FormatStyle.WHITESMITH);
 		}
 		else if (arg.equals("style=banner"))
 		{
-			formatter.setFormattingStyle(ASFormatter.FormatStyle.STYLE_BANNER);
+			formatter.setFormattingStyle(FormatStyle.BANNER);
 		}
 		else if (arg.equals("style=gnu"))
 		{
-			formatter.setFormattingStyle(ASFormatter.FormatStyle.STYLE_GNU);
+			formatter.setFormattingStyle(FormatStyle.GNU);
 		}
 		else if (arg.equals("style=linux"))
 		{
-			formatter.setFormattingStyle(ASFormatter.FormatStyle.STYLE_LINUX);
+			formatter.setFormattingStyle(FormatStyle.LINUX);
 		}
 		else if (isParamOption(arg, "A"))
 		{
@@ -170,35 +172,35 @@ public class Main
 			}
 			else if (style == 1)
 			{
-				formatter.setFormattingStyle(ASFormatter.FormatStyle.STYLE_ALLMAN);
+				formatter.setFormattingStyle(FormatStyle.ALLMAN);
 			}
 			else if (style == 2)
 			{
-				formatter.setFormattingStyle(ASFormatter.FormatStyle.STYLE_JAVA);
+				formatter.setFormattingStyle(FormatStyle.JAVA);
 			}
 			else if (style == 3)
 			{
-				formatter.setFormattingStyle(ASFormatter.FormatStyle.STYLE_KandR);
+				formatter.setFormattingStyle(FormatStyle.KandR);
 			}
 			else if (style == 4)
 			{
-				formatter.setFormattingStyle(ASFormatter.FormatStyle.STYLE_STROUSTRUP);
+				formatter.setFormattingStyle(FormatStyle.STROUSTRUP);
 			}
 			else if (style == 5)
 			{
-				formatter.setFormattingStyle(ASFormatter.FormatStyle.STYLE_WHITESMITH);
+				formatter.setFormattingStyle(FormatStyle.WHITESMITH);
 			}
 			else if (style == 6)
 			{
-				formatter.setFormattingStyle(ASFormatter.FormatStyle.STYLE_BANNER);
+				formatter.setFormattingStyle(FormatStyle.BANNER);
 			}
 			else if (style == 7)
 			{
-				formatter.setFormattingStyle(ASFormatter.FormatStyle.STYLE_GNU);
+				formatter.setFormattingStyle(FormatStyle.GNU);
 			}
 			else if (style == 8)
 			{
-				formatter.setFormattingStyle(ASFormatter.FormatStyle.STYLE_LINUX);
+				formatter.setFormattingStyle(FormatStyle.LINUX);
 			}
 		}
 		// must check for mode=cs before mode=c !!!
@@ -426,7 +428,7 @@ public class Main
 		// depreciated in release 1.22 - may be removed at an appropriate time
 		else if (arg.equals("style=kr"))
 		{
-			formatter.setFormattingStyle(ASFormatter.FormatStyle.STYLE_JAVA);
+			formatter.setFormattingStyle(FormatStyle.JAVA);
 		}
 		else if (isParamOption(arg, "T", "force-indent=tab="))
 		{

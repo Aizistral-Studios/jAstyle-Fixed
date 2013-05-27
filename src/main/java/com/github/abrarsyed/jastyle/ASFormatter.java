@@ -37,14 +37,10 @@ import java.util.List;
 import java.util.Stack;
 
 import com.github.abrarsyed.jastyle.constants.BracketType;
+import com.github.abrarsyed.jastyle.constants.FormatStyle;
 
 public class ASFormatter extends ASBeautifier
 {
-	public static enum FormatStyle
-	{
-		STYLE_NONE, STYLE_ALLMAN, STYLE_JAVA, STYLE_KandR, STYLE_STROUSTRUP, STYLE_WHITESMITH, STYLE_BANNER, STYLE_GNU, STYLE_LINUX
-	}
-
 	public enum BracketMode
 	{
 		NONE_MODE, ATTACH_MODE, BREAK_MODE, LINUX_MODE, STROUSTRUP_MODE, BDAC_MODE
@@ -171,7 +167,7 @@ public class ASFormatter extends ASBeautifier
 		bracketTypeStack = null;
 		parenStack = null;
 		lineCommentNoIndent = false;
-		formattingStyle = FormatStyle.STYLE_NONE;
+		formattingStyle = FormatStyle.NONE;
 		bracketFormatMode = BracketMode.NONE_MODE;
 		shouldPadOperators = true;
 		shouldPadParensOutside = false;
@@ -230,66 +226,7 @@ public class ASFormatter extends ASBeautifier
 	 */
 	void fixOptionVariableConflicts()
 	{
-		switch (formattingStyle)
-			{
-				case STYLE_NONE:
-					// do nothing, accept the current settings
-					break;
-
-				case STYLE_ALLMAN:
-					setBracketFormatMode(BracketMode.BREAK_MODE);
-					setBlockIndent(false);
-					setBracketIndent(false);
-					break;
-
-				case STYLE_JAVA:
-					setBracketFormatMode(BracketMode.ATTACH_MODE);
-					setBlockIndent(false);
-					setBracketIndent(false);
-					break;
-
-				case STYLE_KandR:
-					setBracketFormatMode(BracketMode.LINUX_MODE);
-					setBlockIndent(false);
-					setBracketIndent(false);
-					break;
-
-				case STYLE_STROUSTRUP:
-					setBracketFormatMode(BracketMode.STROUSTRUP_MODE);
-					setBlockIndent(false);
-					setBracketIndent(false);
-					break;
-
-				case STYLE_WHITESMITH:
-					setBracketFormatMode(BracketMode.BREAK_MODE);
-					setBlockIndent(false);
-					setBracketIndent(true);
-					setClassIndent(true);
-					setSwitchIndent(true);
-					break;
-
-				case STYLE_BANNER:
-					setBracketFormatMode(BracketMode.ATTACH_MODE);
-					setBlockIndent(false);
-					setBracketIndent(true);
-					setClassIndent(true);
-					setSwitchIndent(true);
-					break;
-
-				case STYLE_GNU:
-					setBracketFormatMode(BracketMode.BREAK_MODE);
-					setBlockIndent(true);
-					setBracketIndent(false);
-					setSpaceIndentation(2);
-					break;
-
-				case STYLE_LINUX:
-					setBracketFormatMode(BracketMode.LINUX_MODE);
-					setBlockIndent(false);
-					setBracketIndent(false);
-					setSpaceIndentation(8);
-					break;
-			}
+		formattingStyle.apply(this);
 		// cannot have both bracketIndent and block Indent
 		// default to bracketIndent
 		if (isBracketIndent() && isBlockIndent())
