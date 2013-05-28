@@ -45,8 +45,8 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.abrarsyed.jastyle.ASFormatter.BracketMode;
-import com.github.abrarsyed.jastyle.constants.FormatStyle;
+import com.github.abrarsyed.jastyle.constants.EnumBracketMode;
+import com.github.abrarsyed.jastyle.constants.EnumFormatStyle;
 
 public class Main
 {
@@ -128,35 +128,35 @@ public class Main
 		// TODO copy
 		if (arg.equals("style=allman") || arg.equals("style=ansi") || arg.equals("style=bsd"))
 		{
-			formatter.setFormattingStyle(FormatStyle.ALLMAN);
+			formatter.setFormattingStyle(EnumFormatStyle.ALLMAN);
 		}
 		else if (arg.equals("style=java"))
 		{
-			formatter.setFormattingStyle(FormatStyle.JAVA);
+			formatter.setFormattingStyle(EnumFormatStyle.JAVA);
 		}
-		else if (arg.equals("style=k&r") || arg.equals("style=k/r"))
+		else if (arg.equals("style=k&r") || arg.equals("style=k/r") || arg.equals("style=kr"))
 		{
-			formatter.setFormattingStyle(FormatStyle.KandR);
+			formatter.setFormattingStyle(EnumFormatStyle.KR);
 		}
 		else if (arg.equals("style=stroustrup"))
 		{
-			formatter.setFormattingStyle(FormatStyle.STROUSTRUP);
+			formatter.setFormattingStyle(EnumFormatStyle.STROUSTRUP);
 		}
 		else if (arg.equals("style=whitesmith"))
 		{
-			formatter.setFormattingStyle(FormatStyle.WHITESMITH);
+			formatter.setFormattingStyle(EnumFormatStyle.WHITESMITH);
 		}
 		else if (arg.equals("style=banner"))
 		{
-			formatter.setFormattingStyle(FormatStyle.BANNER);
+			formatter.setFormattingStyle(EnumFormatStyle.BANNER);
 		}
 		else if (arg.equals("style=gnu"))
 		{
-			formatter.setFormattingStyle(FormatStyle.GNU);
+			formatter.setFormattingStyle(EnumFormatStyle.GNU);
 		}
 		else if (arg.equals("style=linux"))
 		{
-			formatter.setFormattingStyle(FormatStyle.LINUX);
+			formatter.setFormattingStyle(EnumFormatStyle.LINUX);
 		}
 		else if (isParamOption(arg, "A"))
 		{
@@ -172,35 +172,35 @@ public class Main
 			}
 			else if (style == 1)
 			{
-				formatter.setFormattingStyle(FormatStyle.ALLMAN);
+				formatter.setFormattingStyle(EnumFormatStyle.ALLMAN);
 			}
 			else if (style == 2)
 			{
-				formatter.setFormattingStyle(FormatStyle.JAVA);
+				formatter.setFormattingStyle(EnumFormatStyle.JAVA);
 			}
 			else if (style == 3)
 			{
-				formatter.setFormattingStyle(FormatStyle.KandR);
+				formatter.setFormattingStyle(EnumFormatStyle.KR);
 			}
 			else if (style == 4)
 			{
-				formatter.setFormattingStyle(FormatStyle.STROUSTRUP);
+				formatter.setFormattingStyle(EnumFormatStyle.STROUSTRUP);
 			}
 			else if (style == 5)
 			{
-				formatter.setFormattingStyle(FormatStyle.WHITESMITH);
+				formatter.setFormattingStyle(EnumFormatStyle.WHITESMITH);
 			}
 			else if (style == 6)
 			{
-				formatter.setFormattingStyle(FormatStyle.BANNER);
+				formatter.setFormattingStyle(EnumFormatStyle.BANNER);
 			}
 			else if (style == 7)
 			{
-				formatter.setFormattingStyle(FormatStyle.GNU);
+				formatter.setFormattingStyle(EnumFormatStyle.GNU);
 			}
 			else if (style == 8)
 			{
-				formatter.setFormattingStyle(FormatStyle.LINUX);
+				formatter.setFormattingStyle(EnumFormatStyle.LINUX);
 			}
 		}
 		// must check for mode=cs before mode=c !!!
@@ -351,19 +351,19 @@ public class Main
 		}
 		else if (arg.equals("b") || arg.equals("brackets=break"))
 		{
-			formatter.setBracketFormatMode(BracketMode.BREAK_MODE);
+			formatter.setBracketFormatMode(EnumBracketMode.BREAK);
 		}
 		else if (arg.equals("a") || arg.equals("brackets=attach"))
 		{
-			formatter.setBracketFormatMode(BracketMode.ATTACH_MODE);
+			formatter.setBracketFormatMode(EnumBracketMode.ATTACH);
 		}
 		else if (arg.equals("l") || arg.equals("brackets=linux"))
 		{
-			formatter.setBracketFormatMode(BracketMode.LINUX_MODE);
+			formatter.setBracketFormatMode(EnumBracketMode.LINUX);
 		}
 		else if (arg.equals("u") || arg.equals("brackets=stroustrup"))
 		{
-			formatter.setBracketFormatMode(BracketMode.STROUSTRUP_MODE);
+			formatter.setBracketFormatMode(EnumBracketMode.STROUSTRUP);
 		}
 		else if (arg.equals("O") || arg.equals("keep-one-line-blocks"))
 		{
@@ -428,7 +428,7 @@ public class Main
 		// depreciated in release 1.22 - may be removed at an appropriate time
 		else if (arg.equals("style=kr"))
 		{
-			formatter.setFormattingStyle(FormatStyle.JAVA);
+			formatter.setFormattingStyle(EnumFormatStyle.JAVA);
 		}
 		else if (isParamOption(arg, "T", "force-indent=tab="))
 		{

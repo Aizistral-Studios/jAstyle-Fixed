@@ -36,15 +36,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import com.github.abrarsyed.jastyle.constants.EnumBracketMode;
 import com.github.abrarsyed.jastyle.constants.BracketType;
-import com.github.abrarsyed.jastyle.constants.FormatStyle;
+import com.github.abrarsyed.jastyle.constants.EnumFormatStyle;
 
 public class ASFormatter extends ASBeautifier
 {
-	public enum BracketMode
-	{
-		NONE_MODE, ATTACH_MODE, BREAK_MODE, LINUX_MODE, STROUSTRUP_MODE, BDAC_MODE
-	}
 
 	private int					formatterFileType	= 9;				// initialized with an invalid type
 
@@ -78,8 +75,8 @@ public class ASFormatter extends ASBeautifier
 	private int					traceLineNumber;
 	private long				formattedLineCommentNum;				// comment location on formattedLine
 	private long				previousReadyFormattedLineLength;
-	private FormatStyle			formattingStyle;
-	private BracketMode			bracketFormatMode;
+	private EnumFormatStyle			formattingStyle;
+	private EnumBracketMode			bracketFormatMode;
 	private int					previousBracketType;
 	private boolean				isVirgin;
 	private boolean				shouldPadOperators;
@@ -167,8 +164,8 @@ public class ASFormatter extends ASBeautifier
 		bracketTypeStack = null;
 		parenStack = null;
 		lineCommentNoIndent = false;
-		formattingStyle = FormatStyle.NONE;
-		bracketFormatMode = BracketMode.NONE_MODE;
+		formattingStyle = EnumFormatStyle.NONE;
+		bracketFormatMode = EnumBracketMode.NONE;
 		shouldPadOperators = true;
 		shouldPadParensOutside = false;
 		shouldPadParensInside = false;
@@ -915,11 +912,11 @@ public class ASFormatter extends ASBeautifier
 
 					if (foundClosingHeader && previousNonWSChar == '}' && (shouldBreakOneLineBlocks || !isBracketType(bracketTypeStack.peek(), BracketType.SINGLE_LINE_TYPE)))
 					{
-						if (bracketFormatMode.equals(BracketMode.BREAK_MODE))
+						if (bracketFormatMode.equals(EnumBracketMode.BREAK))
 						{
 							isInLineBreak = true;
 						}
-						else if (bracketFormatMode == BracketMode.NONE_MODE)
+						else if (bracketFormatMode == EnumBracketMode.NONE)
 						{
 							if (shouldBreakClosingHeaderBrackets || isBracketIndent() || isBlockIndent())
 							{
@@ -941,8 +938,8 @@ public class ASFormatter extends ASBeautifier
 								}
 							}
 						}
-						// bracketFormatMode == ATTACH_MODE, LINUX_MODE,
-						// STROUSTRUP_MODE
+						// bracketFormatMode == ATTACH, LINUX,
+						// STROUSTRUP
 						else
 						{
 							if (shouldBreakClosingHeaderBrackets || isBracketIndent() || isBlockIndent())
@@ -1311,7 +1308,7 @@ public class ASFormatter extends ASBeautifier
 	 * set the formatting style.
 	 * @param mode the formatting style.
 	 */
-	public void setFormattingStyle(FormatStyle style)
+	public void setFormattingStyle(EnumFormatStyle style)
 	{
 		formattingStyle = style;
 	}
@@ -1320,7 +1317,7 @@ public class ASFormatter extends ASBeautifier
 	 * set the bracket formatting mode. options:
 	 * @param mode the bracket formatting mode.
 	 */
-	public void setBracketFormatMode(BracketMode mode)
+	public void setBracketFormatMode(EnumBracketMode mode)
 	{
 		bracketFormatMode = mode;
 	}
@@ -2479,18 +2476,18 @@ public class ASFormatter extends ASBeautifier
 		{
 			// break or attach the bracket
 			boolean breakBracket = false;
-			if (bracketFormatMode == BracketMode.NONE_MODE)
+			if (bracketFormatMode == EnumBracketMode.NONE)
 			{
 				if (lineBeginsWith('{')) // is opening bracket broken?
 				{
 					breakBracket = true;
 				}
 			}
-			else if (bracketFormatMode == BracketMode.BREAK_MODE)
+			else if (bracketFormatMode == EnumBracketMode.BREAK)
 			{
 				breakBracket = true;
 			}
-			else if (bracketFormatMode == BracketMode.LINUX_MODE || bracketFormatMode == BracketMode.STROUSTRUP_MODE)
+			else if (bracketFormatMode == EnumBracketMode.LINUX || bracketFormatMode == EnumBracketMode.STROUSTRUP)
 			{
 				// first entry in bracketTypeStack is NULL_TYPE
 				int bracketTypeStackEnd = bracketTypeStack.size() - 1;
@@ -2498,7 +2495,7 @@ public class ASFormatter extends ASBeautifier
 				// break a class if Linux
 				if (isBracketType(bracketTypeStack.get(bracketTypeStackEnd), BracketType.CLASS_TYPE))
 				{
-					if (bracketFormatMode == BracketMode.LINUX_MODE)
+					if (bracketFormatMode == EnumBracketMode.LINUX)
 					{
 						breakBracket = true;
 					}
@@ -2506,7 +2503,7 @@ public class ASFormatter extends ASBeautifier
 				// break a namespace or interface if Linux
 				else if (isBracketType(bracketTypeStack.get(bracketTypeStackEnd), BracketType.NAMESPACE_TYPE) || isBracketType(bracketTypeStack.get(bracketTypeStackEnd), BracketType.INTERFACE_TYPE))
 				{
-					if (bracketFormatMode == BracketMode.LINUX_MODE)
+					if (bracketFormatMode == EnumBracketMode.LINUX)
 					{
 						breakBracket = true;
 					}
@@ -2649,7 +2646,7 @@ public class ASFormatter extends ASBeautifier
 			else
 			{
 				if (!isCharImmediatelyPostComment
-				// && !bracketFormatMode == NONE_MODE
+				// && !bracketFormatMode == NONE
 				&& !isImmediatelyPostEmptyBlock)
 				{
 					isInLineBreak = false;
@@ -2690,7 +2687,7 @@ public class ASFormatter extends ASBeautifier
 			// is this the first opening bracket in the array?
 			if (isOpeningArrayBracket)
 			{
-				if (bracketFormatMode == BracketMode.ATTACH_MODE || bracketFormatMode == BracketMode.LINUX_MODE || bracketFormatMode == BracketMode.STROUSTRUP_MODE)
+				if (bracketFormatMode == EnumBracketMode.ATTACH || bracketFormatMode == EnumBracketMode.LINUX || bracketFormatMode == EnumBracketMode.STROUSTRUP)
 				{
 					// don't attach to a preprocessor directive
 					if (isImmediatelyPostPreprocessor && lineBeginsWith('{'))
@@ -2722,7 +2719,7 @@ public class ASFormatter extends ASBeautifier
 						}
 					}
 				}
-				else if (bracketFormatMode == BracketMode.BREAK_MODE)
+				else if (bracketFormatMode == EnumBracketMode.BREAK)
 				{
 					if (isWhiteSpace(peekNextChar()))
 					{
@@ -2745,7 +2742,7 @@ public class ASFormatter extends ASBeautifier
 					}
 					appendCurrentChar();
 				}
-				else if (bracketFormatMode == BracketMode.NONE_MODE)
+				else if (bracketFormatMode == EnumBracketMode.NONE)
 				{
 					if (lineBeginsWith('{')) // is opening bracket broken?
 					{
