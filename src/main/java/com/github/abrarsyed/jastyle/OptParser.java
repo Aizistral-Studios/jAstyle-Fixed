@@ -194,10 +194,62 @@ public class OptParser
 			}
 		}
 		
+		// padding stuff
+		else if (opt.startsWith("pad"))
+		{
+			temp1 = opt.substring(3);
+			
+			if (temp1.equals("oper"))
+			{
+				formatter.setOperatorPaddingMode(true);
+			}
+			else if (temp1.startsWith("paren"))
+			{
+				temp1 = temp1.substring(5);
+				if (temp1.isEmpty())
+				{
+					formatter.setParensOutsidePaddingMode(true);
+					formatter.setParensInsidePaddingMode(true);
+				}
+				else if (temp1.equals("out"))
+				{
+					formatter.setParensOutsidePaddingMode(true);
+				}
+				else if (temp1.equals("in"))
+				{
+					formatter.setParensInsidePaddingMode(true);
+				}
+				else
+					error();
+			}
+		}
+		else if (opt.equals("unpad-paren"))
+		{
+			formatter.setParensUnPaddingMode(true);
+		}
+		
+		// misc stuff.
+		
+		
 		// delete empty lines
 		else if (opt.equals("delete-empty-lines"))
 		{
 			formatter.setDeleteEmptyLinesMode(true);
+		}
+		else if (opt.startsWith("keep-one-line"))
+		{
+			temp1 = opt.substring(13);
+			
+			if (temp1.equals("statements"))
+			{
+				formatter.setSingleStatementsMode(false);
+			}
+			else if (temp1.equals("blocks"))
+			{
+				formatter.setBreakOneLineBlocksMode(false);
+			}
+			else
+				error();
 		}
 		
 		
@@ -271,21 +323,51 @@ public class OptParser
 					break;
 				case 'y':
 					formatter.setBreakClosingHeaderBracketsMode(true);
+					break;
 				case 'e':
 					formatter.setBreakElseIfsMode(true);
+					break;
+					
+					// X options.
+				case 'x':
+					if (opt.length() == 1)
+					{
+						formatter.setDeleteEmptyLinesMode(true);
+						break;
+					}
+					// TODO: MORE OPTIONS STARTING IN X HERE
+					
+					// no possible matching x thingy
+					else
+						error();
+					
+				// perintheses and padding.
+				case 'p' :
+					formatter.setOperatorPaddingMode(true);
+					break;
+				case 'P' :
+					formatter.setParensOutsidePaddingMode(true);
+					formatter.setParensInsidePaddingMode(true);
+					break;
+				case 'd':
+					formatter.setParensOutsidePaddingMode(true);
+					break;
+				case 'D':
+					formatter.setParensInsidePaddingMode(true);
+					break;
+				case 'U':
+					formatter.setParensUnPaddingMode(true);
+					break;
+					
+				// misc stuff.
+				case 'o':
+					formatter.setSingleStatementsMode(false);
+					break;
+				case'O':
+					formatter.setBreakOneLineBlocksMode(false);
+					break;
+					
 			}
-		
-		// x options
-		if (optStart == 'x')
-		{
-			// 
-			if (opt.length() == 1)
-			{
-				formatter.setDeleteEmptyLinesMode(true);
-			}
-			
-			// TODO: MORE OPTIONS STARTING IN X HERE
-		}
 
 		// nothing else we can parse? throw de exception.
 		error();
