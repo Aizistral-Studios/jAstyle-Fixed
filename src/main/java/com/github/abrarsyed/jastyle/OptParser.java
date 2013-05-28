@@ -169,6 +169,38 @@ public class OptParser
 				error();
 			}
 		}
+		
+		// bracket checking
+		else if (opt.startsWith("break-"))
+		{
+			temp1 = opt.substring(6);
+			
+			if (temp1.startsWith("blocks"))
+			{
+				formatter.setBreakBlocksMode(true);
+				
+				if (temp1.contains("=all"))
+				{
+					formatter.setBreakClosingHeaderBlocksMode(true);
+				}
+			}
+			else if (temp1.equals("closing-brackets"))
+			{
+				formatter.setBreakClosingHeaderBracketsMode(true);
+			}
+			else if (temp1.equals("elseifs"))
+			{
+				formatter.setBreakElseIfsMode(true);
+			}
+		}
+		
+		// delete empty lines
+		else if (opt.equals("delete-empty-lines"))
+		{
+			formatter.setDeleteEmptyLinesMode(true);
+		}
+		
+		
 		else
 		{
 			error();
@@ -228,7 +260,32 @@ public class OptParser
 				case 'u':
 					formatter.setBracketFormatMode(EnumBracketMode.STROUSTRUP);
 					break;
+					
+				// "break" options
+				case 'f':
+					formatter.setBreakBlocksMode(true);
+					break;
+				case 'F':
+					formatter.setBreakBlocksMode(true);
+					formatter.setBreakClosingHeaderBlocksMode(true);
+					break;
+				case 'y':
+					formatter.setBreakClosingHeaderBracketsMode(true);
+				case 'e':
+					formatter.setBreakElseIfsMode(true);
 			}
+		
+		// x options
+		if (optStart == 'x')
+		{
+			// 
+			if (opt.length() == 1)
+			{
+				formatter.setDeleteEmptyLinesMode(true);
+			}
+			
+			// TODO: MORE OPTIONS STARTING IN X HERE
+		}
 
 		// nothing else we can parse? throw de exception.
 		error();
