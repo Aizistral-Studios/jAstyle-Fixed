@@ -1,5 +1,11 @@
 package com.github.abrarsyed.jastyle;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.github.abrarsyed.exceptions.MalformedOptionException;
 import com.github.abrarsyed.jastyle.constants.EnumBracketMode;
 import com.github.abrarsyed.jastyle.constants.EnumFormatStyle;
@@ -15,7 +21,7 @@ public class OptParser
 	{
 		this.formatter = formatter;
 	}
-	
+
 	/**
 	 * A method for no other reason than to help throw the exception.
 	 * This is used because its helps cut down boilerplate.
@@ -25,6 +31,52 @@ public class OptParser
 	private static void error() throws MalformedOptionException
 	{
 		throw new MalformedOptionException();
+	}
+
+	/**
+	 * Parses an Astyle Options file.
+	 * Unsupported, illegal, or malformed options will be logged and ignored.
+	 * @param file Options file to parse. Extension is irrelevant.
+	 * @param log A logger to output stuff to. if this is null, the Global logger will be used.
+	 */
+	public void parseOptionFile(File file, Logger log)
+	{
+		if (log == null)
+		{
+			log = Logger.getGlobal();
+		}
+
+		try
+		{
+			BufferedReader reader = new BufferedReader(new FileReader(file));
+			String line = reader.readLine();
+
+			while (line != null)
+			{
+				// comment or empty.
+				if (line.isEmpty() || line.startsWith("#"))
+				{
+					continue;
+				}
+
+				try
+				{
+					parseOption(line.trim());
+				}
+				catch (MalformedOptionException ex)
+				{
+					log.warning("'" + line + "' is an invalid option!");
+				}
+
+				line = reader.readLine();
+			}
+
+			reader.close();
+		}
+		catch (Exception e)
+		{
+			log.log(Level.SEVERE, "Error loading file " + file, e);
+		}
 	}
 
 	/**
@@ -55,7 +107,7 @@ public class OptParser
 		if (opt.startsWith("--"))
 			throw new IllegalArgumentException("Trying to parse long option " + opt + " while it still cotnains a -");
 
-		String temp1, temp2, temp3;
+		String temp1;
 
 		// Style checking
 		if (opt.startsWith("style="))
@@ -98,13 +150,13 @@ public class OptParser
 				formatter.setTabIndentation(getLongOptNum(temp1, 4), true);
 			}
 		}
-		
+
 		// bracket checking
 		else if (opt.startsWith("brackets="))
 		{
 			temp1 = opt.substring(9);
 			temp1 = temp1.toUpperCase();
-			
+
 			try
 			{
 				formatter.setBracketFormatMode(EnumBracketMode.valueOf(temp1));
@@ -115,14 +167,10 @@ public class OptParser
 				error();
 			}
 		}
-		
-		// break options
-		
-		
-		
-		// nothing else we can parse? throw de exception.
 		else
+		{
 			error();
+		}
 	}
 
 	/**
@@ -134,55 +182,52 @@ public class OptParser
 	{
 		if (opt.startsWith("-"))
 			throw new IllegalArgumentException("Trying to parse short option " + opt + " while it still cotnains a -");
-		
+
 		char optStart = opt.charAt(0);
-		String start = ""+optStart;
-		
+		String start = "" + optStart;
+
 		int tempNum;
-		
-		switch(optStart)
-		{
+
+		switch (optStart)
+			{
 			// style stuff
-			case 'A': 
-				tempNum = getShortOptNum(start, opt, 0);
-				if (tempNum >= EnumFormatStyle.values().length || tempNum < 0)
-					error();
+				case 'A':
+					tempNum = getShortOptNum(start, opt, 0);
+					if (tempNum >= EnumFormatStyle.values().length || tempNum < 0)
+					{
+						error();
+					}
 					formatter.setFormattingStyle(EnumFormatStyle.values()[tempNum]);
-				break;
-			
-			// spaces
-			case 's': 
-				formatter.setSpaceIndentation(getShortOptNum(start, opt, 4));
-				break;
-			
-			// tabs
-			case 't': 
-				formatter.setTabIndentation(getShortOptNum(start, opt, 4), false);
-				break;
-			case 'T': 
-				formatter.setTabIndentation(getShortOptNum(start, opt, 4), true);
-				break;
-				
-			// brackets
-			case 'b': 
-				formatter.setBracketFormatMode(EnumBracketMode.BREAK);
-				break;
-			case 'a': 
-				formatter.setBracketFormatMode(EnumBracketMode.ATTACH);
-				break;
-			case 'l': 
-				formatter.setBracketFormatMode(EnumBracketMode.LINUX);
-				break;
-			case 'u': 
-				formatter.setBracketFormatMode(EnumBracketMode.STROUSTRUP);
-				break;
-		}
-		
-		
-		
-		
-		
-		
+					break;
+
+				// spaces
+				case 's':
+					formatter.setSpaceIndentation(getShortOptNum(start, opt, 4));
+					break;
+
+				// tabs
+				case 't':
+					formatter.setTabIndentation(getShortOptNum(start, opt, 4), false);
+					break;
+				case 'T':
+					formatter.setTabIndentation(getShortOptNum(start, opt, 4), true);
+					break;
+
+				// brackets
+				case 'b':
+					formatter.setBracketFormatMode(EnumBracketMode.BREAK);
+					break;
+				case 'a':
+					formatter.setBracketFormatMode(EnumBracketMode.ATTACH);
+					break;
+				case 'l':
+					formatter.setBracketFormatMode(EnumBracketMode.LINUX);
+					break;
+				case 'u':
+					formatter.setBracketFormatMode(EnumBracketMode.STROUSTRUP);
+					break;
+			}
+
 		// nothing else we can parse? throw de exception.
 		error();
 	}
@@ -192,7 +237,7 @@ public class OptParser
 	 * @param str
 	 * @param the default number to return if there is no equal sign.
 	 * @return
-	 * @throws MalformedOptionException 
+	 * @throws MalformedOptionException
 	 */
 	private int getLongOptNum(String str, int def) throws MalformedOptionException
 	{
@@ -208,10 +253,10 @@ public class OptParser
 				error();
 			}
 		}
-		
+
 		return def;
 	}
-	
+
 	/**
 	 * Parses a string matching pattern *# and tries to conver the # chars to a number given the * chars.
 	 * @param start The section of the option occurring before the number.
@@ -224,7 +269,7 @@ public class OptParser
 	{
 		if (!str.startsWith(start))
 			throw new IllegalArgumentException("Param start must be the portion of param str before the number!");
-		
+
 		if (str.length() > start.length())
 		{
 			try
@@ -236,7 +281,7 @@ public class OptParser
 				error();
 			}
 		}
-		
+
 		return def;
 	}
 
