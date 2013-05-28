@@ -15,7 +15,7 @@ public class OptParser
 	public final ASFormatter	formatter;
 
 	/**
-	 * @param formatter The formatter to which the parsed options will apply.
+	 * @param formatter The formatter to which the parsed options will apply. Options are parsed and applied immediately.
 	 */
 	public OptParser(ASFormatter formatter)
 	{
@@ -25,7 +25,8 @@ public class OptParser
 	/**
 	 * A method for no other reason than to help throw the exception.
 	 * This is used because its helps cut down boilerplate.
-	 * t is is used instead of chaining return statements for booleans, and many unnecessary ifs.
+	 * it is is used instead of chaining return statements for booleans, and many unnecessary ifs.
+	 * Options are parsed and applied immediately.
 	 * @throws MalformedOptionException
 	 */
 	private static void error() throws MalformedOptionException
@@ -36,6 +37,7 @@ public class OptParser
 	/**
 	 * Parses an Astyle Options file.
 	 * Unsupported, illegal, or malformed options will be logged and ignored.
+	 * Options are parsed and applied immediately.
 	 * @param file Options file to parse. Extension is irrelevant.
 	 * @param log A logger to output stuff to. if this is null, the Global logger will be used.
 	 */
