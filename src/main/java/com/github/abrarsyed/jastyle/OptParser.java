@@ -3,8 +3,7 @@ package com.github.abrarsyed.jastyle;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
 
 import com.github.abrarsyed.exceptions.MalformedOptionException;
 import com.github.abrarsyed.jastyle.constants.EnumBracketMode;
@@ -34,6 +33,40 @@ public class OptParser
 	{
 		throw new MalformedOptionException();
 	}
+	
+	/*
+	 * TODO: MAKE THIS THE ACTUAL JAVADOC OF THE FILE.
+	 * Read jAstyle options from a file <br>
+	 * Read a file form the file system, it skips the lines that start with #<br>
+	 * <p/>
+	 * 
+	 * <pre>
+	 * A default options file may be used to set your favorite source style options.
+	 * The command line options have precedence. If there is a conflict between a command line option and an option
+	 * in the default options file, the command line option will be used.
+	 * Artistic Style looks for this file in the following locations (in order):
+	 * the file indicated by the --options= command line option;
+	 * the file and directory indicated by the environment variable ARTISTIC_STYLE_OPTIONS (if it exists);
+	 * This option file lookup can be disabled by specifying --options=none on the command line.
+	 * Options may be set apart by new-lines, tabs, commas, or spaces.
+	 * Long options in the options file may be written without the preceding '--'.
+	 * Lines within the options file that begin with '#' are considered line-comments.
+	 * Example of a default options file:
+	 * <em>
+	 * # this line is a comment
+	 * --brackets=attach   # this is a line-end comment
+	 * # long options can be written without the preceding '--'
+	 * indent-switches     # cannot do this on the command line
+	 * # short options must have the preceding '-'
+	 * -t -p
+	 * # short options can be concatenated together
+	 * -M65Ucv
+	 * </em>
+	 * </pre>
+	 * @param filename The name of the file that will be readed
+	 * @return
+	 * @throws IOException
+	 */
 
 	/**
 	 * Parses an Astyle Options file.
@@ -41,44 +74,40 @@ public class OptParser
 	 * Options are parsed and applied immediately.
 	 * @param file Options file to parse. Extension is irrelevant.
 	 * @param log A logger to output stuff to. if this is null, the Global logger will be used.
+	 * @return A list of all the errored lines. Empty list if there were no errored lines. NULL if something went wrong reading the file.
 	 */
-	public void parseOptionFile(File file, Logger log)
+	public ArrayList<String> parseOptionFile(File file)
 	{
-		if (log == null)
-		{
-			log = Logger.getGlobal();
-		}
-
 		try
 		{
+			ArrayList<String> errors = new ArrayList<String>();
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 			String line = reader.readLine();
 
 			while (line != null)
 			{
 				// comment or empty.
-				if (line.isEmpty() || line.startsWith("#"))
+				if (!(line.isEmpty() || line.startsWith("#")))
 				{
-					continue;
+					try
+					{
+						parseOption(line.trim());
+					}
+					catch (MalformedOptionException ex)
+					{
+						errors.add(line);
+					}
 				}
-
-				try
-				{
-					parseOption(line.trim());
-				}
-				catch (MalformedOptionException ex)
-				{
-					log.warning("'" + line + "' is an invalid option!");
-				}
-
 				line = reader.readLine();
 			}
 
 			reader.close();
+			return errors;
 		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, "Error loading file " + file, e);
+			// error? return null.
+			return null;
 		}
 	}
 

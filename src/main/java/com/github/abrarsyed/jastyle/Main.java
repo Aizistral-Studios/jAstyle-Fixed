@@ -32,10 +32,8 @@
 package com.github.abrarsyed.jastyle;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -43,18 +41,18 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
-import com.github.abrarsyed.jastyle.constants.EnumBracketMode;
-import com.github.abrarsyed.jastyle.constants.EnumFormatStyle;
-import com.github.abrarsyed.jastyle.constants.SourceMode;
+import com.github.abrarsyed.exceptions.MalformedOptionException;
 
 public class Main
 {
-	private final static String	TEMP_SUFFIX		= ".tmp";
-	private final static String	JASTYLE_VERSION	= findVersion("version.txt");
-	private boolean				modeManuallySet	= false;						// file mode is set by an option
-	private boolean				recurseFiles	= false;						// recurse mode set by an option
+	private final static int			EXIT_SUCCESS	= 0;
+	private final static int			EXIT_FAILURE	= -1;
+	private final static String			JASTYLE_VERSION	= findVersion("version.txt");
+	private static boolean				recursive		= false;
+	private static File					optionsFile		= null;
+	private static ArrayList<String>	errors;
 
 	private final static void printVersion()
 	{
@@ -99,542 +97,8 @@ public class Main
 		}
 	}
 
-	private void isOptionError(final String arg, final String errorInfo)
+	public static void formatFile(String fileName, ASFormatter formatter) throws IOException
 	{
-		if (errorInfo.length() > 0) // to avoid a compiler warning
-		{
-			System.out.println("Error in param: " + arg);
-		}
-
-	}
-
-	private boolean isParamOption(final String arg, final String option)
-	{
-		boolean retVal = arg.startsWith(option);
-		// if comparing for short option, 2nd char of arg must be numeric
-		if (retVal && option.length() == 1 && arg.length() > 1 && !Character.isDigit(arg.charAt(1)))
-		{
-			retVal = false;
-		}
-		return retVal;
-	}
-
-	private boolean isParamOption(final String arg, final String option1, final String option2)
-	{
-		return isParamOption(arg, option1) || isParamOption(arg, option2);
-	}
-
-	private boolean parseOption(ASFormatter formatter, final String arg, String errorInfo)
-	{
-		// TODO copy
-		if (arg.equals("style=allman") || arg.equals("style=ansi") || arg.equals("style=bsd"))
-		{
-			formatter.setFormattingStyle(EnumFormatStyle.ALLMAN);
-		}
-		else if (arg.equals("style=java"))
-		{
-			formatter.setFormattingStyle(EnumFormatStyle.JAVA);
-		}
-		else if (arg.equals("style=k&r") || arg.equals("style=k/r") || arg.equals("style=kr"))
-		{
-			formatter.setFormattingStyle(EnumFormatStyle.KR);
-		}
-		else if (arg.equals("style=stroustrup"))
-		{
-			formatter.setFormattingStyle(EnumFormatStyle.STROUSTRUP);
-		}
-		else if (arg.equals("style=whitesmith"))
-		{
-			formatter.setFormattingStyle(EnumFormatStyle.WHITESMITH);
-		}
-		else if (arg.equals("style=banner"))
-		{
-			formatter.setFormattingStyle(EnumFormatStyle.BANNER);
-		}
-		else if (arg.equals("style=gnu"))
-		{
-			formatter.setFormattingStyle(EnumFormatStyle.GNU);
-		}
-		else if (arg.equals("style=linux"))
-		{
-			formatter.setFormattingStyle(EnumFormatStyle.LINUX);
-		}
-		else if (isParamOption(arg, "A"))
-		{
-			int style = 0;
-			final String styleParam = arg.substring("A".length());
-			if (styleParam.length() > 0)
-			{
-				style = Integer.parseInt(styleParam);
-			}
-			if (style < 1 || style > 8)
-			{
-				isOptionError(arg, errorInfo);
-			}
-			else if (style == 1)
-			{
-				formatter.setFormattingStyle(EnumFormatStyle.ALLMAN);
-			}
-			else if (style == 2)
-			{
-				formatter.setFormattingStyle(EnumFormatStyle.JAVA);
-			}
-			else if (style == 3)
-			{
-				formatter.setFormattingStyle(EnumFormatStyle.KR);
-			}
-			else if (style == 4)
-			{
-				formatter.setFormattingStyle(EnumFormatStyle.STROUSTRUP);
-			}
-			else if (style == 5)
-			{
-				formatter.setFormattingStyle(EnumFormatStyle.WHITESMITH);
-			}
-			else if (style == 6)
-			{
-				formatter.setFormattingStyle(EnumFormatStyle.BANNER);
-			}
-			else if (style == 7)
-			{
-				formatter.setFormattingStyle(EnumFormatStyle.GNU);
-			}
-			else if (style == 8)
-			{
-				formatter.setFormattingStyle(EnumFormatStyle.LINUX);
-			}
-		}
-		// must check for mode=cs before mode=c !!!
-		else if (arg.equals("mode=cs"))
-		{
-			formatter.setSourceStyle(SourceMode.CS);
-			modeManuallySet = true;
-		}
-		else if (arg.equals("mode=c"))
-		{
-			formatter.setSourceStyle(SourceMode.C);
-			modeManuallySet = true;
-		}
-		else if (arg.equals("mode=java"))
-		{
-			formatter.setSourceStyle(SourceMode.JAVA);
-			modeManuallySet = true;
-		}
-		else if (isParamOption(arg, "t", "indent=tab="))
-		{
-			int spaceNum = 4;
-
-			final String spaceNumParam = isParamOption(arg, "t") ? arg.substring("t".length()) : arg.substring("indent=tab=".length());
-			if (spaceNumParam.length() > 0)
-			{
-				spaceNum = Integer.parseInt(spaceNumParam);
-			}
-			if (spaceNum < 1 || spaceNum > 20)
-			{
-				isOptionError(arg, errorInfo);
-			}
-			else
-			{
-				formatter.setTabIndentation(spaceNum, false);
-			}
-		}
-		else if (arg.equals("indent=tab"))
-		{
-			formatter.setTabIndentation(4);
-		}
-		else if (isParamOption(arg, "T", "indent=force-tab="))
-		{
-			int spaceNum = 4;
-			final String spaceNumParam = isParamOption(arg, "T") ? arg.substring("T".length()) : arg.substring("indent=force-tab=".length());
-			if (spaceNumParam.length() > 0)
-			{
-				spaceNum = Integer.parseInt(spaceNumParam);
-			}
-			if (spaceNum < 1 || spaceNum > 20)
-			{
-				isOptionError(arg, errorInfo);
-			}
-			else
-			{
-				formatter.setTabIndentation(spaceNum, true);
-			}
-		}
-		else if (arg.equals("indent=force-tab"))
-		{
-			formatter.setTabIndentation(4, true);
-		}
-		else if (isParamOption(arg, "s", "indent=spaces="))
-		{
-			int spaceNum = 4;
-			final String spaceNumParam = isParamOption(arg, "s") ? arg.substring("s".length()) : arg.substring("indent=spaces=".length());
-			if (spaceNumParam.length() > 0)
-			{
-				spaceNum = Integer.parseInt(spaceNumParam);
-			}
-			if (spaceNum < 1 || spaceNum > 20)
-			{
-				isOptionError(arg, errorInfo);
-			}
-			else
-			{
-				formatter.setSpaceIndentation(spaceNum);
-			}
-		}
-		else if (arg.equals("indent=spaces"))
-		{
-			formatter.setSpaceIndentation(4);
-		}
-		else if (isParamOption(arg, "m", "min-conditional-indent="))
-		{
-			int minIndent = 8;
-			final String minIndentParam = isParamOption(arg, "m") ? arg.substring("m".length()) : arg.substring("min-conditional-indent=".length());
-			if (minIndentParam.length() > 0)
-			{
-				minIndent = Integer.parseInt(minIndentParam);
-			}
-			if (minIndent > 40)
-			{
-				isOptionError(arg, errorInfo);
-			}
-			else
-			{
-				formatter.setMinConditionalIndentLength(minIndent);
-			}
-		}
-		else if (isParamOption(arg, "M", "max-instatement-indent="))
-		{
-			int maxIndent = 40;
-			final String maxIndentParam = isParamOption(arg, "M") ? arg.substring("M".length()) : arg.substring("max-instatement-indent=".length());
-			if (maxIndentParam.length() > 0)
-			{
-				maxIndent = Integer.parseInt(maxIndentParam);
-			}
-			if (maxIndent > 80)
-			{
-				isOptionError(arg, errorInfo);
-			}
-			else
-			{
-				formatter.setMaxInStatementIndentLength(maxIndent);
-			}
-		}
-		else if (arg.equals("B") || arg.equals("indent-brackets"))
-		{
-			formatter.setBracketIndent(true);
-		}
-		else if (arg.equals("G") || arg.equals("indent-blocks"))
-		{
-			formatter.setBlockIndent(true);
-		}
-		else if (arg.equals("N") || arg.equals("indent-namespaces"))
-		{
-			formatter.setNamespaceIndent(true);
-		}
-		else if (arg.equals("C") || arg.equals("indent-classes"))
-		{
-			formatter.setClassIndent(true);
-		}
-		else if (arg.equals("S") || arg.equals("indent-switches"))
-		{
-			formatter.setSwitchIndent(true);
-		}
-		else if (arg.equals("K") || arg.equals("indent-cases"))
-		{
-			formatter.setCaseIndent(true);
-		}
-		else if (arg.equals("L") || arg.equals("indent-labels"))
-		{
-			formatter.setLabelIndent(true);
-		}
-		else if (arg.equals("y") || arg.equals("break-closing-brackets"))
-		{
-			formatter.setBreakClosingHeaderBracketsMode(true);
-		}
-		else if (arg.equals("b") || arg.equals("brackets=break"))
-		{
-			formatter.setBracketFormatMode(EnumBracketMode.BREAK);
-		}
-		else if (arg.equals("a") || arg.equals("brackets=attach"))
-		{
-			formatter.setBracketFormatMode(EnumBracketMode.ATTACH);
-		}
-		else if (arg.equals("l") || arg.equals("brackets=linux"))
-		{
-			formatter.setBracketFormatMode(EnumBracketMode.LINUX);
-		}
-		else if (arg.equals("u") || arg.equals("brackets=stroustrup"))
-		{
-			formatter.setBracketFormatMode(EnumBracketMode.STROUSTRUP);
-		}
-		else if (arg.equals("O") || arg.equals("keep-one-line-blocks"))
-		{
-			formatter.setBreakOneLineBlocksMode(false);
-		}
-		else if (arg.equals("o") || arg.equals("keep-one-line-statements"))
-		{
-			formatter.setSingleStatementsMode(false);
-		}
-		else if (arg.equals("P") || arg.equals("pad-paren"))
-		{
-			formatter.setParensOutsidePaddingMode(true);
-			formatter.setParensInsidePaddingMode(true);
-		}
-		else if (arg.equals("d") || arg.equals("pad-paren-out"))
-		{
-			formatter.setParensOutsidePaddingMode(true);
-		}
-		else if (arg.equals("D") || arg.equals("pad-paren-in"))
-		{
-			formatter.setParensInsidePaddingMode(true);
-		}
-		else if (arg.equals("U") || arg.equals("unpad-paren"))
-		{
-			formatter.setParensUnPaddingMode(true);
-		}
-		else if (arg.equals("p") || arg.equals("pad-oper"))
-		{
-			formatter.setOperatorPaddingMode(true);
-		}
-		else if (arg.equals("E") || arg.equals("fill-empty-lines"))
-		{
-			formatter.setEmptyLineFill(true);
-		}
-		else if (arg.equals("w") || arg.equals("indent-preprocessor"))
-		{
-			formatter.setPreprocessorIndent(true);
-		}
-		else if (arg.equals("c") || arg.equals("convert-tabs"))
-		{
-			formatter.setTabSpaceConversionMode(true);
-		}
-		else if (arg.equals("F") || arg.equals("break-blocks=all"))
-		{
-			formatter.setBreakBlocksMode(true);
-			formatter.setBreakClosingHeaderBlocksMode(true);
-		}
-		else if (arg.equals("f") || arg.equals("break-blocks"))
-		{
-			formatter.setBreakBlocksMode(true);
-		}
-		else if (arg.equals("e") || arg.equals("break-elseifs"))
-		{
-			formatter.setBreakElseIfsMode(true);
-		}
-		else if (arg.equals("x") || arg.equals("delete-empty-lines"))
-		{
-			formatter.setDeleteEmptyLinesMode(true);
-		}
-		// depreciated options
-		// /////////////////////////////////////////////////////////////////////////////////////
-		// depreciated in release 1.22 - may be removed at an appropriate time
-		else if (arg.equals("style=kr"))
-		{
-			formatter.setFormattingStyle(EnumFormatStyle.JAVA);
-		}
-		else if (isParamOption(arg, "T", "force-indent=tab="))
-		{
-			// the 'T' option will already have been processed
-			int spaceNum = 4;
-			final String spaceNumParam = isParamOption(arg, "T") ? arg.substring("T".length()) : arg.substring("force-indent=tab=".length());
-			if (spaceNumParam.length() > 0)
-			{
-				spaceNum = Integer.parseInt(spaceNumParam);
-			}
-			if (spaceNum < 1 || spaceNum > 20)
-			{
-				isOptionError(arg, errorInfo);
-			}
-			else
-			{
-				formatter.setTabIndentation(spaceNum, true);
-			}
-		}
-		else if (arg.equals("brackets=break-closing"))
-		{
-			formatter.setBreakClosingHeaderBracketsMode(true);
-		}
-		else if (arg.equals("one-line=keep-blocks"))
-		{
-			formatter.setBreakOneLineBlocksMode(false);
-		}
-		else if (arg.equals("one-line=keep-statements"))
-		{
-			formatter.setSingleStatementsMode(false);
-		}
-		else if (arg.equals("pad=paren"))
-		{
-			formatter.setParensOutsidePaddingMode(true);
-			formatter.setParensInsidePaddingMode(true);
-		}
-		else if (arg.equals("pad=paren-out"))
-		{
-			formatter.setParensOutsidePaddingMode(true);
-		}
-		else if (arg.equals("pad=paren-in"))
-		{
-			formatter.setParensInsidePaddingMode(true);
-		}
-		else if (arg.equals("unpad=paren"))
-		{
-			formatter.setParensUnPaddingMode(true);
-		}
-		else if (arg.equals("pad=oper"))
-		{
-			formatter.setOperatorPaddingMode(true);
-		}
-
-		//  CONSOLE OPTIONS ONLY!!
-		//  TODO re-enable options
-		//
-		// else if ( arg.equals("n") || arg.equals("suffix=none") )
-		// {
-		// g_console.noBackup = true;
-		// }
-		// else if ( isParamOption(arg, "suffix=") )
-		// {
-		// String suffixParam = arg.substring("suffix=".length());
-		// if (suffixParam.length() > 0)
-		// {
-		// g_console.origSuffix = suffixParam;
-		// }
-		// }
-		// else if ( isParamOption(arg, "exclude=") )
-		// {
-		// String suffixParam = arg.substring("exclude=".length());
-		// if (suffixParam.length() > 0)
-		// {
-		// g_console.excludeVector.push_back(suffixParam);
-		// g_console.excludeHitsVector.push_back(false);
-		// }
-		// }
-		else if (arg.equalsIgnoreCase("r") || arg.equals("recursive"))
-		{
-			recurseFiles = true;
-		}
-		// else if ( arg.equals("Z") || arg.equals("preserve-date") )
-		// {
-		// g_console.preserveDate = true;
-		// }
-		// else if ( arg.equals("v") || arg.equals("verbose") )
-		// {
-		// g_console.isVerbose = true;
-		// }
-		// else if ( arg.equals("Q") || arg.equals("formatted") )
-		// {
-		// g_console.isFormattedOnly = true;
-		// }
-		// else if ( arg.equals("q") || arg.equals("quiet") )
-		// {
-		// g_console.isQuiet = true;
-		// }
-		// else if ( arg.equals("X") || arg.equals("errors-to-stdout") )
-		// {
-		// _err = cout;
-		// }
-		else
-		{
-			System.err.println(errorInfo + arg);
-			return false; // invalid option
-		}
-		// End of parseOption function
-		return true; // o.k.
-	}
-
-	/**
-	 * parse the options vector ITER can be either a fileOptionsVector (options
-	 * file) or an optionsVector (command line)
-	 * @return true if no errors, false if errors
-	 */
-	boolean parseOptions(ASFormatter formatter, List<String> options, final String errorInfo)
-	{
-		boolean ok = true;
-
-		for (String arg : options)
-		{
-			if (arg.startsWith("--"))
-			{
-				ok &= parseOption(formatter, arg.substring(2), errorInfo);
-			}
-			else if (arg.charAt(0) == '-')
-			{
-				StringBuilder subArg = new StringBuilder();
-				for (int i = 1; i < arg.length(); ++i)
-				{
-					if (Character.isLetter(arg.charAt(i)) && i > 1)
-					{
-						ok &= parseOption(formatter, subArg.toString(), errorInfo);
-						subArg.delete(0, subArg.length());
-					}
-					subArg.append(arg.charAt(i));
-				}
-				ok &= parseOption(formatter, subArg.toString(), errorInfo);
-			}
-			else
-			{
-				ok &= parseOption(formatter, arg, errorInfo);
-			}
-		}
-		return ok;
-	}
-
-	public void error(final String why, String what)
-	{
-		System.out.println(why + ' ' + what + '\n' + "JArtistic Style has terminated!");
-		System.exit(1);
-	}
-
-	/**
-	 * Open input file, format it, and close the output.
-	 * @param fileName The path and name of the file to be processed.
-	 * @param formatter The formatter object.
-	 * @return true if the file was formatted, false if it was not (no changes).
-	 */
-	public void formatFile(String fileName, ASFormatter formatter) throws IOException
-	{
-		// open input file
-		Reader in = new BufferedReader(new FileReader(fileName));
-
-		// open tmp file
-		String tmpFileName = fileName + TEMP_SUFFIX;
-		File file = new File(tmpFileName);
-		// remove the pre-existing temp file, if present
-		file.delete();
-		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(tmpFileName)));
-
-		// Unless a specific language mode has been set, set the language mode
-		// according to the file's suffix.
-		if (!modeManuallySet)
-		{
-			if (fileName.endsWith(".java"))
-			{
-				formatter.setSourceStyle(SourceMode.JAVA);
-			}
-			else if (fileName.endsWith(".cs"))
-			{
-				formatter.setSourceStyle(SourceMode.CS);
-			}
-			else
-			{
-				formatter.setSourceStyle(SourceMode.C);
-			}
-		}
-
-		ASStreamIterator streamIterator = new ASStreamIterator(in);
-		formatter.init(streamIterator);
-
-		// format the file
-		while (formatter.hasMoreLines())
-		{
-			out.println(formatter.nextLine().toString());
-			// if (formatter.hasMoreLines())
-			// out.print(streamIterator.getOutputEOL());
-
-		}
-		out.flush();
-		out.close();
-		in.close();
-		new File(fileName).renameTo(new File(fileName + ".orig"));
-		new File(tmpFileName).renameTo(new File(fileName));
 	}
 
 	// /**
@@ -858,130 +322,8 @@ public class Main
 	// }
 	// }
 
-	private final static String	OPTIONS			= "--options=";
-	private final static int	EXIT_SUCCESS	= 0;
-	private final static int	EXIT_FAILURE	= -1;
-
-	/**
-	 * Useful when options are in a String line (applets for example). This
-	 * method suppose that options will not be loaded from options file.<br>
-	 * @param args options separated by spaces
-	 * @param formatter Formatter to be used
-	 * @throws IOException
-	 */
-	public void processOptions(String args, ASFormatter formatter) throws IOException
-	{
-		processOptions(args.split("\\s+"), formatter, false);
-	}
-
 	//
 	// , optionsVector, and fileOptionsVector
-
-	/**
-	 * Process options from the command line and options file, build the vectors
-	 * fileNameVector and set the formatter properties
-	 * @param args String[] with the options and files that will be formatted
-	 * @param formatter The ASFormatter to use
-	 * @throws IOException
-	 */
-	public List<String> processOptions(String[] args, ASFormatter formatter) throws IOException
-	{
-		return processOptions(args, formatter, true);
-	}
-
-	/**
-	 * Process options from the command line and options file, build the vectors
-	 * fileNameVector and set the formatter properties
-	 * @param args
-	 * @param formatter
-	 * @param shouldParseOptionsFile
-	 * @return List List with the filenames to be processed
-	 * @throws IOException
-	 */
-	private List<String> processOptions(String args[], ASFormatter formatter, boolean shouldParseOptionsFile) throws IOException
-	{
-		boolean ok = true;
-
-		String optionsFileName = null;
-
-		modeManuallySet = false;
-		List<String> optionsVector = new ArrayList<String>();
-		List<String> fileNameVector = new ArrayList<String>();
-
-		if (args != null && args.length > 0)
-
-		// get command line options
-		{
-			for (String arg : args)
-			{
-				if (arg.equals(OPTIONS + "=none"))
-				{
-					shouldParseOptionsFile = false;
-				}
-				else if (isParamOption(arg, OPTIONS))
-				{
-					optionsFileName = arg.substring(OPTIONS.length());
-				}
-				else if (arg.equals("-h") || arg.equals("--help") || arg.equals("-?"))
-				{
-					printHelp();
-					System.exit(EXIT_SUCCESS);
-				}
-				else if (arg.equals("-V") || arg.equals("--version"))
-				{
-					printVersion();
-					System.exit(EXIT_SUCCESS);
-				}
-				else if (arg.charAt(0) == '-')
-				{
-					optionsVector.add(arg);
-				}
-				else
-				// file-name
-				{
-					fileNameVector.add(arg);
-				}
-			}
-		}
-
-		// get options file path and name
-		if (shouldParseOptionsFile)
-		{
-
-			if (optionsFileName != null && optionsFileName.trim().length() > 0)
-			{
-				String env = System.getenv("ARTISTIC_STYLE_OPTIONS");
-				if (env != null && env.trim().length() > 0)
-				{
-					optionsFileName = env;
-				}
-			}
-			if (optionsFileName != null && optionsFileName.trim().length() > 0)
-			{
-				List<String> fileOptions = importOptions(optionsFileName);
-				if (fileOptions != null && fileOptions.size() > 0)
-				{
-					ok = parseOptions(formatter, fileOptions, "Invalid option in default options file: ");
-				}
-			}
-
-		}
-
-		if (!ok)
-		{
-			System.out.println("For help on options, type 'java -jar jastyle.jar -h' ");
-			System.exit(EXIT_FAILURE);
-		}
-
-		// parse the command line options vector for errors
-		ok = parseOptions(formatter, optionsVector, "Invalid command line option: ");
-		if (!ok)
-		{
-			System.out.println("For help on options, type 'java -jar jastyle.jar -h' \n");
-			System.exit(EXIT_FAILURE);
-		}
-		return fileNameVector;
-	}
 
 	// // rename a file and check for an error
 	// void renameFile(String oldFileName, String newFileName, String errMsg)
@@ -1002,62 +344,6 @@ public class Main
 	// }
 
 	/**
-	 * Read jAstyle options from a file <br>
-	 * Read a file form the file system, it skips the lines that start with #<br>
-	 * <p/>
-	 * 
-	 * <pre>
-	 * A default options file may be used to set your favorite source style options.
-	 * The command line options have precedence. If there is a conflict between a command line option and an option
-	 * in the default options file, the command line option will be used.
-	 * Artistic Style looks for this file in the following locations (in order):
-	 * the file indicated by the --options= command line option;
-	 * the file and directory indicated by the environment variable ARTISTIC_STYLE_OPTIONS (if it exists);
-	 * This option file lookup can be disabled by specifying --options=none on the command line.
-	 * Options may be set apart by new-lines, tabs, commas, or spaces.
-	 * Long options in the options file may be written without the preceding '--'.
-	 * Lines within the options file that begin with '#' are considered line-comments.
-	 * Example of a default options file:
-	 * <em>
-	 * # this line is a comment
-	 * --brackets=attach   # this is a line-end comment
-	 * # long options can be written without the preceding '--'
-	 * indent-switches     # cannot do this on the command line
-	 * # short options must have the preceding '-'
-	 * -t -p
-	 * # short options can be concatenated together
-	 * -M65Ucv
-	 * </em>
-	 * </pre>
-	 * @param filename The name of the file that will be readed
-	 * @return
-	 * @throws IOException
-	 */
-	private final static List<String> importOptions(String filename) throws IOException
-	{
-		String line = null;
-		List<String> fileOptions = new ArrayList<String>();
-		BufferedReader reader = new BufferedReader(new FileReader(filename));
-		do
-		{
-			line = reader.readLine();
-			if (line != null)
-			{
-				line = line.trim();
-
-				if (line.isEmpty() || line.startsWith("#"))
-				{
-					continue;
-				}
-
-				fileOptions.add(line);
-			}
-		} while (line != null);
-		reader.close();
-		return fileOptions;
-	}
-
-	/**
 	 * Not supported options:<br>
 	 * <p/>
 	 * 
@@ -1074,82 +360,81 @@ public class Main
 	 * @param args
 	 * @throws IOException
 	 */
-	public static void main(String[] args) throws IOException
+	public static void main(String[] cliArgs) throws IOException
 	{
-		if (args.length < 1)
+		// intial catch for no options
+		if (cliArgs.length < 1)
 		{
 			printHelp();
 			System.exit(EXIT_SUCCESS);
 		}
-		String dir;
-		String filename;
-		Main console = new Main();
+		
+		System.out.println("Parsing options...");
+
+		// convert to list so we can add and remove stuff easily.
+		ArrayList<String> args = convertList(cliArgs);
+
+		// parse non-formatter stuff    changes the args list too.
+		ArrayList<String> filenames = parseConsoleOptions(args);
+
 		ASFormatter formatter = new ASFormatter();
+		OptParser parser = new OptParser(formatter);
 
-		ArrayList<File> files = new ArrayList<File>();
-		List<String> filenames = console.processOptions(args, formatter);
-
-		FilenameFilter filter = null;
-		File temp;
-
-		// collect potential files
-		for (String filepath : filenames)
+		// check options file first.. since they are overwrite by the other options.
+		if (optionsFile != null)
 		{
-			int index = filepath.lastIndexOf(File.separatorChar);
+			// get the errors...
+			ArrayList<String> parsedErrors = parser.parseOptionFile(optionsFile);
 
-			// no slash? directory is here.
-			if (index < 0)
+			// catch and output the IO error.
+			if (parsedErrors == null)
 			{
-				dir = ".";
-				filename = filepath;
-			}
-			else
-			{
-				// slash index is somehow larger than string??? this isnt possible.....
-				if (index >= filepath.length())
-				{
-					System.err.println("The filename " + filepath + " is invalid");
-					System.exit(EXIT_FAILURE);
-				}
-
-				// split the dir and the file name into different strings for parsing later
-				dir = filepath.substring(0, index);
-				filename = filepath.substring(index + 1);
+				errors.add("something went wrong reading options file : " + optionsFile);
 			}
 
-			// filename with wildcard
-			if (filename.indexOf('*') != -1 || filename.indexOf('?') != -1)
+			// and add them to the actual errors list.
+			for (String e : parsedErrors)
 			{
-				// set teh filter
-				filter = new FileWildcardFilter(filename);
-
-				// set teh searching file to the directory
-				temp = new File(dir);
+				errors.add(e + " is not a supported option");
 			}
-
-			// only possible with a trailing slash
-			// pointing to a directory no?
-			else if (filename.isEmpty())
-			{
-				temp = new File(dir);
-			}
-
-			// straight up filename
-			else
-			{
-				temp = new File(dir, filename);
-			}
-
-			// collect the files
-			files.addAll(collectFiles(temp, filter, console.recurseFiles));
-
-			// clear filter status.
-			filter = null;
 		}
 
-		// format collected files
+		// now the normal options.
+		for (String opt : args)
+		{
+			try
+			{
+				parser.parseOption(opt);
+			}
+			catch (MalformedOptionException e)
+			{
+				errors.add("option " + opt + " is not a valid option");
+			}
+		}
+
+		// grab the errors before anything special happens.
+
+		if (errors.size() > 0)
+		{
+			for (String error : errors)
+			{
+				System.err.println(error);
+			}
+			System.exit(EXIT_FAILURE);
+		}
+
+		// now we make sure there are no conflicting messages.
+		formatter.fixOptionVariableConflicts();
+		
+		System.out.println("Parsing file names...");
+
+		// now we go through the filenames and parse them into files.
+		ArrayList<File> files = parseFileNames(filenames, recursive);
+		
+		System.out.println("Formatting files.");
+
+		// now we format the collected files
 		Reader reader = null;
-		;
 		for (File currFile : files)
 		{
 			System.out.println("Converting " + currFile.getAbsolutePath() + " ...\n");
@@ -1157,7 +442,7 @@ public class Main
 			{
 				reader = new BufferedReader(new FileReader(currFile.getAbsolutePath()));
 
-				console.formatFile(currFile.getAbsolutePath(), formatter);
+				formatFile(currFile.getAbsolutePath(), formatter);
 			}
 			catch (Throwable t)
 			{
@@ -1171,7 +456,186 @@ public class Main
 				}
 			}
 		}
+		
+		System.out.println("Compelte");
 
+		System.exit(EXIT_SUCCESS);
+	}
+
+	/**
+	 * This method parses the CommandLine options that have no bearing on the actual formatting, and will ONLY be parsed when coming from the command line.
+	 * The OptParser is reserved for only changing formatter options.
+	 * @param args A list with all of the parsed options removed. leaving only things for the OptParser to go through.
+	 * @return A list of FileNames to be parsed into actual paths
+	 */
+	public static ArrayList<String> parseConsoleOptions(ArrayList<String> args)
+	{
+		ArrayList<String> filenames = new ArrayList<String>();
+		ArrayList<String> toRemove = new ArrayList<String>();
+		String temp;
+		// used normal loop so I can remove elements
+		for (String arg : args)
+		{
+			if (arg.startsWith("--"))
+			{
+				// LONG CLI options
+				temp = arg.substring(2);
+				if (temp.equals("recursive"))
+				{
+					recursive = true;
+				}
+				else if (temp.equals("version"))
+				{
+					printVersion();
+					System.exit(EXIT_SUCCESS);
+				}
+				else if (temp.equals("help"))
+				{
+					printHelp();
+					System.exit(EXIT_SUCCESS);
+				}
+				else if (temp.startsWith("options="))
+				{
+					temp = temp.substring(8);
+
+					if (temp.equals("none"))
+					{
+						optionsFile = null;
+					}
+					else
+					{
+						// let this error with a FileNotFound. Its the users problem.
+						optionsFile = new File(temp);
+						if (!optionsFile.exists())
+							errors.add("the file " + temp + " could not be found.");
+					}
+				}
+				else
+				{
+					// other options that havent been parsed yet.
+					continue;
+				}
+
+				toRemove.add(arg);
+			}
+			else if (arg.startsWith("-"))
+			{
+				if (arg.length() > 2)
+				{
+					// leave real error checking to the OptParser
+					//errors.add(arg + " is not a supported command-line option.");
+					continue;
+				}
+
+				// SHORT CLI options
+
+				switch (arg.charAt(1))
+					{
+						case 'r':
+						case 'R':
+							recursive = true;
+							toRemove.add(arg);  // only one that doesn't terminate the program.
+							break;
+						case 'V':
+							printVersion();
+							System.exit(EXIT_SUCCESS);
+						case 'h':
+						case '?':
+							printHelp();
+							System.exit(EXIT_SUCCESS);
+					}
+			}
+			else
+			{
+				// isn't a short or a long. good to add as a file.
+				filenames.add(arg);
+				// remove these from the list so they arn't flagged in the OptParser.
+				toRemove.add(arg);
+			}
+		}
+		
+		args.removeAll(toRemove);
+
+		return filenames;
+	}
+
+	/**
+	 * Parses filenames and patterns into a list of existing files.
+	 * @param filenames List of filenames to parse.
+	 * @param recursive Whether or not to search recursively
+	 * @return a list of existing files.
+	 */
+	private static ArrayList<File> parseFileNames(ArrayList<String> filenames, boolean recursive)
+	{
+		ArrayList<File> files = new ArrayList<File>();
+		FilenameFilter filter = null;
+		File temp;
+		String dir, name;
+
+		// collect potential files
+		for (String filepath : filenames)
+		{
+			int index = filepath.lastIndexOf(File.separatorChar);
+
+			// no slash? directory is here.
+			if (index < 0)
+			{
+				dir = ".";
+				name = filepath;
+			}
+			else
+			{
+				// slash index is somehow larger than string??? this isnt possible.....
+				if (index >= filepath.length())
+				{
+					System.err.println("The filename " + filepath + " is invalid");
+					System.exit(EXIT_FAILURE);
+				}
+
+				// split the dir and the file name into different strings for parsing later
+				dir = filepath.substring(0, index);
+				name = filepath.substring(index + 1);
+			}
+
+			// filename with wildcard
+			if (name.indexOf('*') != -1 || name.indexOf('?') != -1)
+			{
+				// set teh filter
+				filter = new FileWildcardFilter(name);
+
+				// set teh searching file to the directory
+				temp = new File(dir);
+			}
+
+			// only possible with a trailing slash
+			// pointing to a directory no?
+			else if (name.isEmpty())
+			{
+				temp = new File(dir);
+			}
+
+			// straight up filename
+			else
+			{
+				temp = new File(dir, name);
+			}
+
+			// collect the files
+			files.addAll(collectFiles(temp, filter, recursive));
+
+			// clear filter status.
+			filter = null;
+		}
+
+		return files;
+	}
+	
+	private static <T> ArrayList<T> convertList(T[] array)
+	{
+		ArrayList<T> list = new ArrayList<T>();
+		for (T obj : array)
+			list.add(obj);
+		return list;
 	}
 
 	/**

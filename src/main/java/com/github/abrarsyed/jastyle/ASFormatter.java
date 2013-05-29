@@ -31,7 +31,14 @@
 
 package com.github.abrarsyed.jastyle;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -43,6 +50,7 @@ import com.github.abrarsyed.jastyle.constants.SourceMode;
 
 public class ASFormatter extends ASBeautifier
 {
+	private final static String	TEMP_SUFFIX			= ".tmp";
 
 	private SourceMode			formatterFileType	= null;			// initialized with an invalid type
 
@@ -222,7 +230,7 @@ public class ASFormatter extends ASBeautifier
 	 * set the variables for each preefined style. this will override any
 	 * previous settings.
 	 */
-	void fixOptionVariableConflicts()
+	public void fixOptionVariableConflicts()
 	{
 		formattingStyle.apply(this);
 		// cannot have both bracketIndent and block Indent
@@ -235,6 +243,7 @@ public class ASFormatter extends ASBeautifier
 
 	/**
 	 * initialize the ASFormatter.
+	 * You really souldn't be calling this unless you know what your doing.
 	 * <p/>
 	 * init() should be called every time a ASFormatter object is to start formatting a NEW source file. init() recieves a pointer to a DYNAMICALLY CREATED ASSourceIterator object that will be used to iterate through the source code. This object will be deleted during the ASFormatter's destruction, and thus should not be deleted elsewhere.
 	 * @param iter a pointer to the DYNAMICALLY CREATED ASSourceIterator object.
@@ -330,10 +339,66 @@ public class ASFormatter extends ASBeautifier
 	}
 
 	/**
+	 * Open input file, format it, and close the output.
+	 * @param fileName The path and name of the file to be processed.
+	 * @param formatter The formatter object.
+	 * @return true if the file was formatted, false if it was not (no changes).
+	 */
+	public boolean formatFile(File file)
+	{
+		try
+		{
+			// open input file
+			Reader in = new BufferedReader(new FileReader(file));
+
+			// open tmp file
+			String tmpFileName = file.getPath() + TEMP_SUFFIX;
+			
+			// clean existing file.
+			if (file.exists())
+				file.delete();
+			
+			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(tmpFileName)));
+
+			// Unless a specific language mode has been set, set the language mode
+			// according to the file's suffix.
+			if (this.fileType == null)
+			{
+				this.setSourceStyle(SourceMode.getFromFileName(file.getName()));
+			}
+
+			ASStreamIterator streamIterator = new ASStreamIterator(in);
+			this.init(streamIterator);
+
+			// format the file
+			while (this.hasMoreLines())
+			{
+				out.println(this.nextLine().toString());
+				// if (formatter.hasMoreLines())
+				// out.print(streamIterator.getOutputEOL());
+
+			}
+			out.flush();
+			out.close();
+			in.close();
+
+			String path = file.getAbsolutePath();
+			file.renameTo(new File(file + ".orig"));
+			new File(tmpFileName).renameTo(new File(path));
+
+			return true;
+		}
+		catch (Exception e)
+		{
+			return false;
+		}
+	}
+
+	/**
 	 * get the next formatted line.
+	 * You shouldn't be calling this one unless you know what your doing either
 	 * @return formatted line.
 	 */
-
 	@Override
 	public StringBuilder nextLine()
 	{

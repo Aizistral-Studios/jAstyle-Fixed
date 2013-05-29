@@ -32,8 +32,25 @@
 package com.github.abrarsyed.jastyle.constants;
 
 public enum SourceMode
-{	
+{
 	C,
 	JAVA,
-	CS;
+	CS, // C# C_SHARP
+	;
+
+	public static SourceMode getFromFileName(String filename)
+	{
+		if (filename.endsWith(".java"))
+		{
+			return JAVA;
+		}
+		else if (filename.endsWith(".cs"))
+		{
+			return CS;
+		}
+		else
+		{
+			return C;
+		}
+	}
 }
