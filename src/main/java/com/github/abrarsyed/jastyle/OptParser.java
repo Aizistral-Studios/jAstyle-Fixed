@@ -33,13 +33,12 @@ public class OptParser
 	{
 		throw new MalformedOptionException();
 	}
-	
+
 	/*
 	 * TODO: MAKE THIS THE ACTUAL JAVADOC OF THE FILE.
 	 * Read jAstyle options from a file <br>
 	 * Read a file form the file system, it skips the lines that start with #<br>
 	 * <p/>
-	 * 
 	 * <pre>
 	 * A default options file may be used to set your favorite source style options.
 	 * The command line options have precedence. If there is a conflict between a command line option and an option
@@ -54,9 +53,9 @@ public class OptParser
 	 * Example of a default options file:
 	 * <em>
 	 * # this line is a comment
-	 * --brackets=attach   # this is a line-end comment
+	 * --brackets=attach # this is a line-end comment
 	 * # long options can be written without the preceding '--'
-	 * indent-switches     # cannot do this on the command line
+	 * indent-switches # cannot do this on the command line
 	 * # short options must have the preceding '-'
 	 * -t -p
 	 * # short options can be concatenated together
@@ -137,7 +136,9 @@ public class OptParser
 	private void parseLongOption(String opt) throws MalformedOptionException
 	{
 		if (opt.startsWith("--"))
+		{
 			throw new IllegalArgumentException("Trying to parse long option " + opt + " while it still cotnains a -");
+		}
 
 		String temp1;
 
@@ -199,16 +200,16 @@ public class OptParser
 				error();
 			}
 		}
-		
+
 		// bracket checking
 		else if (opt.startsWith("break-"))
 		{
 			temp1 = opt.substring(6);
-			
+
 			if (temp1.startsWith("blocks"))
 			{
 				formatter.setBreakBlocksMode(true);
-				
+
 				if (temp1.contains("=all"))
 				{
 					formatter.setBreakClosingHeaderBlocksMode(true);
@@ -223,12 +224,12 @@ public class OptParser
 				formatter.setBreakElseIfsMode(true);
 			}
 		}
-		
+
 		// padding stuff
 		else if (opt.startsWith("pad"))
 		{
 			temp1 = opt.substring(3);
-			
+
 			if (temp1.equals("oper"))
 			{
 				formatter.setOperatorPaddingMode(true);
@@ -250,16 +251,18 @@ public class OptParser
 					formatter.setParensInsidePaddingMode(true);
 				}
 				else
+				{
 					error();
+				}
 			}
 		}
 		else if (opt.equals("unpad-paren"))
 		{
 			formatter.setParensUnPaddingMode(true);
 		}
-		
+
 		// source mode stuff
-		if (opt.startsWith("mode="))
+		else if (opt.startsWith("mode="))
 		{
 			// 6 = length of "style="
 			temp1 = opt.substring(5);
@@ -275,11 +278,9 @@ public class OptParser
 				error();
 			}
 		}
-		
-		
+
 		// misc stuff.
-		
-		
+
 		else if (opt.equals("delete-empty-lines"))
 		{
 			formatter.setDeleteEmptyLinesMode(true);
@@ -287,7 +288,7 @@ public class OptParser
 		else if (opt.startsWith("keep-one-line"))
 		{
 			temp1 = opt.substring(13);
-			
+
 			if (temp1.equals("statements"))
 			{
 				formatter.setSingleStatementsMode(false);
@@ -297,10 +298,11 @@ public class OptParser
 				formatter.setBreakOneLineBlocksMode(false);
 			}
 			else
+			{
 				error();
+			}
 		}
-		
-		
+
 		else
 		{
 			error();
@@ -315,7 +317,9 @@ public class OptParser
 	private void parseShortOption(String opt) throws MalformedOptionException
 	{
 		if (opt.startsWith("-"))
+		{
 			throw new IllegalArgumentException("Trying to parse short option " + opt + " while it still cotnains a -");
+		}
 
 		char optStart = opt.charAt(0);
 		String start = "" + optStart;
@@ -360,7 +364,7 @@ public class OptParser
 				case 'u':
 					formatter.setBracketFormatMode(EnumBracketMode.STROUSTRUP);
 					break;
-					
+
 				// "break" options
 				case 'f':
 					formatter.setBreakBlocksMode(true);
@@ -375,8 +379,8 @@ public class OptParser
 				case 'e':
 					formatter.setBreakElseIfsMode(true);
 					break;
-					
-					// X options.
+
+				// X options.
 				case 'x':
 					if (opt.length() == 1)
 					{
@@ -384,16 +388,16 @@ public class OptParser
 						break;
 					}
 					// TODO: MORE OPTIONS STARTING IN X HERE
-					
-					// no possible matching x thingy
 					else
+					{
 						error();
-					
-				// perintheses and padding.
-				case 'p' :
+					}
+
+					// perintheses and padding.
+				case 'p':
 					formatter.setOperatorPaddingMode(true);
 					break;
-				case 'P' :
+				case 'P':
 					formatter.setParensOutsidePaddingMode(true);
 					formatter.setParensInsidePaddingMode(true);
 					break;
@@ -406,15 +410,15 @@ public class OptParser
 				case 'U':
 					formatter.setParensUnPaddingMode(true);
 					break;
-					
+
 				// misc stuff.
 				case 'o':
 					formatter.setSingleStatementsMode(false);
 					break;
-				case'O':
+				case 'O':
 					formatter.setBreakOneLineBlocksMode(false);
 					break;
-					
+
 			}
 
 		// nothing else we can parse? throw de exception.
@@ -457,7 +461,9 @@ public class OptParser
 	private int getShortOptNum(String start, String str, int def) throws MalformedOptionException
 	{
 		if (!str.startsWith(start))
+		{
 			throw new IllegalArgumentException("Param start must be the portion of param str before the number!");
+		}
 
 		if (str.length() > start.length())
 		{

@@ -41,7 +41,6 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import com.github.abrarsyed.exceptions.MalformedOptionException;
 
@@ -95,10 +94,6 @@ public class Main
 		{
 			e.printStackTrace();
 		}
-	}
-
-	public static void formatFile(String fileName, ASFormatter formatter) throws IOException
-	{
 	}
 
 	// /**
@@ -368,7 +363,7 @@ public class Main
 			printHelp();
 			System.exit(EXIT_SUCCESS);
 		}
-		
+
 		System.out.println("Parsing options...");
 
 		// convert to list so we can add and remove stuff easily.
@@ -379,6 +374,9 @@ public class Main
 
 		ASFormatter formatter = new ASFormatter();
 		OptParser parser = new OptParser(formatter);
+		
+		// init the errros thing jst in case.
+		errors = new ArrayList<String>();
 
 		// check options file first.. since they are overwrite by the other options.
 		if (optionsFile != null)
@@ -425,12 +423,12 @@ public class Main
 
 		// now we make sure there are no conflicting messages.
 		formatter.fixOptionVariableConflicts();
-		
+
 		System.out.println("Parsing file names...");
 
 		// now we go through the filenames and parse them into files.
 		ArrayList<File> files = parseFileNames(filenames, recursive);
-		
+
 		System.out.println("Formatting files.");
 
 		// now we format the collected files
@@ -442,7 +440,7 @@ public class Main
 			{
 				reader = new BufferedReader(new FileReader(currFile.getAbsolutePath()));
 
-				formatFile(currFile.getAbsolutePath(), formatter);
+				formatter.formatFile(currFile);
 			}
 			catch (Throwable t)
 			{
@@ -456,7 +454,7 @@ public class Main
 				}
 			}
 		}
-		
+
 		System.out.println("Compelte");
 
 		System.exit(EXIT_SUCCESS);
@@ -507,7 +505,9 @@ public class Main
 						// let this error with a FileNotFound. Its the users problem.
 						optionsFile = new File(temp);
 						if (!optionsFile.exists())
+						{
 							errors.add("the file " + temp + " could not be found.");
+						}
 					}
 				}
 				else
@@ -553,7 +553,7 @@ public class Main
 				toRemove.add(arg);
 			}
 		}
-		
+
 		args.removeAll(toRemove);
 
 		return filenames;
@@ -629,12 +629,14 @@ public class Main
 
 		return files;
 	}
-	
+
 	private static <T> ArrayList<T> convertList(T[] array)
 	{
 		ArrayList<T> list = new ArrayList<T>();
 		for (T obj : array)
+		{
 			list.add(obj);
+		}
 		return list;
 	}
 
