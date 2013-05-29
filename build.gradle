@@ -5,7 +5,7 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'signing'
 
-group = 'com.github.abrarsyed'
+group = 'com.github.abrarsyed.jastyle'
 version = '1.0-SNAPSHOT'
 archivesBaseName = 'jAstyle'
 
