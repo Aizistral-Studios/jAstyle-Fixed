@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import com.github.abrarsyed.exceptions.MalformedOptionException;
 import com.github.abrarsyed.jastyle.constants.EnumBracketMode;
 import com.github.abrarsyed.jastyle.constants.EnumFormatStyle;
+import com.github.abrarsyed.jastyle.constants.SourceMode;
 
 public class OptParser
 {
@@ -228,10 +229,28 @@ public class OptParser
 			formatter.setParensUnPaddingMode(true);
 		}
 		
+		// source mode stuff
+		if (opt.startsWith("mode="))
+		{
+			// 6 = length of "style="
+			temp1 = opt.substring(5);
+			temp1 = temp1.toUpperCase();
+
+			try
+			{
+				formatter.setSourceStyle(SourceMode.valueOf(temp1));
+			}
+			catch (Exception e)
+			{
+				// no possible style. fail.
+				error();
+			}
+		}
+		
+		
 		// misc stuff.
 		
 		
-		// delete empty lines
 		else if (opt.equals("delete-empty-lines"))
 		{
 			formatter.setDeleteEmptyLinesMode(true);

@@ -36,7 +36,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
-import com.github.abrarsyed.jastyle.constants.FileType;
+import com.github.abrarsyed.jastyle.constants.SourceMode;
 
 public class ASBeautifier extends AbstractASBase
 {
@@ -61,7 +61,7 @@ public class ASBeautifier extends AbstractASBase
 	private Stack<Integer>			inStatementIndentStackSizeStack;
 	private Stack<Integer>			parenIndentStack;
 
-	private int						beautifierFileType	= 9;			// initialized with an invalid type
+	private SourceMode				beautifierFileType	= null;		// initialized with an invalid type
 	private String					indentString;
 	private String					currentHeader;
 	private String					previousLastLineHeader;
@@ -95,7 +95,6 @@ public class ASBeautifier extends AbstractASBase
 	private boolean					blockCommentNoIndent;
 	private boolean					blockCommentNoBeautify;
 	private boolean					previousLineProbationTab;
-	private int						fileType;
 	private int						minConditionalIndent;
 	private int						parenDepth;
 	private int						indentLength;
@@ -153,8 +152,8 @@ public class ASBeautifier extends AbstractASBase
 		setNamespaceIndent(false);
 		setLabelIndent(false);
 		setEmptyLineFill(false);
-		fileType = FileType.JAVA_TYPE;
-		setJavaStyle();
+		fileType = SourceMode.JAVA;
+		this.setSourceStyle(SourceMode.JAVA);
 		setPreprocessorIndent(false);
 	}
 
@@ -369,25 +368,9 @@ public class ASBeautifier extends AbstractASBase
 	/**
 	 * set indentation style to C/C++.
 	 */
-	public void setCStyle()
+	public void setSourceStyle(SourceMode mode)
 	{
-		fileType = FileType.C_TYPE;
-	}
-
-	/**
-	 * set indentation style to Java.
-	 */
-	public void setJavaStyle()
-	{
-		fileType = FileType.JAVA_TYPE;
-	}
-
-	/**
-	 * set indentation style to C#.
-	 */
-	public void setSharpStyle()
-	{
-		fileType = FileType.SHARP_TYPE;
+		fileType = mode;
 	}
 
 	/**
@@ -548,7 +531,7 @@ public class ASBeautifier extends AbstractASBase
 	 * get the file type.
 	 * @return
 	 */
-	public int getFileType()
+	public SourceMode getFileType()
 	{
 		return fileType;
 	}

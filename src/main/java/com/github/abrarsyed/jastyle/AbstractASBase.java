@@ -31,31 +31,31 @@
 
 package com.github.abrarsyed.jastyle;
 
-import com.github.abrarsyed.jastyle.constants.FileType;
+import com.github.abrarsyed.jastyle.constants.SourceMode;
 
 public class AbstractASBase
 {
 
-	private int	fileType;	// a value from enum FileType
+	protected SourceMode	fileType;	// a value from enum FileType
 
-	protected void init(final int fileTypeArg)
+	protected void init(SourceMode fileTypeArg)
 	{
 		fileType = fileTypeArg;
 	}
 
 	protected boolean isCStyle()
 	{
-		return fileType == FileType.C_TYPE;
+		return fileType == SourceMode.C;
 	}
 
 	protected boolean isJavaStyle()
 	{
-		return fileType == FileType.JAVA_TYPE;
+		return fileType == SourceMode.JAVA;
 	}
 
 	protected boolean isSharpStyle()
 	{
-		return fileType == FileType.SHARP_TYPE;
+		return fileType == SourceMode.CS;
 	}
 
 	// check if a specific character can be used in a legal

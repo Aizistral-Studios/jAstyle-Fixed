@@ -33,6 +33,8 @@ package com.github.abrarsyed.jastyle;
 
 import java.util.Stack;
 
+import com.github.abrarsyed.jastyle.constants.SourceMode;
+
 public class ASEnhancer extends AbstractASBase
 {
 	// options from command line or options file
@@ -77,7 +79,7 @@ public class ASEnhancer extends AbstractASBase
 	 * <p/>
 	 * init() is called each time an ASFormatter object is initialized.
 	 */
-	void init(int fileType, int _indentLength, String _indentString, boolean _caseIndent, boolean _emptyLineFill)
+	void init(SourceMode fileType, int _indentLength, String _indentString, boolean _caseIndent, boolean _emptyLineFill)
 	{
 		// formatting variables from ASFormatter and ASBeautifier
 		init(fileType);

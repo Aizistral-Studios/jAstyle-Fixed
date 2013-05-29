@@ -34,7 +34,7 @@ package com.github.abrarsyed.jastyle;
 import java.util.Collections;
 import java.util.List;
 
-import com.github.abrarsyed.jastyle.constants.FileType;
+import com.github.abrarsyed.jastyle.constants.SourceMode;
 
 public class ASResource
 {
@@ -197,7 +197,7 @@ public class ASResource
 	 * ASBeautifier.cpp
 	 * @param headers a reference to the vector to be built.
 	 */
-	public static void buildHeaders(List<String> headers, int fileType, boolean beautifier)
+	public static void buildHeaders(List<String> headers, SourceMode fileType, boolean beautifier)
 	{
 		headers.add(AS_IF);
 		headers.add(AS_ELSE);
@@ -208,13 +208,13 @@ public class ASResource
 		headers.add(AS_TRY);
 		headers.add(AS_CATCH);
 
-		if (fileType == FileType.JAVA_TYPE)
+		if (fileType == SourceMode.JAVA)
 		{
 			headers.add(AS_FINALLY);
 			headers.add(AS_SYNCHRONIZED);
 		}
 
-		if (fileType == FileType.SHARP_TYPE)
+		if (fileType == SourceMode.CS)
 		{
 			headers.add(AS_FINALLY);
 			headers.add(AS_FOREACH);
@@ -232,13 +232,13 @@ public class ASResource
 			headers.add(AS_CASE);
 			headers.add(AS_DEFAULT);
 
-			if (fileType == FileType.C_TYPE)
+			if (fileType == SourceMode.C)
 			{
 				headers.add(AS_CONST);
 				headers.add(AS_TEMPLATE);
 			}
 
-			if (fileType == FileType.JAVA_TYPE)
+			if (fileType == SourceMode.JAVA)
 			{
 				headers.add(AS_STATIC); // for static constructor
 			}
@@ -289,17 +289,17 @@ public class ASResource
 	 * ASFormatter.cpp and ASBeautifier.cpp
 	 * @param nonParenHeaders a reference to the vector to be built.
 	 */
-	public static void buildNonParenHeaders(List<String> nonParenHeaders, int fileType, boolean beautifier)
+	public static void buildNonParenHeaders(List<String> nonParenHeaders, SourceMode fileType, boolean beautifier)
 	{
 		nonParenHeaders.add(AS_ELSE);
 		nonParenHeaders.add(AS_DO);
 		nonParenHeaders.add(AS_TRY);
 
-		if (fileType == FileType.JAVA_TYPE)
+		if (fileType == SourceMode.JAVA)
 		{
 			nonParenHeaders.add(AS_FINALLY);
 		}
-		else if (fileType == FileType.SHARP_TYPE)
+		else if (fileType == SourceMode.CS)
 		{
 			nonParenHeaders.add(AS_CATCH); // can be a paren or non-paren header
 			nonParenHeaders.add(AS_FINALLY);
@@ -314,12 +314,12 @@ public class ASResource
 		{
 			nonParenHeaders.add(AS_CASE);
 			nonParenHeaders.add(AS_DEFAULT);
-			if (fileType == FileType.C_TYPE)
+			if (fileType == SourceMode.C)
 			{
 				nonParenHeaders.add(AS_CONST);
 				nonParenHeaders.add(AS_TEMPLATE);
 			}
-			else if (fileType == FileType.JAVA_TYPE)
+			else if (fileType == SourceMode.JAVA)
 			{
 				nonParenHeaders.add(AS_STATIC);
 			}
@@ -387,21 +387,21 @@ public class ASResource
 	 * NOTE: Cannot be both a header and a preBlockStatement.
 	 * @param preBlockStatements a reference to the vector to be built.
 	 */
-	public static void buildPreBlockStatements(List<String> preBlockStatements, int fileType)
+	public static void buildPreBlockStatements(List<String> preBlockStatements, SourceMode fileType)
 	{
 		preBlockStatements.add(AS_CLASS);
-		if (fileType == FileType.C_TYPE)
+		if (fileType == SourceMode.C)
 		{
 			preBlockStatements.add(AS_STRUCT);
 			preBlockStatements.add(AS_UNION);
 			preBlockStatements.add(AS_NAMESPACE);
 		}
-		else if (fileType == FileType.JAVA_TYPE)
+		else if (fileType == SourceMode.JAVA)
 		{
 			preBlockStatements.add(AS_INTERFACE);
 			preBlockStatements.add(AS_THROWS);
 		}
-		else if (fileType == FileType.SHARP_TYPE)
+		else if (fileType == SourceMode.CS)
 		{
 			preBlockStatements.add(AS_INTERFACE);
 			preBlockStatements.add(AS_NAMESPACE);
@@ -414,17 +414,17 @@ public class ASResource
 	 * Build the vector of pre-command headers. Used by ONLY ASFormatter.cpp
 	 * @param preCommandHeaders a reference to the vector to be built.
 	 */
-	public static void buildPreCommandHeaders(List<String> preCommandHeaders, int fileType)
+	public static void buildPreCommandHeaders(List<String> preCommandHeaders, SourceMode fileType)
 	{
-		if (fileType == FileType.C_TYPE)
+		if (fileType == SourceMode.C)
 		{
 			preCommandHeaders.add(AS_CONST);
 		}
-		else if (fileType == FileType.JAVA_TYPE)
+		else if (fileType == SourceMode.JAVA)
 		{
 			preCommandHeaders.add(AS_THROWS);
 		}
-		else if (fileType == FileType.SHARP_TYPE)
+		else if (fileType == SourceMode.CS)
 		{
 			preCommandHeaders.add(AS_WHERE);
 		}
@@ -438,20 +438,20 @@ public class ASResource
 	 * add 'extern' here. Do not want an extra indent.
 	 * @param preDefinitionHeaders a reference to the vector to be built.
 	 */
-	public static void buildPreDefinitionHeaders(List<String> preDefinitionHeaders, int fileType)
+	public static void buildPreDefinitionHeaders(List<String> preDefinitionHeaders, SourceMode fileType)
 	{
 		preDefinitionHeaders.add(AS_CLASS);
-		if (fileType == FileType.C_TYPE)
+		if (fileType == SourceMode.C)
 		{
 			preDefinitionHeaders.add(AS_STRUCT);
 			preDefinitionHeaders.add(AS_UNION);
 			preDefinitionHeaders.add(AS_NAMESPACE);
 		}
-		else if (fileType == FileType.JAVA_TYPE)
+		else if (fileType == SourceMode.JAVA)
 		{
 			preDefinitionHeaders.add(AS_INTERFACE);
 		}
-		else if (fileType == FileType.SHARP_TYPE)
+		else if (fileType == SourceMode.CS)
 		{
 			preDefinitionHeaders.add(AS_INTERFACE);
 			preDefinitionHeaders.add(AS_NAMESPACE);

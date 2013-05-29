@@ -36,14 +36,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import com.github.abrarsyed.jastyle.constants.EnumBracketMode;
 import com.github.abrarsyed.jastyle.constants.BracketType;
+import com.github.abrarsyed.jastyle.constants.EnumBracketMode;
 import com.github.abrarsyed.jastyle.constants.EnumFormatStyle;
+import com.github.abrarsyed.jastyle.constants.SourceMode;
 
 public class ASFormatter extends ASBeautifier
 {
 
-	private int					formatterFileType	= 9;				// initialized with an invalid type
+	private SourceMode			formatterFileType	= null;			// initialized with an invalid type
 
 	private List<String>		headers;
 	private List<String>		nonParenHeaders;
@@ -75,8 +76,8 @@ public class ASFormatter extends ASBeautifier
 	private int					traceLineNumber;
 	private long				formattedLineCommentNum;				// comment location on formattedLine
 	private long				previousReadyFormattedLineLength;
-	private EnumFormatStyle			formattingStyle;
-	private EnumBracketMode			bracketFormatMode;
+	private EnumFormatStyle		formattingStyle;
+	private EnumBracketMode		bracketFormatMode;
 	private int					previousBracketType;
 	private boolean				isVirgin;
 	private boolean				shouldPadOperators;
@@ -2210,17 +2211,17 @@ public class ASFormatter extends ASBeautifier
 		assert newOperator != null;
 
 		boolean shouldPad = !newOperator.equals(ASResource.AS_COLON_COLON) && !newOperator.equals(ASResource.AS_PAREN_PAREN) && !newOperator.equals(ASResource.AS_BLPAREN_BLPAREN) && !newOperator.equals(ASResource.AS_PLUS_PLUS) && !newOperator.equals(ASResource.AS_MINUS_MINUS) && !newOperator.equals(ASResource.AS_NOT) && !newOperator.equals(ASResource.AS_BIT_NOT) && !newOperator.equals(ASResource.AS_ARROW) && !(newOperator.equals(ASResource.AS_MINUS) && isInExponent()) && !((newOperator.equals(ASResource.AS_PLUS) || newOperator.equals(ASResource.AS_MINUS)) // check for unary plus or
-		// minus
-		&& (previousNonWSChar == '(' || previousNonWSChar == '=' || previousNonWSChar == ',')) && !(newOperator.equals(ASResource.AS_PLUS) && isInExponent()) && !isCharImmediatelyPostOperator && !((newOperator.equals(ASResource.AS_MULT) || newOperator.equals(ASResource.AS_BIT_AND)) && isPointerOrReference()) && !(newOperator.equals(ASResource.AS_MULT) && (previousNonWSChar == '.' || previousNonWSChar == '>'))
-		// check
-		// for
-		// ->
-		&& !((isInTemplate || isCharImmediatelyPostTemplate) && (newOperator.equals(ASResource.AS_LS) || newOperator.equals(ASResource.AS_GR))) && !(newOperator.equals(ASResource.AS_GCC_MIN_ASSIGN) && peekNextChar(currentLine, charNum + 1) == '>') && !(newOperator.equals(ASResource.AS_GR) && previousNonWSChar == '?') && !isInCase;
+				// minus
+				&& (previousNonWSChar == '(' || previousNonWSChar == '=' || previousNonWSChar == ',')) && !(newOperator.equals(ASResource.AS_PLUS) && isInExponent()) && !isCharImmediatelyPostOperator && !((newOperator.equals(ASResource.AS_MULT) || newOperator.equals(ASResource.AS_BIT_AND)) && isPointerOrReference()) && !(newOperator.equals(ASResource.AS_MULT) && (previousNonWSChar == '.' || previousNonWSChar == '>'))
+				// check
+				// for
+				// ->
+				&& !((isInTemplate || isCharImmediatelyPostTemplate) && (newOperator.equals(ASResource.AS_LS) || newOperator.equals(ASResource.AS_GR))) && !(newOperator.equals(ASResource.AS_GCC_MIN_ASSIGN) && peekNextChar(currentLine, charNum + 1) == '>') && !(newOperator.equals(ASResource.AS_GR) && previousNonWSChar == '?') && !isInCase;
 
 		// pad before operator
 		if (shouldPad && !isInBlParen && !(newOperator.equals(ASResource.AS_COLON) && !foundQuestionMark) && !(newOperator.equals(ASResource.AS_QUESTION) && isSharpStyle() // check for C# nullable type (e.g.
 		// int?)
-		&& currentLine.indexOf(":", charNum + 1) == -1))
+				&& currentLine.indexOf(":", charNum + 1) == -1))
 		{
 			appendSpacePad();
 		}
@@ -2238,7 +2239,7 @@ public class ASFormatter extends ASBeautifier
 		// but do not pad after a '-' that is a unary-minus.
 		if (shouldPad && currentLine.length() < charNum + 1 && !isInBlParen && !isBeforeComment() && !(newOperator.equals(ASResource.AS_PLUS) && isUnaryOperator()) && !(newOperator.equals(ASResource.AS_MINUS) && isUnaryOperator()) && !(currentLine.charAt(charNum + 1) == ';') && !(currentLine.indexOf("::", charNum + 1) == charNum + 1) && !(newOperator.equals(ASResource.AS_QUESTION) && isSharpStyle() // check for C# nullable type (e.g.
 		// int?)
-		&& currentLine.charAt(charNum + 1) == '['))
+				&& currentLine.charAt(charNum + 1) == '['))
 		{
 			appendSpaceAfter();
 		}
@@ -2646,8 +2647,8 @@ public class ASFormatter extends ASBeautifier
 			else
 			{
 				if (!isCharImmediatelyPostComment
-				// && !bracketFormatMode == NONE
-				&& !isImmediatelyPostEmptyBlock)
+						// && !bracketFormatMode == NONE
+						&& !isImmediatelyPostEmptyBlock)
 				{
 					isInLineBreak = false;
 				}

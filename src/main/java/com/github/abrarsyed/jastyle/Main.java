@@ -47,6 +47,7 @@ import java.util.List;
 
 import com.github.abrarsyed.jastyle.constants.EnumBracketMode;
 import com.github.abrarsyed.jastyle.constants.EnumFormatStyle;
+import com.github.abrarsyed.jastyle.constants.SourceMode;
 
 public class Main
 {
@@ -206,17 +207,17 @@ public class Main
 		// must check for mode=cs before mode=c !!!
 		else if (arg.equals("mode=cs"))
 		{
-			formatter.setSharpStyle();
+			formatter.setSourceStyle(SourceMode.CS);
 			modeManuallySet = true;
 		}
 		else if (arg.equals("mode=c"))
 		{
-			formatter.setCStyle();
+			formatter.setSourceStyle(SourceMode.C);
 			modeManuallySet = true;
 		}
 		else if (arg.equals("mode=java"))
 		{
-			formatter.setJavaStyle();
+			formatter.setSourceStyle(SourceMode.JAVA);
 			modeManuallySet = true;
 		}
 		else if (isParamOption(arg, "t", "indent=tab="))
@@ -481,7 +482,7 @@ public class Main
 		{
 			formatter.setOperatorPaddingMode(true);
 		}
-		
+
 		//  CONSOLE OPTIONS ONLY!!
 		//  TODO re-enable options
 		//
@@ -506,7 +507,7 @@ public class Main
 		// g_console.excludeHitsVector.push_back(false);
 		// }
 		// }
-		else if ( arg.equalsIgnoreCase("r") || arg.equals("recursive") )
+		else if (arg.equalsIgnoreCase("r") || arg.equals("recursive"))
 		{
 			recurseFiles = true;
 		}
@@ -606,15 +607,15 @@ public class Main
 		{
 			if (fileName.endsWith(".java"))
 			{
-				formatter.setJavaStyle();
+				formatter.setSourceStyle(SourceMode.JAVA);
 			}
 			else if (fileName.endsWith(".cs"))
 			{
-				formatter.setSharpStyle();
+				formatter.setSourceStyle(SourceMode.CS);
 			}
 			else
 			{
-				formatter.setCStyle();
+				formatter.setSourceStyle(SourceMode.C);
 			}
 		}
 
@@ -913,7 +914,7 @@ public class Main
 		{
 			for (String arg : args)
 			{
-				if (arg.equals(OPTIONS+"=none"))
+				if (arg.equals(OPTIONS + "=none"))
 				{
 					shouldParseOptionsFile = false;
 				}
@@ -1084,18 +1085,18 @@ public class Main
 		String filename;
 		Main console = new Main();
 		ASFormatter formatter = new ASFormatter();
-		
+
 		ArrayList<File> files = new ArrayList<File>();
 		List<String> filenames = console.processOptions(args, formatter);
-		
+
 		FilenameFilter filter = null;
 		File temp;
-		
+
 		// collect potential files
 		for (String filepath : filenames)
 		{
 			int index = filepath.lastIndexOf(File.separatorChar);
-			
+
 			// no slash? directory is here.
 			if (index < 0)
 			{
@@ -1110,7 +1111,7 @@ public class Main
 					System.err.println("The filename " + filepath + " is invalid");
 					System.exit(EXIT_FAILURE);
 				}
-				
+
 				// split the dir and the file name into different strings for parsing later
 				dir = filepath.substring(0, index);
 				filename = filepath.substring(index + 1);
@@ -1121,33 +1122,34 @@ public class Main
 			{
 				// set teh filter
 				filter = new FileWildcardFilter(filename);
-				
+
 				// set teh searching file to the directory
 				temp = new File(dir);
 			}
-			
+
 			// only possible with a trailing slash
 			// pointing to a directory no?
 			else if (filename.isEmpty())
 			{
 				temp = new File(dir);
 			}
-			
+
 			// straight up filename
 			else
 			{
 				temp = new File(dir, filename);
 			}
-			
+
 			// collect the files
 			files.addAll(collectFiles(temp, filter, console.recurseFiles));
-			
+
 			// clear filter status.
 			filter = null;
 		}
-		
+
 		// format collected files
-		Reader reader = null;;
+		Reader reader = null;
+		;
 		for (File currFile : files)
 		{
 			System.out.println("Converting " + currFile.getAbsolutePath() + " ...\n");
@@ -1157,7 +1159,7 @@ public class Main
 
 				console.formatFile(currFile.getAbsolutePath(), formatter);
 			}
-			catch(Throwable t)
+			catch (Throwable t)
 			{
 				System.out.println("Error formatting file " + currFile.getAbsolutePath() + " ...\n");
 			}
@@ -1171,9 +1173,8 @@ public class Main
 		}
 
 	}
-	
+
 	/**
-	 * 
 	 * @param dir Directory to search in
 	 * @param filter Filter to apply to files. May be null to accept all the file names.
 	 * @param recurse If subdirectopries should be recursed through or not.
@@ -1182,14 +1183,14 @@ public class Main
 	public static ArrayList<File> collectFiles(File dir, FilenameFilter filter, boolean recurse)
 	{
 		ArrayList<File> files = new ArrayList<File>();
-		
+
 		// check if supplied directory is a file itself.
 		if (dir.isFile() && (filter == null || filter.accept(dir, dir.getName())))
 		{
 			files.add(dir);
 			return files;
 		}
-		
+
 		// otherwise.. recurse and search for files.
 		for (File file : dir.listFiles())
 		{
@@ -1198,16 +1199,16 @@ public class Main
 			// if filter accepts the file add it.
 			if (file.isFile() && (filter == null || filter.accept(dir, file.getName())))
 			{
-					files.add(file);
+				files.add(file);
 			}
-			
+
 			// its a directory and recursing is enabled.. recurse.
 			if (file.isDirectory() && recurse)
 			{
 				files.addAll(collectFiles(file, filter, recurse));
 			}
 		}
-		
+
 		return files;
 	}
 }
