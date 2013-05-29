@@ -127,7 +127,9 @@ public class ASEnhancer extends AbstractASBase
 		}
 
 		if (lineLength == 0 && !isInEventTable && !emptyLineFill)
+		{
 			return;
+		}
 
 		// test for unindent on attached brackets
 		if (unindentNextLine)
@@ -403,7 +405,9 @@ public class ASEnhancer extends AbstractASBase
 	int indentLine(StringBuilder line, int indent)
 	{
 		if (line.length() == 0 && !emptyLineFill)
+		{
 			return 0;
+		}
 
 		int charsToInsert; // number of chars to insert
 
@@ -442,7 +446,9 @@ public class ASEnhancer extends AbstractASBase
 		}
 
 		if (whitespace == 0)
+		{
 			return 0;
+		}
 
 		int charsToErase; // number of chars to erase
 

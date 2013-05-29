@@ -404,32 +404,32 @@ public class OptParser
 				case 'u':
 					formatter.setBracketFormatMode(EnumBracketMode.STROUSTRUP);
 					break;
-					
+
 				// other indent options
 				case 'C':
-						formatter.setClassIndent(true);
-						break;
+					formatter.setClassIndent(true);
+					break;
 				case 'S':
-						formatter.setSwitchIndent(true);
-						break;
+					formatter.setSwitchIndent(true);
+					break;
 				case 'K':
 					formatter.setCaseIndent(true);
 					break;
 				case 'G':
-						formatter.setBlockIndent(true);
-						break;
+					formatter.setBlockIndent(true);
+					break;
 				case 'B':
-						formatter.setBracketIndent(true);
-						break;
+					formatter.setBracketIndent(true);
+					break;
 				case 'N':
-						formatter.setNamespaceIndent(true);
-						break;
+					formatter.setNamespaceIndent(true);
+					break;
 				case 'L':
-						formatter.setLabelIndent(true);
-						break;
+					formatter.setLabelIndent(true);
+					break;
 				case 'w':
-						formatter.setPreprocessorIndent(true);
-						break;
+					formatter.setPreprocessorIndent(true);
+					break;
 				case 'M':
 					formatter.setMaxInStatementIndentLength(getShortOptNum(start, opt, 40));
 					break;

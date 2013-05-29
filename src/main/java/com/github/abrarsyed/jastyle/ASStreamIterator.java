@@ -80,7 +80,9 @@ public class ASStreamIterator implements ASSourceIterator
 			}
 
 			if (ch <= 0)
+			{
 				return buffer;
+			}
 
 			int peekCh = inStream.peek();
 
@@ -169,7 +171,9 @@ public class ASStreamIterator implements ASSourceIterator
 			}
 
 			if (ch <= 0)
+			{
 				return nextLine;
+			}
 
 			int peekCh = inStream.peek();
 

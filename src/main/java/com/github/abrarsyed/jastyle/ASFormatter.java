@@ -196,7 +196,9 @@ public class ASFormatter extends ASBeautifier
 	private void buildLanguageVectors()
 	{
 		if (getFileType() == formatterFileType)
+		{
 			return;
+		}
 
 		formatterFileType = getFileType();
 
@@ -353,27 +355,29 @@ public class ASFormatter extends ASBeautifier
 
 			// open tmp file
 			String tmpFileName = file.getPath() + TEMP_SUFFIX;
-			
+
 			// clean existing file.
 			if (file.exists())
+			{
 				file.delete();
-			
+			}
+
 			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(tmpFileName)));
 
 			// Unless a specific language mode has been set, set the language mode
 			// according to the file's suffix.
-			if (this.fileType == null)
+			if (fileType == null)
 			{
-				this.setSourceStyle(SourceMode.getFromFileName(file.getName()));
+				setSourceStyle(SourceMode.getFromFileName(file.getName()));
 			}
 
 			ASStreamIterator streamIterator = new ASStreamIterator(in);
 			this.init(streamIterator);
 
 			// format the file
-			while (this.hasMoreLines())
+			while (hasMoreLines())
 			{
-				out.println(this.nextLine().toString());
+				out.println(nextLine().toString());
 				// if (formatter.hasMoreLines())
 				// out.print(streamIterator.getOutputEOL());
 
@@ -1532,7 +1536,9 @@ public class ASFormatter extends ASBeautifier
 		int peekNum = ASUtils.findFirstNotOf(currentLine, ASUtils.WHITE_SPACE, charNum + 1);
 
 		if (peekNum == -1)
+		{
 			return ch;
+		}
 
 		ch = currentLine.charAt(peekNum);
 
@@ -1549,7 +1555,9 @@ public class ASFormatter extends ASBeautifier
 		int peekNum = ASUtils.findFirstNotOf(currentLine, ASUtils.WHITE_SPACE, charNum + 1);
 
 		if (peekNum == -1)
+		{
 			return foundComment;
+		}
 
 		foundComment = currentLine.indexOf("/*", peekNum) == peekNum || currentLine.indexOf("//", peekNum) == peekNum;
 
@@ -1725,7 +1733,9 @@ public class ASFormatter extends ASBeautifier
 		tabIncrementIn = 0;
 
 		if (isInComment || isInPreprocessor || isInQuoteContinuation)
+		{
 			return;
+		}
 
 		while (isWhiteSpace(currentLine.charAt(charNum)) && charNum + 1 < len)
 		{
@@ -1954,7 +1964,9 @@ public class ASFormatter extends ASBeautifier
 			return (prevFormattedChar == 'e' || prevFormattedChar == 'E') && (prevPrevFormattedChar == '.' || Character.isDigit(prevPrevFormattedChar));
 		}
 		else
+		{
 			return false;
+		}
 	}
 
 	/**
@@ -2029,7 +2041,9 @@ public class ASFormatter extends ASBeautifier
 			}
 
 			if (bracketCount == 0)
+			{
 				return true;
+			}
 		}
 
 		return false;
@@ -2067,9 +2081,13 @@ public class ASFormatter extends ASBeautifier
 		// look ahead to find the next non-comment text
 		StringBuilder nextText = peekNextText(new StringBuilder(currentLine.substring(startChar)));
 		if (nextText.length() == 0 || !isCharPotentialHeader(nextText, 0))
+		{
 			return false;
+		}
 		if (findKeyword(nextText, 0, ASResource.AS_GET) || findKeyword(nextText, 0, ASResource.AS_SET) || findKeyword(nextText, 0, ASResource.AS_ADD) || findKeyword(nextText, 0, ASResource.AS_REMOVE))
+		{
 			return true;
+		}
 		return false;
 	}
 
@@ -2195,9 +2213,13 @@ public class ASFormatter extends ASBeautifier
 		{
 			int endNum = currentLine.indexOf("*/", charNum + 2);
 			if (endNum == -1)
+			{
 				return;
+			}
 			if (ASUtils.findFirstNotOf(currentLine, ASUtils.WHITE_SPACE, endNum + 2) != -1)
+			{
 				return;
+			}
 		}
 
 		int len = formattedLine.length();
@@ -2879,7 +2901,9 @@ public class ASFormatter extends ASBeautifier
 
 		// do NOT replace if in quotes
 		if (isInQuote || isInQuoteContinuation)
+		{
 			return;
+		}
 
 		int indent = getIndentLength();
 		int numSpaces = indent - (tabIncrementIn + charNum) % indent;
@@ -2898,12 +2922,16 @@ public class ASFormatter extends ASBeautifier
 		// look ahead to find the next non-comment text
 		StringBuilder nextText = peekNextText(firstLine, true);
 		if (nextText.length() == 0 || !isCharPotentialHeader(nextText, 0))
+		{
 			return;
+		}
 
 		String newHeader = findHeader(nextText, 0, headers);
 
 		if (newHeader == null)
+		{
 			return;
+		}
 
 		// may need to break if a header follows
 		boolean isClosingHeader = newHeader.equals(ASResource.AS_ELSE) || newHeader.equals(ASResource.AS_CATCH) || newHeader.equals(ASResource.AS_FINALLY);
@@ -2974,17 +3002,23 @@ public class ASFormatter extends ASBeautifier
 		// peekNextText will do the peekReset
 		StringBuilder nextText = peekNextText(nextLine, true);
 		if (nextText.length() == 0 || !isCharPotentialHeader(nextText, 0))
+		{
 			return false;
+		}
 
 		String newHeader = findHeader(nextText, 0, headers);
 
 		if (newHeader == null)
+		{
 			return false;
+		}
 
 		boolean isClosingHeader = newHeader.equals(ASResource.AS_ELSE) || newHeader.equals(ASResource.AS_CATCH) || newHeader.equals(ASResource.AS_FINALLY);
 
 		if (isClosingHeader && !shouldBreakClosingHeaderBlocks)
+		{
 			return false;
+		}
 
 		return true;
 	}

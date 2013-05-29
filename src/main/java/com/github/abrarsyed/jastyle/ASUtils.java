@@ -71,7 +71,9 @@ class ASUtils
 		{
 			char ch = in.charAt(index);
 			if (chars.indexOf(ch) < 0)
+			{
 				return index;
+			}
 		}
 		return -1;
 	}
@@ -87,7 +89,9 @@ class ASUtils
 		{
 			char ch = in.charAt(index);
 			if (chars.indexOf(ch) < 0)
+			{
 				return index;
+			}
 		}
 		return -1;
 	}

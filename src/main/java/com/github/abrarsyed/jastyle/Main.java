@@ -374,7 +374,7 @@ public class Main
 
 		ASFormatter formatter = new ASFormatter();
 		OptParser parser = new OptParser(formatter);
-		
+
 		// init the errros thing jst in case.
 		errors = new ArrayList<String>();
 

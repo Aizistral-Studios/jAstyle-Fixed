@@ -63,10 +63,14 @@ public class AbstractASBase
 	protected boolean isLegalNameChar(char ch)
 	{
 		if (isWhiteSpace(ch))
+		{
 			return false;
+		}
 
 		if (ch > 127)
+		{
 			return false;
+		}
 
 		return java.lang.Character.isLetterOrDigit(ch) || ch == '.' || ch == '_' || isJavaStyle() && ch == '$' || isSharpStyle() && ch == '@'; // may
 		// be
@@ -93,7 +97,9 @@ public class AbstractASBase
 	{
 		assert !isWhiteSpace(ch) : "White spaces not permitted as a Potential Operator";
 		if (ch > 127)
+		{
 			return false;
+		}
 		return ASUtils.isPunct(ch) && ch != '{' && ch != '}' && ch != '(' && ch != ')' && ch != '[' && ch != ']' && ch != ';' && ch != ',' && ch != '#' && ch != '\\' && ch != '\'' && ch != '\"';
 	}
 
@@ -108,7 +114,9 @@ public class AbstractASBase
 	{
 		final int peekNum = ASUtils.findFirstNotOf(line, " \t", start + 1);
 		if (peekNum == -1)
+		{
 			return ' ';
+		}
 		return line.charAt(peekNum);
 	}
 
@@ -120,17 +128,25 @@ public class AbstractASBase
 		final int keywordLength = keyword.length();
 
 		if (line.indexOf(keyword, i) != i)
+		{
 			return false;
+		}
 		// check that this is not part of a longer word
 		final int wordEnd = i + keywordLength;
 		if (wordEnd == line.length())
+		{
 			return true;
+		}
 		if (isLegalNameChar(line.charAt(wordEnd)))
+		{
 			return false;
+		}
 		// is not a keyword if part of a definition
 		final char peekChar = peekNextChar(line, wordEnd - 1);
 		if (peekChar == ',' || peekChar == ')')
+		{
 			return false;
+		}
 		return true;
 	}
 

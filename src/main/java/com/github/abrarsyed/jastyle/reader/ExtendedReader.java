@@ -55,7 +55,9 @@ public class ExtendedReader extends Reader
 		{
 			int bufferedChar = read();
 			if (bufferedChar < 0)
+			{
 				return bufferedChar;
+			}
 			_bufferedChar = (char) bufferedChar;
 			_hasBufferedChar = true;
 		}
@@ -80,7 +82,9 @@ public class ExtendedReader extends Reader
 	{
 		int offset = off;
 		if (len <= 0)
+		{
 			return 0;
+		}
 		int readLength = len;
 
 		boolean extraChar = _hasBufferedChar;
@@ -106,7 +110,9 @@ public class ExtendedReader extends Reader
 	public synchronized boolean ready() throws IOException
 	{
 		if (_hasBufferedChar)
+		{
 			return true;
+		}
 		return _reader.ready();
 	}
 

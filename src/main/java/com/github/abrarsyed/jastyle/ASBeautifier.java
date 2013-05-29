@@ -153,7 +153,7 @@ public class ASBeautifier extends AbstractASBase
 		setLabelIndent(false);
 		setEmptyLineFill(false);
 		fileType = SourceMode.JAVA;
-		this.setSourceStyle(SourceMode.JAVA);
+		setSourceStyle(SourceMode.JAVA);
 		setPreprocessorIndent(false);
 	}
 
@@ -263,7 +263,9 @@ public class ASBeautifier extends AbstractASBase
 	private void initStatic()
 	{
 		if (fileType == beautifierFileType)
+		{
 			return;
+		}
 
 		beautifierFileType = fileType;
 
@@ -738,9 +740,13 @@ public class ASBeautifier extends AbstractASBase
 				line.append(" ");
 			}
 			else if (emptyLineFill && !isInQuoteContinuation && headerStack.size() > 0)
+			{
 				return preLineWS(prevFinalLineSpaceTabCount, prevFinalLineTabCount);
+			}
 			else
+			{
 				return line;
+			}
 		}
 
 		// handle preprocessor commands
@@ -858,7 +864,9 @@ public class ASBeautifier extends AbstractASBase
 			// unless this is a multi-line #define, return this precompiler line
 			// as is.
 			if (!isInDefine && !isInDefineDefinition)
+			{
 				return originalLine;
+			}
 		}
 
 		// if there exists any worker beautifier in the activeBeautifierStack,
@@ -2061,7 +2069,9 @@ public class ASBeautifier extends AbstractASBase
 			else if (ch == '/')
 			{
 				if (line.indexOf("//", i + charDistance) == i + charDistance)
+				{
 					return remainingCharNum;
+				}
 				else if (line.indexOf("/*", i + charDistance) == i + charDistance)
 				{
 					charDistance++;
@@ -2069,7 +2079,9 @@ public class ASBeautifier extends AbstractASBase
 				}
 			}
 			else
+			{
 				return charDistance;
+			}
 		}
 
 		return charDistance;
@@ -2102,7 +2114,9 @@ public class ASBeautifier extends AbstractASBase
 			// check that this is not part of a longer word
 			int wordEnd = i + header.length();
 			if (wordEnd == line.length())
+			{
 				return header;
+			}
 			if (isLegalNameChar(line.charAt(wordEnd)))
 			{
 				continue;
@@ -2129,7 +2143,9 @@ public class ASBeautifier extends AbstractASBase
 		for (int p = 0; p < maxOperators; p++)
 		{
 			if (line.indexOf(possibleOperators.get(p), i) == i)
+			{
 				return possibleOperators.get(p);
+			}
 		}
 		return null;
 	}
@@ -2147,7 +2163,9 @@ public class ASBeautifier extends AbstractASBase
 		int peekNum = ASUtils.findFirstNotOf(line, ASUtils.WHITE_SPACE, i + 1);
 
 		if (peekNum == -1)
+		{
 			return ch;
+		}
 
 		ch = line.charAt(peekNum);
 

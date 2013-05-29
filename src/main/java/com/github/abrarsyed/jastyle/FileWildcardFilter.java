@@ -56,19 +56,19 @@ public class FileWildcardFilter implements FilenameFilter
 			{
 				buffer.append(".*");
 			}
-			
+
 			// replace ? with .
 			else if (c == '?')
 			{
 				buffer.append(".");
 			}
-			
+
 			// replace misc regex with escaped versions
 			else if ("+()^$.{}[]|\\".indexOf(c) != -1)
 			{
 				buffer.append('\\').append(c);
 			}
-			
+
 			// seems to be just a normal char
 			else
 			{
