@@ -125,6 +125,7 @@ Indentation options:
 
     --indent-brackets  OR  -B
     Add extra indentation to '{' and '}' block brackets.
+    
     --indent-namespaces  OR  -N
     Indent the contents of namespace blocks.
 

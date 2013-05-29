@@ -140,20 +140,20 @@ public class OptParser
 			throw new IllegalArgumentException("Trying to parse long option " + opt + " while it still cotnains a -");
 		}
 
-		String temp1;
+		String temp;
 
 		// Style checking
 		if (opt.startsWith("style="))
 		{
 			// 6 = length of "style="
-			temp1 = opt.substring(6);
-			temp1 = temp1.toUpperCase();
-			temp1 = temp1.replace("&", "");
-			temp1 = temp1.replace("/", "");
+			temp = opt.substring(6);
+			temp = temp.toUpperCase();
+			temp = temp.replace("&", "");
+			temp = temp.replace("/", "");
 
 			try
 			{
-				formatter.setFormattingStyle(EnumFormatStyle.valueOf(temp1));
+				formatter.setFormattingStyle(EnumFormatStyle.valueOf(temp));
 			}
 			catch (Exception e)
 			{
@@ -165,34 +165,74 @@ public class OptParser
 		// indent checking
 		else if (opt.startsWith("indent="))
 		{
-			temp1 = opt.substring(7);
+			temp = opt.substring(7);
 
 			// spaces.
-			if (temp1.startsWith("spaces"))
+			if (temp.startsWith("spaces"))
 			{
-				formatter.setSpaceIndentation(getLongOptNum(temp1, 4));
+				formatter.setSpaceIndentation(getLongOptNum(temp, 4));
 			}
 
 			// tabs.
-			else if (temp1.startsWith("tab"))
+			else if (temp.startsWith("tab"))
 			{
-				formatter.setTabIndentation(getLongOptNum(temp1, 4), false);
+				formatter.setTabIndentation(getLongOptNum(temp, 4), false);
 			}
-			else if (temp1.startsWith("force-tab"))
+			else if (temp.startsWith("force-tab"))
 			{
-				formatter.setTabIndentation(getLongOptNum(temp1, 4), true);
+				formatter.setTabIndentation(getLongOptNum(temp, 4), true);
 			}
+			else if (temp.equals("classes"))
+			{
+				formatter.setClassIndent(true);
+			}
+			else if (temp.equals("switches"))
+			{
+				formatter.setSwitchIndent(true);
+			}
+			else if (temp.equals("cases"))
+			{
+				formatter.setCaseIndent(true);
+			}
+			else if (temp.equals("blocks"))
+			{
+				formatter.setBlockIndent(true);
+			}
+			else if (temp.equals("brackets"))
+			{
+				formatter.setBracketIndent(true);
+			}
+			else if (temp.equals("namespaces"))
+			{
+				formatter.setNamespaceIndent(true);
+			}
+			else if (temp.equals("labels"))
+			{
+				formatter.setLabelIndent(true);
+			}
+			else if (temp.equals("preprocessor"))
+			{
+				formatter.setPreprocessorIndent(true);
+			}
+		}
+		else if (opt.startsWith("max-instatement-indent="))
+		{
+			formatter.setMaxInStatementIndentLength(getLongOptNum(opt, 40));
+		}
+		else if (opt.startsWith("min-conditional-indent="))
+		{
+			formatter.setMinConditionalIndentLength(getLongOptNum(opt, 8));
 		}
 
 		// bracket checking
 		else if (opt.startsWith("brackets="))
 		{
-			temp1 = opt.substring(9);
-			temp1 = temp1.toUpperCase();
+			temp = opt.substring(9);
+			temp = temp.toUpperCase();
 
 			try
 			{
-				formatter.setBracketFormatMode(EnumBracketMode.valueOf(temp1));
+				formatter.setBracketFormatMode(EnumBracketMode.valueOf(temp));
 			}
 			catch (Exception e)
 			{
@@ -204,22 +244,22 @@ public class OptParser
 		// bracket checking
 		else if (opt.startsWith("break-"))
 		{
-			temp1 = opt.substring(6);
+			temp = opt.substring(6);
 
-			if (temp1.startsWith("blocks"))
+			if (temp.startsWith("blocks"))
 			{
 				formatter.setBreakBlocksMode(true);
 
-				if (temp1.contains("=all"))
+				if (temp.contains("=all"))
 				{
 					formatter.setBreakClosingHeaderBlocksMode(true);
 				}
 			}
-			else if (temp1.equals("closing-brackets"))
+			else if (temp.equals("closing-brackets"))
 			{
 				formatter.setBreakClosingHeaderBracketsMode(true);
 			}
-			else if (temp1.equals("elseifs"))
+			else if (temp.equals("elseifs"))
 			{
 				formatter.setBreakElseIfsMode(true);
 			}
@@ -228,25 +268,25 @@ public class OptParser
 		// padding stuff
 		else if (opt.startsWith("pad"))
 		{
-			temp1 = opt.substring(3);
+			temp = opt.substring(3);
 
-			if (temp1.equals("oper"))
+			if (temp.equals("oper"))
 			{
 				formatter.setOperatorPaddingMode(true);
 			}
-			else if (temp1.startsWith("paren"))
+			else if (temp.startsWith("paren"))
 			{
-				temp1 = temp1.substring(5);
-				if (temp1.isEmpty())
+				temp = temp.substring(5);
+				if (temp.isEmpty())
 				{
 					formatter.setParensOutsidePaddingMode(true);
 					formatter.setParensInsidePaddingMode(true);
 				}
-				else if (temp1.equals("out"))
+				else if (temp.equals("out"))
 				{
 					formatter.setParensOutsidePaddingMode(true);
 				}
-				else if (temp1.equals("in"))
+				else if (temp.equals("in"))
 				{
 					formatter.setParensInsidePaddingMode(true);
 				}
@@ -265,12 +305,12 @@ public class OptParser
 		else if (opt.startsWith("mode="))
 		{
 			// 6 = length of "style="
-			temp1 = opt.substring(5);
-			temp1 = temp1.toUpperCase();
+			temp = opt.substring(5);
+			temp = temp.toUpperCase();
 
 			try
 			{
-				formatter.setSourceStyle(SourceMode.valueOf(temp1));
+				formatter.setSourceStyle(SourceMode.valueOf(temp));
 			}
 			catch (Exception e)
 			{
@@ -287,13 +327,13 @@ public class OptParser
 		}
 		else if (opt.startsWith("keep-one-line"))
 		{
-			temp1 = opt.substring(13);
+			temp = opt.substring(13);
 
-			if (temp1.equals("statements"))
+			if (temp.equals("statements"))
 			{
 				formatter.setSingleStatementsMode(false);
 			}
-			else if (temp1.equals("blocks"))
+			else if (temp.equals("blocks"))
 			{
 				formatter.setBreakOneLineBlocksMode(false);
 			}
@@ -363,6 +403,38 @@ public class OptParser
 					break;
 				case 'u':
 					formatter.setBracketFormatMode(EnumBracketMode.STROUSTRUP);
+					break;
+					
+				// other indent options
+				case 'C':
+						formatter.setClassIndent(true);
+						break;
+				case 'S':
+						formatter.setSwitchIndent(true);
+						break;
+				case 'K':
+					formatter.setCaseIndent(true);
+					break;
+				case 'G':
+						formatter.setBlockIndent(true);
+						break;
+				case 'B':
+						formatter.setBracketIndent(true);
+						break;
+				case 'N':
+						formatter.setNamespaceIndent(true);
+						break;
+				case 'L':
+						formatter.setLabelIndent(true);
+						break;
+				case 'w':
+						formatter.setPreprocessorIndent(true);
+						break;
+				case 'M':
+					formatter.setMaxInStatementIndentLength(getShortOptNum(start, opt, 40));
+					break;
+				case 'm':
+					formatter.setMinConditionalIndentLength(getShortOptNum(start, opt, 8));
 					break;
 
 				// "break" options
