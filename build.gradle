@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 apply plugin: 'java'
 apply plugin: 'maven'
 //apply plugin: 'maven-publish'   expiramental
@@ -31,6 +33,11 @@ dependencies
 	deployJars 'org.apache.maven.wagon:wagon-http:2.2'
 }
 
+processResources
+{
+	expand(version: version)
+}
+
 /*
  * maven-publish not implemented yet.
 publications {
@@ -49,11 +56,11 @@ publications {
 */
 
 jar {
+	// MTEA inf stuff
 	metaInf {
 		from 'LICENSE'
 		from 'README'
 	}
-	from sourceSets.main.resources
 
 	// manifest
 	manifest { attributes 'Main-Class' : 'com.github.abrarsyed.jastyle.Main' }
@@ -76,7 +83,6 @@ artifacts {
 }
 
 signing {
-	
 	 sign configurations.archives
 }
 
