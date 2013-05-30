@@ -16,8 +16,7 @@ repositories {
 }
 
 configurations {
-	 deployJars
-	 provided	
+	 provided
 	  
 	 eclipse.classpath.plusConfigurations += provided
 	 sourceSets.main.compileClasspath += provided
@@ -29,8 +28,6 @@ dependencies
 	provided 'org.projectlombok:lombok:0.11.8'
 	
 	testCompile 'junit:junit:4.5'
-
-	deployJars 'org.apache.maven.wagon:wagon-http:2.2'
 }
 
 processResources
@@ -87,68 +84,65 @@ signing {
 }
 
 uploadArchives {
-	repositories {
-		mavenDeployer {
-			
-			configuration = configurations.deployJars
-			beforeDeployment { MavenDeployment deployment ->
-				 signing.signPom(deployment)
-			}
+	repositories.mavenDeployer {
+		
+		beforeDeployment { MavenDeployment deployment ->
+			signing.signPom(deployment)
+		}
 
-			repository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
-				authentication(userName: sonatypeUsername, password: sonatypePassword)
-			}
+		snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
+			authentication(userName: sonatypeUsername, password: sonatypePassword)
+		}
+		
+		repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
+			authentication(userName: sonatypeUsername, password: sonatypePassword)
+		}
 
-			pom {
-				groupId = group
-				version = version
-				artifactId = archivesBaseName
-				project {
-					name 'jAstyle'
-					packaging 'jar'
-					description 'Java Artistic Style Library'
+		pom {
+			groupId = project.group
+			version = project.version
+			artifactId = project.archivesBaseName
+			project {
+				name project.archivesBaseName
+				packaging 'jar'
+				description 'Java Artistic Style Library'
+				url 'https://github.com/AbrarSyed/jastyle'
+
+				scm {
 					url 'https://github.com/AbrarSyed/jastyle'
+					connection 'scm:git:git://github.com/AbrarSyed/jastyle.git'
+					developerConnection 'scm:git:git@github.com:AbrarSyed/jastyle.git'
+				}
 
-					scm {
-						url 'https://github.com/AbrarSyed/jastyle'
-						connection 'scm:git:git://github.com/AbrarSyed/jastyle.git'
-						developerConnection 'scm:git:git@github.com:AbrarSyed/jastyle.git'
+				issueManagement {
+					system 'github'
+					url 'http://github.com/AbrarSyed/jastyle/issues'
+				}
+
+				licenses {
+					license {
+						name 'GNU Lesser General Public License (LGPL), Version 3'
+						url 'http://www.fsf.org/licensing/licenses/lgpl.txt'
+						distribution 'repo'
 					}
+				}
 
-					issueManagement {
-						system 'github'
-						url 'http://github.com/AbrarSyed/jastyle/issues'
+				developers {
+					developer {
+						id 'stephenc'
+						name 'Stephen Connolly'
+						roles { role 'packager' }
 					}
-
-					licenses {
-						license {
-							name 'GNU Lesser General Public License (LGPL), Version 3'
-							url 'http://www.fsf.org/licensing/licenses/lgpl.txt'
-							distribution 'repo'
-						}
+					developer {
+						name 'Hector Suarez Barenca'
+						roles { role 'developer' }
 					}
-
-					developers {
-						developer {
-							id 'stephenc'
-							name 'Stephen Connolly'
-							roles {
-								role 'packager'
-							}
-						}
-						developer {
-							name 'Hector Suarez Barenca'
-							roles {
-								role 'developer'
-							}
-						}
-						developer {
-							id 'AbrarSyed'
-							name 'Abrar Syed'
-							roles {
-								role 'packager'
-								role 'developer'
-							}
+					developer {
+						id 'AbrarSyed'
+						name 'Abrar Syed'
+						roles {
+							role 'packager'
+							role 'developer'
 						}
 					}
 				}
