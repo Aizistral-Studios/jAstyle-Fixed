@@ -1,4 +1,4 @@
-package com.github.abrarsyed.exceptions;
+package com.github.abrarsyed.jastyle.exceptions;
 
 public class MalformedOptionException extends Exception
 {

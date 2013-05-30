@@ -1,4 +1,4 @@
-package com.github.abrarsyed.jastyle;
+package com.github.abrarsyed.jastyle.main;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -10,7 +10,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class Recursive
+import com.github.abrarsyed.jastyle.Main;
+
+public class RecursiveTest
 {
 	private final File root = new File("temp\\recurseTest");
 	private int generated = 0, tmpFiles = 0, recurseFiles = 0;
@@ -53,7 +55,7 @@ public class Recursive
 	}
 
 	@Test
-	public void testMultiply()
+	public void test()
 	{
 		ArrayList<File> list = Main.collectFiles(root, null, true);
 		Assert.assertEquals(generated, list.size());

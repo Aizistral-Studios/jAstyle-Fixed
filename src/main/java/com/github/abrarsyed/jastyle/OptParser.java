@@ -5,10 +5,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 
-import com.github.abrarsyed.exceptions.MalformedOptionException;
 import com.github.abrarsyed.jastyle.constants.EnumBracketMode;
 import com.github.abrarsyed.jastyle.constants.EnumFormatStyle;
 import com.github.abrarsyed.jastyle.constants.SourceMode;
+import com.github.abrarsyed.jastyle.exceptions.MalformedOptionException;
 
 public class OptParser
 {

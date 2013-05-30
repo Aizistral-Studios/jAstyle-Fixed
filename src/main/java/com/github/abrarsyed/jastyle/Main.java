@@ -42,16 +42,16 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 
-import com.github.abrarsyed.exceptions.MalformedOptionException;
+import com.github.abrarsyed.jastyle.exceptions.MalformedOptionException;
 
 public class Main
 {
-	private final static int			EXIT_SUCCESS	= 0;
-	private final static int			EXIT_FAILURE	= -1;
-	private final static String			JASTYLE_VERSION	= findVersion("version.txt");
-	private static boolean				recursive		= false;
-	private static File					optionsFile		= null;
-	private static ArrayList<String>	errors;
+	private final static int		EXIT_SUCCESS	= 0;
+	private final static int		EXIT_FAILURE	= -1;
+	private final static String		JASTYLE_VERSION	= findVersion("version.txt");
+	private static boolean			recursive		= false;
+	private static File				optionsFile		= null;
+	public static ArrayList<String>	errors			= new ArrayList<String>();
 
 	private final static void printVersion()
 	{
@@ -366,6 +366,9 @@ public class Main
 
 		System.out.println("Parsing options...");
 
+		// clear errors list.
+		errors.clear();
+
 		// convert to list so we can add and remove stuff easily.
 		ArrayList<String> args = convertList(cliArgs);
 
@@ -374,9 +377,6 @@ public class Main
 
 		ASFormatter formatter = new ASFormatter();
 		OptParser parser = new OptParser(formatter);
-
-		// init the errros thing jst in case.
-		errors = new ArrayList<String>();
 
 		// check options file first.. since they are overwrite by the other options.
 		if (optionsFile != null)
@@ -502,7 +502,6 @@ public class Main
 					}
 					else
 					{
-						// let this error with a FileNotFound. Its the users problem.
 						optionsFile = new File(temp);
 						if (!optionsFile.exists())
 						{
