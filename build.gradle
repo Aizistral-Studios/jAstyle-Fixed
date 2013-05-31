@@ -8,7 +8,7 @@ apply plugin: 'idea'
 apply plugin: 'signing'
 
 group = 'com.github.abrarsyed.jastyle'
-version = '.9-SNAPSHOT'
+version = '0.9-SNAPSHOT'
 archivesBaseName = 'jAstyle'
 
 repositories {
