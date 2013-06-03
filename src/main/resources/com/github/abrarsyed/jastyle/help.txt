@@ -225,9 +225,7 @@ Other options:
 
     --help  OR  -h  OR  -?
     Print this help message.
-
-Unsupported options:
---------------
+    
     --suffix=####
     Append the suffix #### instead of '.orig' to original filename.
 
@@ -235,6 +233,8 @@ Unsupported options:
     Do not retain a backup of the original file.
     Only the command-line parameters will be used.
 
+Unsupported options:
+--------------
     --exclude=####
     Specify a file or directory #### to be excluded from processing.
 

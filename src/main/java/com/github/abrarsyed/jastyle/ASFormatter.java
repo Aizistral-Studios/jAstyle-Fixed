@@ -43,6 +43,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import com.github.abrarsyed.jastyle.constants.BracketType;
 import com.github.abrarsyed.jastyle.constants.EnumBracketMode;
 import com.github.abrarsyed.jastyle.constants.EnumFormatStyle;
@@ -147,6 +150,9 @@ public class ASFormatter extends ASBeautifier
 	private boolean				isImmediatelyPostPreprocessor;
 	private boolean				isImmediatelyPostReturn;
 	private boolean				isImmediatelyPostOperator;
+	
+	@Setter @Getter
+	private String 				suffix = ".orig";
 
 	private boolean				shouldBreakBlocks;
 	private boolean				shouldBreakClosingHeaderBlocks;
@@ -387,7 +393,8 @@ public class ASFormatter extends ASBeautifier
 			in.close();
 
 			String path = file.getAbsolutePath();
-			file.renameTo(new File(file + ".orig"));
+			if (suffix != null)
+				file.renameTo(new File(file + suffix));
 			new File(tmpFileName).renameTo(new File(path));
 
 			return true;

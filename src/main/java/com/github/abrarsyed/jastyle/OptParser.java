@@ -342,6 +342,18 @@ public class OptParser
 				error();
 			}
 		}
+		
+		// suffix stuff
+		else if (opt.startsWith("suffix="))
+		{
+			temp = opt.substring(7);
+			if (temp.equals("none"))
+				formatter.setSuffix(null);
+			else if (!temp.isEmpty())
+				formatter.setSuffix(temp);
+			else
+				error();
+		}
 
 		else
 		{
@@ -465,7 +477,7 @@ public class OptParser
 						error();
 					}
 
-					// perintheses and padding.
+					// Parentheses and padding.
 				case 'p':
 					formatter.setOperatorPaddingMode(true);
 					break;
@@ -489,6 +501,11 @@ public class OptParser
 					break;
 				case 'O':
 					formatter.setBreakOneLineBlocksMode(false);
+					break;
+					
+					// suffix
+				case 'n':
+					formatter.setSuffix(null);
 					break;
 
 			}
@@ -523,7 +540,7 @@ public class OptParser
 	}
 
 	/**
-	 * Parses a string matching pattern *# and tries to conver the # chars to a number given the * chars.
+	 * Parses a string matching pattern *# and tries to convert the # chars to a number given the * chars.
 	 * @param start The section of the option occurring before the number.
 	 * @param str The entire option.
 	 * @param def The number to be returned if there is no number section.
@@ -551,6 +568,4 @@ public class OptParser
 
 		return def;
 	}
-
-	//...
 }
