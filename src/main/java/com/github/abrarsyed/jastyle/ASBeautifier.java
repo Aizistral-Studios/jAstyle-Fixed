@@ -669,7 +669,7 @@ public class ASBeautifier extends AbstractASBase
 			final int strlen = originalLine.length();
 			leadingWhiteSpaces = 0;
 
-			for (int j = 0; j < strlen && isWhiteSpace(originalLine.charAt(j)); j++)
+			for (int j = 0; j < strlen && Character.isWhitespace(originalLine.charAt(j)); j++)
 			{
 				if (originalLine.charAt(j) == '\t')
 				{
@@ -706,12 +706,12 @@ public class ASBeautifier extends AbstractASBase
 			int trimSize = 0;
 			strlen = newLine.length();
 
-			while (trimSize < strlen && trimSize < leadingWhiteSpaces && isWhiteSpace(newLine.charAt(trimSize)))
+			while (trimSize < strlen && trimSize < leadingWhiteSpaces && Character.isWhitespace(newLine.charAt(trimSize)))
 			{
 				trimSize++;
 			}
 
-			while (trimSize < strlen && isWhiteSpace(newLine.charAt(strlen - 1)))
+			while (trimSize < strlen && Character.isWhitespace(newLine.charAt(strlen - 1)))
 			{
 				strlen--;
 			}
@@ -957,7 +957,7 @@ public class ASBeautifier extends AbstractASBase
 			prevCh = ch;
 			ch = tempCh;
 
-			if (isWhiteSpace(ch))
+			if (Character.isWhitespace(ch))
 			{
 				continue;
 			}
@@ -2062,7 +2062,7 @@ public class ASBeautifier extends AbstractASBase
 					inComment = false;
 				}
 			}
-			else if (isWhiteSpace(ch))
+			else if (Character.isWhitespace(ch))
 			{
 				continue;
 			}

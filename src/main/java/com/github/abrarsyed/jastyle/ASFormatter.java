@@ -372,6 +372,7 @@ public class ASFormatter extends ASBeautifier
 
 			// Unless a specific language mode has been set, set the language mode
 			// according to the file's suffix.
+			SourceMode fileTypeOld = fileType;
 			if (fileType == null)
 			{
 				setSourceStyle(SourceMode.getFromFileName(file.getName()));
@@ -381,13 +382,18 @@ public class ASFormatter extends ASBeautifier
 			this.init(streamIterator);
 
 			// format the file
+			String temp;
 			while (hasMoreLines())
 			{
-				out.println(nextLine().toString());
+				temp = nextLine().toString();
+				out.println(temp);
 				// if (formatter.hasMoreLines())
 				// out.print(streamIterator.getOutputEOL());
-
 			}
+			
+			// reset sourcemode back to old.
+			setSourceStyle(fileTypeOld);
+			
 			out.flush();
 			out.close();
 			in.close();
@@ -647,7 +653,7 @@ public class ASFormatter extends ASBeautifier
 			}
 
 			// handle white space - needed to simplify the rest.
-			if (isWhiteSpace(currentChar) || isInPreprocessor)
+			if (Character.isWhitespace(currentChar) || isInPreprocessor)
 			{
 				appendCurrentChar();
 				continue;
@@ -804,7 +810,7 @@ public class ASFormatter extends ASBeautifier
 					{
 						continue;
 					}
-					else if (!isLegalNameChar(currentChar) && !isWhiteSpace(currentChar))
+					else if (!isLegalNameChar(currentChar) && !Character.isWhitespace(currentChar))
 					{
 						// this is not a template -> leave...
 						isInTemplate = false;
@@ -1066,7 +1072,7 @@ public class ASFormatter extends ASBeautifier
 					// this checks currentLine, appendSpacePad() checks
 					// formattedLine
 					// in C# 'catch' can be either a paren or non-paren header
-					if ((!isNonParenHeader || currentHeader.equals(ASResource.AS_CATCH) && peekNextChar() == '(') && !isWhiteSpace(currentLine.charAt(charNum + 1)))
+					if ((!isNonParenHeader || currentHeader.equals(ASResource.AS_CATCH) && peekNextChar() == '(') && !Character.isWhitespace(currentLine.charAt(charNum + 1)))
 					{
 						appendSpacePad();
 					}
@@ -1305,7 +1311,7 @@ public class ASFormatter extends ASBeautifier
 				{
 					nextChar = currentLine.charAt(charNum + 1);
 				}
-				if (!isWhiteSpace(nextChar) && nextChar != '}' && nextChar != ')' && nextChar != ']' && nextChar != '>' && nextChar != ';' && !isBeforeComment()
+				if (!Character.isWhitespace(nextChar) && nextChar != '}' && nextChar != ')' && nextChar != ']' && nextChar != '>' && nextChar != ';' && !isBeforeComment()
 				/* && !(isBracketType(bracketTypeStack.peek(), ARRAY_TYPE)) */)
 				{
 					appendCurrentChar();
@@ -1613,7 +1619,7 @@ public class ASFormatter extends ASBeautifier
 		isInLineBreak = false;
 		previousChar = currentChar;
 
-		if (!isWhiteSpace(currentChar))
+		if (!Character.isWhitespace(currentChar))
 		{
 			previousNonWSChar = currentChar;
 			if (!isInComment && !isInLineComment && !isInQuote && !isImmediatelyPostComment && !isImmediatelyPostLineComment && !isSequenceReached("/*") && !isSequenceReached("//"))
@@ -1622,7 +1628,7 @@ public class ASFormatter extends ASBeautifier
 			}
 		}
 
-		if (charNum + 1 < currentLine.length() && (!isWhiteSpace(peekNextChar()) || isInComment || isInLineComment))
+		if (charNum + 1 < currentLine.length() && (!Character.isWhitespace(peekNextChar()) || isInComment || isInLineComment))
 		{
 			currentChar = currentLine.charAt(++charNum);
 
@@ -1744,7 +1750,7 @@ public class ASFormatter extends ASBeautifier
 			return;
 		}
 
-		while (isWhiteSpace(currentLine.charAt(charNum)) && charNum + 1 < len)
+		while (Character.isWhitespace(currentLine.charAt(charNum)) && charNum + 1 < len)
 		{
 			if (currentLine.charAt(charNum) == '\t')
 			{
@@ -1768,7 +1774,7 @@ public class ASFormatter extends ASBeautifier
 		{
 			lineIsLineCommentOnly = true;
 		}
-		if (isWhiteSpace(currentLine.charAt(charNum)) && !(charNum + 1 < currentLine.length()))
+		if (Character.isWhitespace(currentLine.charAt(charNum)) && !(charNum + 1 < currentLine.length()))
 		{
 			lineIsEmpty = true;
 		}
@@ -1811,7 +1817,7 @@ public class ASFormatter extends ASBeautifier
 	private void appendSpacePad()
 	{
 		int len = formattedLine.length();
-		if (len > 0 && !isWhiteSpace(formattedLine.charAt(len - 1)))
+		if (len > 0 && !Character.isWhitespace(formattedLine.charAt(len - 1)))
 		{
 			formattedLine.append(' ');
 			spacePadNum++;
@@ -1825,7 +1831,7 @@ public class ASFormatter extends ASBeautifier
 	private void appendSpaceAfter()
 	{
 		int len = currentLine.length();
-		if (charNum + 1 < len && !isWhiteSpace(currentLine.charAt(charNum + 1)))
+		if (charNum + 1 < len && !Character.isWhitespace(currentLine.charAt(charNum + 1)))
 		{
 			formattedLine.append(' ');
 			spacePadNum++;
@@ -1933,7 +1939,7 @@ public class ASFormatter extends ASBeautifier
 		if (!isPR)
 		{
 			char nextChar = peekNextChar();
-			isPR |= !isWhiteSpace(nextChar) && nextChar != '-' && nextChar != '(' && nextChar != '[' && !isLegalNameChar(nextChar);
+			isPR |= !Character.isWhitespace(nextChar) && nextChar != '-' && nextChar != '(' && nextChar != '[' && !isLegalNameChar(nextChar);
 		}
 
 		return isPR;
@@ -2816,7 +2822,7 @@ public class ASFormatter extends ASBeautifier
 				}
 				else if (bracketFormatMode == EnumBracketMode.BREAK)
 				{
-					if (isWhiteSpace(peekNextChar()))
+					if (Character.isWhitespace(peekNextChar()))
 					{
 						breakLine();
 					}
@@ -2863,7 +2869,7 @@ public class ASFormatter extends ASBeautifier
 			// if an opening bracket ends the line there will be no inStatement
 			// indent
 			char nextChar = peekNextChar();
-			if (isWhiteSpace(nextChar) || isBeforeLineEndComment(charNum) || nextChar == '{')
+			if (Character.isWhitespace(nextChar) || isBeforeLineEndComment(charNum) || nextChar == '{')
 			{
 				isNonInStatementArray = true;
 			}

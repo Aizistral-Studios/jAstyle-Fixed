@@ -146,7 +146,7 @@ public class ASEnhancer extends AbstractASBase
 			char ch = line.charAt(i);
 
 			// bypass whitespace
-			if (isWhiteSpace(ch))
+			if (Character.isWhitespace(ch))
 			{
 				continue;
 			}
@@ -356,7 +356,7 @@ public class ASEnhancer extends AbstractASBase
 				i++;
 				for (; i < lineLength; i++) // bypass whitespace
 				{
-					if (!isWhiteSpace(line.charAt(i)))
+					if (!Character.isWhitespace(line.charAt(i)))
 					{
 						break;
 					}

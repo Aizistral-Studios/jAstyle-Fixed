@@ -58,11 +58,15 @@ public class AbstractASBase
 		return fileType == SourceMode.CS;
 	}
 
-	// check if a specific character can be used in a legal
-	// variable/method/class name
+	/**
+	 * check if a specific character can be used in a legal
+	 * variable/method/class name
+	 * @param ch
+	 * @return
+	 */
 	protected boolean isLegalNameChar(char ch)
 	{
-		if (isWhiteSpace(ch))
+		if (Character.isWhitespace(ch))
 		{
 			return false;
 		}
@@ -72,18 +76,13 @@ public class AbstractASBase
 			return false;
 		}
 
-		return java.lang.Character.isLetterOrDigit(ch) || ch == '.' || ch == '_' || isJavaStyle() && ch == '$' || isSharpStyle() && ch == '@'; // may
-		// be
-		// used
-		// as
-		// a
-		// prefix
+		return java.lang.Character.isLetterOrDigit(ch) || ch == '.' || ch == '_' || (isJavaStyle() && ch == '$') || (isSharpStyle() && ch == '@'); // may be used as a prefix
 	}
 
 	// check if a specific character can be part of a header
 	protected boolean isCharPotentialHeader(StringBuilder line, final int i)
 	{
-		assert !isWhiteSpace(line.charAt(i)) : "White spaces not permitted at position " + i;
+		assert !Character.isWhitespace(line.charAt(i)) : "White spaces not permitted at position " + i;
 		char prevCh = ' ';
 		if (i > 0)
 		{
@@ -95,18 +94,12 @@ public class AbstractASBase
 	// check if a specific character can be part of an operator
 	protected boolean isCharPotentialOperator(char ch)
 	{
-		assert !isWhiteSpace(ch) : "White spaces not permitted as a Potential Operator";
+		assert !Character.isWhitespace(ch) : "White spaces not permitted as a Potential Operator";
 		if (ch > 127)
 		{
 			return false;
 		}
 		return ASUtils.isPunct(ch) && ch != '{' && ch != '}' && ch != '(' && ch != ')' && ch != '[' && ch != ']' && ch != ';' && ch != ',' && ch != '#' && ch != '\\' && ch != '\'' && ch != '\"';
-	}
-
-	// check if a specific character is a whitespace character
-	protected boolean isWhiteSpace(char ch)
-	{
-		return ch == ' ' || ch == '\t';
 	}
 
 	// peek at the next unread character.

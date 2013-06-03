@@ -432,30 +432,16 @@ public class Main
 		System.out.println("Formatting files.");
 
 		// now we format the collected files
-		Reader reader = null;
+		boolean worked;
 		for (File currFile : files)
 		{
 			System.out.println("Converting " + currFile.getAbsolutePath() + " ...\n");
-			try
-			{
-				reader = new BufferedReader(new FileReader(currFile.getAbsolutePath()));
-
-				formatter.formatFile(currFile);
-			}
-			catch (Throwable t)
-			{
+			worked = formatter.formatFile(currFile);
+			if (!worked)
 				System.out.println("Error formatting file " + currFile.getAbsolutePath() + " ...\n");
-			}
-			finally
-			{
-				if (reader != null)
-				{
-					reader.close();
-				}
-			}
 		}
 
-		System.out.println("Compelte");
+		System.out.println("Complete");
 
 		System.exit(EXIT_SUCCESS);
 	}
