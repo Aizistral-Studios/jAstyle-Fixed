@@ -99,8 +99,7 @@ public class ASFormatter extends ASBeautifier
 	private boolean				isInLineComment;
 	private boolean				isInComment;
 	private boolean				isInPreprocessor;
-	private boolean				isInTemplate;							// true both in template definitions (e.g.
-	// template<class A>) and template usage (e.g. F<int>).
+	private boolean				isInTemplate;							// true both in template definitions (e.g. template<class A>) and template usage (e.g. F<int>).
 	private boolean				doesLineStartComment;
 	private boolean				lineEndsInCommentOnly;
 	private boolean				lineIsLineCommentOnly;

@@ -82,7 +82,8 @@ public class AbstractASBase
 	// check if a specific character can be part of a header
 	protected boolean isCharPotentialHeader(StringBuilder line, final int i)
 	{
-		assert !Character.isWhitespace(line.charAt(i)) : "White spaces not permitted at position " + i;
+		if (Character.isWhitespace(line.charAt(i)))
+				throw new IllegalArgumentException("White spaces not permitted at position " + i);
 		char prevCh = ' ';
 		if (i > 0)
 		{
