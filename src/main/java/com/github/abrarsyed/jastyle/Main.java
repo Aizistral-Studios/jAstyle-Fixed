@@ -350,7 +350,7 @@ public class Main
 	 * --formatted / -Q
 	 * --quiet / -q
 	 * </pre>
-	 * @param args
+	 * @param cliArgs
 	 * @throws IOException
 	 */
 	public static void main(String[] cliArgs) throws IOException
@@ -391,7 +391,7 @@ public class Main
 			// and add them to the actual errors list.
 			for (String e : parsedErrors)
 			{
-				errors.add(e + " is not a supported option");
+				System.err.println(e + " is not a supported config file option, continuing...");
 			}
 		}
 

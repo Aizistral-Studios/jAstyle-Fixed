@@ -3059,7 +3059,7 @@ public class ASFormatter extends ASBeautifier
 	// append the CURRENT character (curentChar) to the current formatted line.
 	private void appendCurrentChar()
 	{
-		appendChar(currentChar, false);
+		appendChar(currentChar, true);
 	}
 
 	// append the CURRENT character (curentChar) to the current formatted line.
