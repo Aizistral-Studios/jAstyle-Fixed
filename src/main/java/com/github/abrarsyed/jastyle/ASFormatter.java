@@ -253,17 +253,17 @@ public class ASFormatter extends ASBeautifier
 	 * You really souldn't be calling this unless you know what your doing.
 	 * <p/>
 	 * init() should be called every time a ASFormatter object is to start formatting a NEW source file. init() recieves a pointer to a DYNAMICALLY CREATED ASSourceIterator object that will be used to iterate through the source code. This object will be deleted during the ASFormatter's destruction, and thus should not be deleted elsewhere.
-	 * @param iter a pointer to the DYNAMICALLY CREATED ASSourceIterator object.
+	 * @param iterator a pointer to the DYNAMICALLY CREATED ASSourceIterator object.
 	 */
 	@Override
-	public void init(ASSourceIterator si)
+	public void init(ASSourceIterator iterator)
 	{
 		buildLanguageVectors();
 		fixOptionVariableConflicts();
 
-		super.init(si);
+		super.init(iterator);
 		enhancer.init(getFileType(), getIndentLength(), getIndentString(), isCaseIndent(), isEmptyLineFill());
-		sourceIterator = si;
+		sourceIterator = iterator;
 
 		preBracketHeaderStack = new Stack<String>();
 		parenStack = new Stack<Integer>();
@@ -347,8 +347,7 @@ public class ASFormatter extends ASBeautifier
 
 	/**
 	 * Open input file, format it, and close the output.
-	 * @param fileName The path and name of the file to be processed.
-	 * @param formatter The formatter object.
+	 * @param file the file to be processed
 	 * @return true if the file was formatted, false if it was not (no changes).
 	 */
 	public boolean formatFile(File file)
@@ -359,15 +358,8 @@ public class ASFormatter extends ASBeautifier
 			Reader in = new BufferedReader(new FileReader(file));
 
 			// open tmp file
-			String tmpFileName = file.getPath() + TEMP_SUFFIX;
-
-			// clean existing file.
-			if (file.exists())
-			{
-				file.delete();
-			}
-
-			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(tmpFileName)));
+			File tempFile = new File(file.getPath() + TEMP_SUFFIX);
+			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(tempFile)));
 
 			// Unless a specific language mode has been set, set the language mode
 			// according to the file's suffix.
@@ -397,10 +389,16 @@ public class ASFormatter extends ASBeautifier
 			out.close();
 			in.close();
 
-			String path = file.getAbsolutePath();
+            // get the new File
+            File outFile = file;
 			if (suffix != null)
-				file.renameTo(new File(file + suffix));
-			new File(tmpFileName).renameTo(new File(path));
+				new File(file.getPath() + suffix);
+
+            // you never know.. new file might exist too.
+            outFile.delete();
+
+            // rename
+			tempFile.renameTo(outFile);
 
 			return true;
 		}
@@ -1388,7 +1386,7 @@ public class ASFormatter extends ASBeautifier
 
 	/**
 	 * set the formatting style.
-	 * @param mode the formatting style.
+	 * @param style the formatting style.
 	 */
 	public void setFormattingStyle(EnumFormatStyle style)
 	{
@@ -2085,7 +2083,7 @@ public class ASFormatter extends ASBeautifier
 	/**
 	 * peek at the next word to determine if it is a C# non-paren header. will
 	 * look ahead in the input file if necessary.
-	 * @param char position on currentLine to start the search
+	 * @param startChar position on currentLine to start the search
 	 * @return true if the next word is get or set.
 	 */
 	private boolean isNextWordSharpNonParenHeader(int startChar)
@@ -2107,7 +2105,7 @@ public class ASFormatter extends ASBeautifier
 	 * peek at the next char to determine if it is an opening bracket. will look
 	 * ahead in the input file if necessary. this determines a java static
 	 * constructor.
-	 * @param char position on currentLine to start the search
+	 * @param startChar position on currentLine to start the search
 	 * @return true if the next word is an opening bracket.
 	 */
 	private boolean isNextCharOpeningBracket(int startChar)
@@ -2130,7 +2128,7 @@ public class ASFormatter extends ASBeautifier
 	/**
 	 * get the next non-whitespace subString on following lines, bypassing all
 	 * comments.
-	 * @param the first line to check
+	 * @param firstLine the first line to check
 	 * @return the next non-whitespace subString.
 	 */
 	private StringBuilder peekNextText(StringBuilder firstLine, boolean endOnEmptyLine /* false */)
