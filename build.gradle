@@ -8,7 +8,7 @@ apply plugin: 'idea'
 apply plugin: 'signing'
 
 group = 'com.github.abrarsyed.jastyle'
-version = '0.9-SNAPSHOT'
+version = '1.0-SNAPSHOT'
 archivesBaseName = 'jAstyle'
 
 repositories {
@@ -71,24 +71,24 @@ artifacts {
 	archives sourcesJar
 }
 
-//signing {
-//	 sign configurations.archives
-//}
+signing {
+	 sign configurations.archives
+}
 
 uploadArchives {
 	repositories.mavenDeployer {
 		
-//		beforeDeployment { MavenDeployment deployment ->
-//			signing.signPom(deployment)
-//		}
+		beforeDeployment { MavenDeployment deployment ->
+			signing.signPom(deployment)
+		}
 
-//		snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
-//			authentication(userName: sonatypeUsername, password: sonatypePassword)
-//		}
+		snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
+			authentication(userName: sonatypeUsername, password: sonatypePassword)
+		}
 		
-//		repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
-//			authentication(userName: sonatypeUsername, password: sonatypePassword)
-//		}
+		repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
+			authentication(userName: sonatypeUsername, password: sonatypePassword)
+		}
 
 		pom {
 			groupId = project.group
