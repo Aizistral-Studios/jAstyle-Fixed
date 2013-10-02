@@ -268,7 +268,7 @@ public class OptParser
 		// padding stuff
 		else if (opt.startsWith("pad"))
 		{
-			temp = opt.substring(3);
+			temp = opt.substring(4);
 
 			if (temp.equals("oper"))
 			{
