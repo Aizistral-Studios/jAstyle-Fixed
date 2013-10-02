@@ -149,8 +149,7 @@ public class ASFormatter extends ASBeautifier
 	private boolean				isImmediatelyPostPreprocessor;
 	private boolean				isImmediatelyPostReturn;
 	private boolean				isImmediatelyPostOperator;
-	
-	@Setter @Getter
+
 	private String 				suffix = ".orig";
 
 	private boolean				shouldBreakBlocks;
@@ -3074,5 +3073,15 @@ public class ASFormatter extends ASBeautifier
 	{
 		return currentLine.indexOf(sequence, charNum) == charNum;
 	}
+
+    public String gtSuffix()
+    {
+        return suffix;
+    }
+
+    public void setSuffix(String suff)
+    {
+        suffix = suff;
+    }
 
 }

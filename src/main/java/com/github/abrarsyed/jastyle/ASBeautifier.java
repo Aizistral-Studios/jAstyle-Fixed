@@ -926,6 +926,11 @@ public class ASBeautifier extends AbstractASBase
 				isInSwitch = true;
 			}
 
+            // special case for static methods that throw exceptions
+            if (isJavaStyle() && i > 1 && headerStack.get(i).equals(ASResource.AS_THROWS) && headerStack.get(i-1).equals(ASResource.AS_STATIC))
+            {
+                tabCount--;
+            }
 		}
 
 		if (!lineStartsInComment && isCStyle() && isInClass && classIndent && headerStack.size() >= 2 && headerStack.get(headerStack.size() - 2).equals(ASResource.AS_CLASS) && headerStack.get(headerStack.size() - 1).equals(ASResource.AS_OPEN_BRACKET) && line.charAt(0) == '}')

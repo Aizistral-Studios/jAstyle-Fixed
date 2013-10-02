@@ -17,8 +17,6 @@ repositories {
 
 dependencies
 {
-	compile 'org.projectlombok:lombok:0.11.8'
-	
 	testCompile 'junit:junit:4.5'
 }
 
