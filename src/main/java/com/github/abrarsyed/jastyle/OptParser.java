@@ -178,11 +178,18 @@ public class OptParser
 			{
 				formatter.setTabIndentation(getLongOptNum(temp, 4), false);
 			}
-			else if (temp.startsWith("force-tab"))
-			{
-				formatter.setTabIndentation(getLongOptNum(temp, 4), true);
-			}
-			else if (temp.equals("classes"))
+            else if (temp.startsWith("force-tab"))
+            {
+                formatter.setTabIndentation(getLongOptNum(temp, 4), true);
+            }
+
+        }
+        // indent type checking
+        else if (opt.startsWith("indent-"))
+        {
+            temp = opt.substring(7);
+
+			if (temp.equals("classes"))
 			{
 				formatter.setClassIndent(true);
 			}
