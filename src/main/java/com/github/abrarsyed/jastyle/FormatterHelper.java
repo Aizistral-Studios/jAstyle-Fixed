@@ -26,69 +26,67 @@
  */
 package com.github.abrarsyed.jastyle;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 
 public class FormatterHelper
 {
-	/**
-	 * Returns the formatted version of the source code
-	 * @param in The reader of the original source code (this reader will be closed)
-	 * @param formatter The formatter to use
-	 * @return String
-	 */
-	public static String format(Reader in, ASFormatter formatter)
-	{
-		ASStreamIterator streamIterator = new ASStreamIterator(in);
-		formatter.init(streamIterator);
-		StringWriter writer = new StringWriter();
-		PrintWriter out = new PrintWriter(writer);
-		// format the file
-		while (formatter.hasMoreLines())
-		{
-			out.println(formatter.nextLine().toString());
-		}
-		out.flush();
-		out.close();
-		try
-		{
-			in.close();
-		}
-		catch (IOException e)
-		{
-			throw new RuntimeException(e.getCause());
-		}
-		return writer.toString();
-	}
+    /**
+     * Returns the formatted version of the source code
+     *
+     * @param in        The reader of the original source code (this reader will be closed)
+     * @param formatter The formatter to use
+     * @return String
+     */
+    public static String format(Reader in, ASFormatter formatter)
+    {
+        ASStreamIterator streamIterator = new ASStreamIterator(in);
+        formatter.init(streamIterator);
+        StringWriter writer = new StringWriter();
+        PrintWriter out = new PrintWriter(writer);
+        // format the file
+        while (formatter.hasMoreLines())
+        {
+            out.println(formatter.nextLine().toString());
+        }
+        out.flush();
+        out.close();
+        try
+        {
+            in.close();
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e.getCause());
+        }
+        return writer.toString();
+    }
 
-	/**
-	 * Returns the formatted version of the source code
-	 * @param in The reader of the original source code (this reader will be closed)
-	 * @param formatter The formatter to use
-	 * @param writer The writer where thw output will be written
-	 */
-	public static void format(Reader in, ASFormatter formatter, Writer writer)
-	{
-		ASStreamIterator streamIterator = new ASStreamIterator(in);
-		formatter.init(streamIterator);
-		PrintWriter out = new PrintWriter(writer);
-		// format the file
-		while (formatter.hasMoreLines())
-		{
-			out.println(formatter.nextLine().toString());
-		}
-		out.flush();
-		out.close();
-		try
-		{
-			in.close();
-		}
-		catch (IOException e)
-		{
-			throw new RuntimeException(e.getCause());
-		}
-	}
+    /**
+     * Returns the formatted version of the source code
+     *
+     * @param in        The reader of the original source code (this reader will be closed)
+     * @param formatter The formatter to use
+     * @param writer    The writer where thw output will be written
+     */
+    public static void format(Reader in, ASFormatter formatter, Writer writer)
+    {
+        ASStreamIterator streamIterator = new ASStreamIterator(in);
+        formatter.init(streamIterator);
+        PrintWriter out = new PrintWriter(writer);
+        // format the file
+        while (formatter.hasMoreLines())
+        {
+            out.println(formatter.nextLine().toString());
+        }
+        out.flush();
+        out.close();
+        try
+        {
+            in.close();
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e.getCause());
+        }
+    }
 }

@@ -32,59 +32,60 @@ import java.util.regex.Pattern;
 
 public class FileWildcardFilter implements FilenameFilter
 {
-	private Pattern	p;
+    private Pattern p;
 
-	public FileWildcardFilter(String filenameWithWildcars)
-	{
-		p = Pattern.compile(replaceWildcards(filenameWithWildcars));
-	}
+    public FileWildcardFilter(String filenameWithWildcars)
+    {
+        p = Pattern.compile(replaceWildcards(filenameWithWildcars));
+    }
 
-	/**
-	 * Checks for * and ? in the wildcard variable and replaces them correct
-	 * pattern characters.
-	 * @param wild - Wildcard name containing * and ?
-	 * @return - String containing modified wildcard name
-	 */
-	private String replaceWildcards(String wild)
-	{
-		StringBuilder buffer = new StringBuilder();
+    /**
+     * Checks for * and ? in the wildcard variable and replaces them correct
+     * pattern characters.
+     *
+     * @param wild - Wildcard name containing * and ?
+     * @return - String containing modified wildcard name
+     */
+    private String replaceWildcards(String wild)
+    {
+        StringBuilder buffer = new StringBuilder();
 
-		for (char c : wild.toCharArray())
-		{
-			// replace * with .*
-			if (c == '*')
-			{
-				buffer.append(".*");
-			}
+        for (char c : wild.toCharArray())
+        {
+            // replace * with .*
+            if (c == '*')
+            {
+                buffer.append(".*");
+            }
 
-			// replace ? with .
-			else if (c == '?')
-			{
-				buffer.append(".");
-			}
+            // replace ? with .
+            else if (c == '?')
+            {
+                buffer.append(".");
+            }
 
-			// replace misc regex with escaped versions
-			else if ("+()^$.{}[]|\\".indexOf(c) != -1)
-			{
-				buffer.append('\\').append(c);
-			}
+            // replace misc regex with escaped versions
+            else if ("+()^$.{}[]|\\".indexOf(c) != -1)
+            {
+                buffer.append('\\').append(c);
+            }
 
-			// seems to be just a normal char
-			else
-			{
-				buffer.append(c);
-			}
-		}
+            // seems to be just a normal char
+            else
+            {
+                buffer.append(c);
+            }
+        }
 
-		// return the built buffer
-		return buffer.toString();
-	}
+        // return the built buffer
+        return buffer.toString();
+    }
 
-	@Override
-	public boolean accept(File dir, String name)
-	{
-		// accept anything with 
-		return p.matcher(name).matches();
-	}
+    @Override
+    public boolean accept(File dir, String name)
+    {
+        // accept anything with
+        return p.matcher(name).matches();
+    }
 
 }

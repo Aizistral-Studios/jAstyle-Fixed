@@ -34,14 +34,14 @@ import java.util.Comparator;
  */
 class SortOnLength implements Serializable, Comparator<String>
 {
-	/**
+    /**
      *
      */
-	private static final long	serialVersionUID	= 4170501851833867985L;
+    private static final long serialVersionUID = 4170501851833867985L;
 
-	@Override
-	public int compare(String a, String b)
-	{
-		return b.length() - a.length();
-	}
+    @Override
+    public int compare(String a, String b)
+    {
+        return b.length() - a.length();
+    }
 }
