@@ -2311,51 +2311,70 @@ public class ASFormatter extends ASBeautifier
 		formattedLine.setCharAt(beg + 1, currentChar);
 	}
 
-	/**
-	 * add or remove space padding to operators currentChar contains the paren
-	 * the operators and necessary padding will be appended to formattedLine the
-	 * calling function should have a continue statement after calling this
-	 * method
-	 * @param *newOperator the operator to be padded
-	 */
-	private void padOperators(String newOperator)
-	{
-		assert newOperator != null;
+    /**
+     * add or remove space padding to operators currentChar contains the paren
+     * the operators and necessary padding will be appended to formattedLine the
+     * calling function should have a continue statement after calling this
+     * method
+     *
+     * @param *newOperator the operator to be padded
+     */
+    private void padOperators(String newOperator)
+    {
+        assert newOperator != null;
 
-		boolean shouldPad = !newOperator.equals(ASResource.AS_COLON_COLON) && !newOperator.equals(ASResource.AS_PAREN_PAREN) && !newOperator.equals(ASResource.AS_BLPAREN_BLPAREN) && !newOperator.equals(ASResource.AS_PLUS_PLUS) && !newOperator.equals(ASResource.AS_MINUS_MINUS) && !newOperator.equals(ASResource.AS_NOT) && !newOperator.equals(ASResource.AS_BIT_NOT) && !newOperator.equals(ASResource.AS_ARROW) && !(newOperator.equals(ASResource.AS_MINUS) && isInExponent()) && !((newOperator.equals(ASResource.AS_PLUS) || newOperator.equals(ASResource.AS_MINUS)) // check for unary plus or
-				// minus
-				&& (previousNonWSChar == '(' || previousNonWSChar == '=' || previousNonWSChar == ',')) && !(newOperator.equals(ASResource.AS_PLUS) && isInExponent()) && !isCharImmediatelyPostOperator && !((newOperator.equals(ASResource.AS_MULT) || newOperator.equals(ASResource.AS_BIT_AND)) && isPointerOrReference()) && !(newOperator.equals(ASResource.AS_MULT) && (previousNonWSChar == '.' || previousNonWSChar == '>'))
-				// check
-				// for
-				// ->
-				&& !((isInTemplate || isCharImmediatelyPostTemplate) && (newOperator.equals(ASResource.AS_LS) || newOperator.equals(ASResource.AS_GR))) && !(newOperator.equals(ASResource.AS_GCC_MIN_ASSIGN) && peekNextChar(currentLine, charNum + 1) == '>') && !(newOperator.equals(ASResource.AS_GR) && previousNonWSChar == '?') && !isInCase;
+        boolean shouldPad = !newOperator.equals(ASResource.AS_COLON_COLON) && !newOperator.equals(ASResource.AS_PAREN_PAREN) && !newOperator.equals(ASResource.AS_BLPAREN_BLPAREN) && !newOperator.equals(ASResource.AS_PLUS_PLUS) && !newOperator.equals(ASResource.AS_MINUS_MINUS) && !newOperator.equals(ASResource.AS_NOT) && !newOperator.equals(ASResource.AS_BIT_NOT) && !newOperator.equals(ASResource.AS_ARROW) && !(newOperator.equals(ASResource.AS_MINUS) && isInExponent()) && !((newOperator.equals(ASResource.AS_PLUS) || newOperator.equals(ASResource.AS_MINUS)) // check for unary plus or
+                // minus
+                && (previousNonWSChar == '(' || previousNonWSChar == '=' || previousNonWSChar == ',')) && !(newOperator.equals(ASResource.AS_PLUS) && isInExponent()) && !isCharImmediatelyPostOperator && !((newOperator.equals(ASResource.AS_MULT) || newOperator.equals(ASResource.AS_BIT_AND)) && isPointerOrReference()) && !(newOperator.equals(ASResource.AS_MULT) && (previousNonWSChar == '.' || previousNonWSChar == '>'))
+                // check
+                // for
+                // ->
+                && !((isInTemplate || isCharImmediatelyPostTemplate) && (newOperator.equals(ASResource.AS_LS) || newOperator.equals(ASResource.AS_GR))) && !(newOperator.equals(ASResource.AS_GCC_MIN_ASSIGN) && peekNextChar(currentLine, charNum + 1) == '>') && !(newOperator.equals(ASResource.AS_GR) && previousNonWSChar == '?') && !isInCase;
 
-		// pad before operator
-		if (shouldPad && !isInBlParen && !(newOperator.equals(ASResource.AS_COLON) && !foundQuestionMark) && !(newOperator.equals(ASResource.AS_QUESTION) && isSharpStyle() // check for C# nullable type (e.g.
-		// int?)
-				&& currentLine.indexOf(":", charNum + 1) == -1))
-		{
-			appendSpacePad();
-		}
-		appendSequence(newOperator);
-		goForward(newOperator.length() - 1);
+        // pad before operator
+        if (shouldPad && !isInBlParen && !(newOperator.equals(ASResource.AS_COLON) && !foundQuestionMark) && !(newOperator.equals(ASResource.AS_QUESTION) && isSharpStyle() // check for C# nullable type (e.g.
+                // int?)
+                && currentLine.indexOf(":", charNum + 1) == -1))
+        {
+            appendSpacePad();
+        }
+        appendSequence(newOperator);
+        goForward(newOperator.length() - 1);
 
-		// since this block handles '()' and '[]',
-		// the parenStack must be updated here accordingly!
-		if (newOperator.equals(ASResource.AS_PAREN_PAREN) || newOperator.equals(ASResource.AS_BLPAREN_BLPAREN))
-		{
-			parenStack.set(parenStack.size() - 1, parenStack.peek() - 1);
-		}
-		currentChar = newOperator.charAt(newOperator.length() - 1);
-		// pad after operator
-		// but do not pad after a '-' that is a unary-minus.
-		if (shouldPad && currentLine.length() < charNum + 1 && !isInBlParen && !isBeforeComment() && !(newOperator.equals(ASResource.AS_PLUS) && isUnaryOperator()) && !(newOperator.equals(ASResource.AS_MINUS) && isUnaryOperator()) && !(currentLine.charAt(charNum + 1) == ';') && !(currentLine.indexOf("::", charNum + 1) == charNum + 1) && !(newOperator.equals(ASResource.AS_QUESTION) && isSharpStyle() // check for C# nullable type (e.g.
-		// int?)
-				&& currentLine.charAt(charNum + 1) == '['))
-		{
-			appendSpaceAfter();
-		}
-	}
+        // since this block handles '()' and '[]',
+        // the parenStack must be updated here accordingly!
+        if (newOperator.equals(ASResource.AS_PAREN_PAREN) || newOperator.equals(ASResource.AS_BLPAREN_BLPAREN))
+        {
+            parenStack.set(parenStack.size() - 1, parenStack.peek() - 1);
+        }
+        currentChar = newOperator.charAt(newOperator.length() - 1);
+        // pad after operator
+        // but do not pad after a '-' that is a unary-minus.
+
+        if (shouldPad
+                //&& currentLine.length() < charNum + 1
+                && !isInBlParen
+                && !isBeforeComment()
+                && !(newOperator.equals(ASResource.AS_PLUS) && isUnaryOperator())
+                && !(newOperator.equals(ASResource.AS_MINUS) && isUnaryOperator())
+                && !peek(1, 1).equals(";") //!(currentLine.charAt(charNum + 1) == ';')
+                && !peek(1, 2).equals("::") //!(currentLine.indexOf("::", charNum + 1) == charNum + 1)
+                && !(newOperator.equals(ASResource.AS_QUESTION)
+                && isSharpStyle() // check for C# nullable type (e.g. int?)
+                && currentLine.charAt(charNum + 1) == '['))
+        {
+            appendSpaceAfter();
+        }
+    }
+
+    private String peek(int offset, int len)
+    {
+        if (charNum + offset + len > currentLine.length())
+        {
+            return "";
+        }
+        return currentLine.substring(charNum + offset, charNum + offset + len);
+    }
 
 	/**
 	 * add or remove space padding to parens currentChar contains the paren the
