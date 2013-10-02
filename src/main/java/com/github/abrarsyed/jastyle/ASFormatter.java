@@ -2443,12 +2443,24 @@ public class ASFormatter extends ASBeautifier
 				{
 					spacesOutsideToDelete--;
 				}
-				else if (lastChar == '|' // check for ||
-						|| lastChar == '&' // check for &&
-						|| lastChar == ',' || lastChar == '>' && !foundCastOperator || lastChar == '<' || lastChar == '?' || lastChar == ':' || lastChar == ';' || lastChar == '=' || lastChar == '+' || lastChar == '-' || lastChar == '*' && isInPotentialCalculation || lastChar == '/' || lastChar == '%')
-				{
-					spacesOutsideToDelete--;
-				}
+                else if (lastChar == '|' // check for ||
+                        || lastChar == '&' // check for &&
+                        || lastChar == ','
+                        || (lastChar == '>' && !foundCastOperator)
+                        || lastChar == '<'
+                        || lastChar == '?'
+                        || lastChar == ':'
+                        || lastChar == ';'
+                        || lastChar == '='
+                        || lastChar == '+'
+                        || lastChar == '-'
+                        || lastChar == '*'
+                        || lastChar == '/'
+                        || lastChar == '%'
+                        )
+                {
+                    spacesOutsideToDelete--;
+                }
 
 				if (spacesOutsideToDelete > 0)
 				{
