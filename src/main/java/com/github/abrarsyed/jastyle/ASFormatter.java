@@ -2493,6 +2493,7 @@ public class ASFormatter extends ASBeautifier
                         || lastChar == '*'
                         || lastChar == '/'
                         || lastChar == '%'
+                        || lastChar == '^'
                         )
                 {
                     spacesOutsideToDelete--;
