@@ -31,25 +31,15 @@
 
 package com.github.abrarsyed.jastyle;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
-
-import lombok.Getter;
-import lombok.Setter;
-
 import com.github.abrarsyed.jastyle.constants.BracketType;
 import com.github.abrarsyed.jastyle.constants.EnumBracketMode;
 import com.github.abrarsyed.jastyle.constants.EnumFormatStyle;
 import com.github.abrarsyed.jastyle.constants.SourceMode;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 
 public class ASFormatter extends ASBeautifier
 {
@@ -344,68 +334,94 @@ public class ASFormatter extends ASBeautifier
 		isJavaStaticConstructor = false;
 	}
 
-	/**
-	 * Open input file, format it, and close the output.
-	 * @param file the file to be processed
-	 * @return true if the file was formatted, false if it was not (no changes).
-	 */
-	public boolean formatFile(File file)
-	{
-		try
-		{
-			// open input file
-			Reader in = new BufferedReader(new FileReader(file));
+    /**
+     * Open input file, format it, and close the output.
+     *
+     * @param file the file to be processed
+     * @return true if the file was formatted, false if it was not (no changes).
+     */
+    public boolean formatFile(File file)
+    {
+        try
+        {
+            // Unless a specific language mode has been set, set the language mode
+            // according to the file's suffix.
+            SourceMode fileTypeOld = fileType;
+            if (fileType == null)
+            {
+                setSourceStyle(SourceMode.getFromFileName(file.getName()));
+            }
 
-			// open tmp file
-			File tempFile = new File(file.getPath() + TEMP_SUFFIX);
-			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(tempFile)));
+            // open input file
+            Reader in = new BufferedReader(new FileReader(file));
 
-			// Unless a specific language mode has been set, set the language mode
-			// according to the file's suffix.
-			SourceMode fileTypeOld = fileType;
-			if (fileType == null)
-			{
-				setSourceStyle(SourceMode.getFromFileName(file.getName()));
-			}
+            // open tmp file
+            File tempFile = new File(file.getPath() + TEMP_SUFFIX);
+            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(tempFile)));
 
-			ASStreamIterator streamIterator = new ASStreamIterator(in);
-			this.init(streamIterator);
+            format(in, out);
 
-			// format the file
-			String temp;
-			while (hasMoreLines())
-			{
-				temp = nextLine().toString();
-				out.println(temp);
-				// if (formatter.hasMoreLines())
-				// out.print(streamIterator.getOutputEOL());
-			}
-			
-			// reset sourcemode back to old.
-			setSourceStyle(fileTypeOld);
-			
-			out.flush();
-			out.close();
-			in.close();
+            out.flush();
+            out.close();
+            in.close();
+
+            // reset sourcemode back to old.
+            setSourceStyle(fileTypeOld);
 
             // get the new File
             File outFile = file;
-			if (suffix != null)
-				new File(file.getPath() + suffix);
+            if (suffix != null)
+            {
+                new File(file.getPath() + suffix);
+            }
 
             // you never know.. new file might exist too.
             outFile.delete();
 
             // rename
-			tempFile.renameTo(outFile);
+            tempFile.renameTo(outFile);
 
-			return true;
-		}
-		catch (Exception e)
-		{
-			return false;
-		}
-	}
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Formats the string contents of the reader and sends it out the writer.
+     * Niether of the streams is flushed or closed in this method.
+     *
+     * @param in  Reader, where to get the input
+     * @param out Writer, where the formatted output goes
+     */
+    public void format(Reader in, Writer out) throws IOException
+    {
+        ASStreamIterator streamIterator = new ASStreamIterator(in);
+        this.init(streamIterator);
+
+        // get a printWriter
+        PrintWriter pout;
+        if (out instanceof PrintWriter)
+        {
+            pout = (PrintWriter) out;
+        }
+        else
+        {
+            pout = new PrintWriter(out);
+        }
+
+        // format the file
+        String temp;
+        while (hasMoreLines())
+        {
+            temp = nextLine().toString();
+            pout.println(temp);
+            // if (formatter.hasMoreLines())
+            // out.print(streamIterator.getOutputEOL());
+        }
+    }
 
 	/**
 	 * get the next formatted line.
