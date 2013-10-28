@@ -8,8 +8,11 @@ apply plugin: 'idea'
 apply plugin: 'signing'
 
 group = 'com.github.abrarsyed.jastyle'
-version = '1.2-SNAPSHOT'
+version = '1.3-SNAPSHOT'
 archivesBaseName = 'jAstyle'
+
+targetCompatibility = '1.6'
+//sourceCompatibility = '1.7'
 
 repositories {
 	 mavenCentral()
@@ -135,10 +138,10 @@ uploadArchives {
 							role 'developer'
 						}
 					}
-                    developer {
-                        id 'LexManos'
-                        roles { role 'contributor' }
-                    }
+					developer {
+						id 'LexManos'
+						roles { role 'contributor' }
+					}
 				}
 			}
 		}
