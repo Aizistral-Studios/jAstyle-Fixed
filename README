@@ -6,3 +6,7 @@ This is a fork of Hector Suarez Barenca's port of Astyle to java from http://sou
 It is also a fork of Stephen Connolly's Maven version from https://github.com/stephenc/jastyle
 
 Unlike The original version, this version has been modified to work as a library as well as from the Command line.
+
+
+Despite bieng uneditted in a long time, this project is actively being used as a library in ForgeGradle: https://github.com/MinecraftForge/ForgeGradle
+This project is still bieng actively maintained, if anyone needs anything, put up an issue.
