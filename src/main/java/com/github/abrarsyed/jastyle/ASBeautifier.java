@@ -110,6 +110,7 @@ public class ASBeautifier extends AbstractASBase
     private char currentNonSpaceCh;
     private char currentNonLegalCh;
     private char prevNonLegalCh;
+    private boolean useProperInnerClassIndenting = true;
 
     // variables set by ASFormatter - must be updated in activeBeautifierStack
     protected int inLineNumber;
@@ -639,6 +640,26 @@ public class ASBeautifier extends AbstractASBase
     }
 
     /**
+     * Check if we should use proper inner class indenting
+     *
+     * @return if we should use proper inner class indenting
+     */
+    public boolean isUseProperInnerClassIndenting()
+    {
+        return this.useProperInnerClassIndenting;
+    }
+
+    /**
+     * Set if we should use proper inner class indenting
+     *
+     * @param useProperInnerClassIndenting if we should use proper inner class indenting
+     */
+    public void setUseProperInnerClassIndenting(boolean useProperInnerClassIndenting)
+    {
+        this.useProperInnerClassIndenting = useProperInnerClassIndenting;
+    }
+
+    /**
      * beautify a line of source code. every line of source code in a source
      * code file should be sent one after the other to the beautify method.
      *
@@ -927,7 +948,10 @@ public class ASBeautifier extends AbstractASBase
             }
             else if (!(i > 0 && !headerStack.get(i - 1).equals(ASResource.AS_OPEN_BRACKET) && headerStack.get(i).equals(ASResource.AS_OPEN_BRACKET)))
             {
-                ++tabCount;
+                if (!this.useProperInnerClassIndenting || !headerStack.get(i).equals(ASResource.AS_STATIC))
+                {
+                    ++tabCount;
+                }
             }
 
             if (!isJavaStyle() && !namespaceIndent && i >= 1 && headerStack.get(i - 1).equals(ASResource.AS_NAMESPACE) && headerStack.get(i).equals(ASResource.AS_OPEN_BRACKET))

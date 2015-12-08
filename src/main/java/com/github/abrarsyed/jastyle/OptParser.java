@@ -370,6 +370,13 @@ public class OptParser
             }
         }
 
+        // proper inner class indenting
+        else if (opt.startsWith("proper-inner-class-indenting="))
+        {
+            temp = opt.substring("proper-inner-class-indenting=".length());
+            this.formatter.setUseProperInnerClassIndenting(Boolean.parseBoolean(temp));
+        }
+
         else
         {
             error();
