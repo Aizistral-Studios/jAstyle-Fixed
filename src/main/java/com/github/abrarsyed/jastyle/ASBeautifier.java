@@ -779,6 +779,10 @@ public class ASBeautifier extends AbstractASBase
                 line.delete(trimEnd + 1, trimEnd + 1 + spacesToDelete);
             }
         }
+        
+        if (line == null) {
+            line = new StringBuilder();
+        }
 
         if (line.length() == 0)
         {
@@ -948,10 +952,20 @@ public class ASBeautifier extends AbstractASBase
             }
             else if (!(i > 0 && !headerStack.get(i - 1).equals(ASResource.AS_OPEN_BRACKET) && headerStack.get(i).equals(ASResource.AS_OPEN_BRACKET)))
             {
-                if (!this.useProperInnerClassIndenting || !headerStack.get(i).equals(ASResource.AS_STATIC))
-                {
-                    ++tabCount;
+                boolean isInnerStatic = false;
+                
+                if (this.useProperInnerClassIndenting) {
+                    if (headerStack.get(i).equals(ASResource.AS_STATIC) && headerStack.size() > i + 1 
+                            && ASResource.AS_CLASS.equals(headerStack.get(i + 1))) {
+                        
+                        isInnerStatic = true;
+                    }
                 }
+                
+                if (!isInnerStatic) {
+                    //System.out.println("Adding tab for resource: " + headerStack.get(i));
+                    ++tabCount;      
+                }                
             }
 
             if (!isJavaStyle() && !namespaceIndent && i >= 1 && headerStack.get(i - 1).equals(ASResource.AS_NAMESPACE) && headerStack.get(i).equals(ASResource.AS_OPEN_BRACKET))
@@ -1001,6 +1015,8 @@ public class ASBeautifier extends AbstractASBase
         {
             --tabCount;
         }
+        
+        //System.out.println("Line: [" + line + "], tabCount: " + tabCount);
 
         // parse characters in the current line.
 
