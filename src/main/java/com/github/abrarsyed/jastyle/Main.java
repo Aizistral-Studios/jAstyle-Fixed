@@ -378,13 +378,15 @@ public class Main
             ArrayList<String> parsedErrors = parser.parseOptionFile(optionsFile);
 
             // catch and output the IO error.
-            if (parsedErrors == null) {
+            if (parsedErrors == null)
+            {
                 errors.add("something went wrong reading options file : " + optionsFile);
-            } else {
-                // and add them to the actual errors list.
-                for (String e : parsedErrors) {
-                    System.err.println(e + " is not a supported config file option, continuing...");
-                }
+            }
+
+            // and add them to the actual errors list.
+            for (String e : parsedErrors)
+            {
+                System.err.println(e + " is not a supported config file option, continuing...");
             }
         }
 
