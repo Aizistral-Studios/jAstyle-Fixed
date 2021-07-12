@@ -35,7 +35,7 @@ public class MainTest {
         formatter.setBreakClosingHeaderBracketsMode(false);
         formatter.setDeleteEmptyLinesMode(false);
         formatter.setMaxInStatementIndentLength(40);
-        formatter.setUseProperInnerClassIndenting(true);
+        //formatter.setUseProperInnerClassIndenting(true);
         
         Reader reader;
         Writer writer;

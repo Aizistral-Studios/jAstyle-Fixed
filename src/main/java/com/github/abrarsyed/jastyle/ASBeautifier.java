@@ -110,8 +110,8 @@ public class ASBeautifier extends AbstractASBase
     private char currentNonSpaceCh;
     private char currentNonLegalCh;
     private char prevNonLegalCh;
-    private boolean useProperInnerClassIndenting = true;
-
+    private boolean useProperInnerClassIndenting = false;
+    
     // variables set by ASFormatter - must be updated in activeBeautifierStack
     protected int inLineNumber;
     protected boolean lineCommentNoBeautify;
@@ -638,7 +638,7 @@ public class ASBeautifier extends AbstractASBase
     {
         return beautify(sourceIterator.nextLine());
     }
-
+    
     /**
      * Check if we should use proper inner class indenting
      *
@@ -778,10 +778,6 @@ public class ASBeautifier extends AbstractASBase
             {
                 line.delete(trimEnd + 1, trimEnd + 1 + spacesToDelete);
             }
-        }
-        
-        if (line == null) {
-            line = new StringBuilder();
         }
 
         if (line.length() == 0)
@@ -952,20 +948,17 @@ public class ASBeautifier extends AbstractASBase
             }
             else if (!(i > 0 && !headerStack.get(i - 1).equals(ASResource.AS_OPEN_BRACKET) && headerStack.get(i).equals(ASResource.AS_OPEN_BRACKET)))
             {
-                boolean isInnerStatic = false;
-                
                 if (this.useProperInnerClassIndenting) {
                     if (headerStack.get(i).equals(ASResource.AS_STATIC) && headerStack.size() > i + 1 
                             && ASResource.AS_CLASS.equals(headerStack.get(i + 1))) {
-                        
-                        isInnerStatic = true;
+                        // NO-OP
+                    } else {
+                        ++tabCount;
                     }
+                } else {
+                    ++tabCount;
                 }
-                
-                if (!isInnerStatic) {
-                    //System.out.println("Adding tab for resource: " + headerStack.get(i));
-                    ++tabCount;      
-                }                
+                // TODO Patch target
             }
 
             if (!isJavaStyle() && !namespaceIndent && i >= 1 && headerStack.get(i - 1).equals(ASResource.AS_NAMESPACE) && headerStack.get(i).equals(ASResource.AS_OPEN_BRACKET))
@@ -1015,8 +1008,6 @@ public class ASBeautifier extends AbstractASBase
         {
             --tabCount;
         }
-        
-        //System.out.println("Line: [" + line + "], tabCount: " + tabCount);
 
         // parse characters in the current line.
 

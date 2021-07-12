@@ -12,7 +12,7 @@ apply plugin: 'idea'
 apply plugin: 'signing'
 
 group = 'com.github.abrarsyed.jastyle'
-version = '1.4'
+version = '1.5'
 archivesBaseName = 'jAstyle-Fixed'
 
 targetCompatibility = '1.6'
@@ -105,5 +105,13 @@ publishing {
             def snapshotsRepoUrl = "$buildDir/repos/snapshots"
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
         }
+    }
+}
+
+install {
+    repositories.mavenInstaller {
+        pom.groupId = project.group;
+        pom.version = project.version
+        pom.artifactId = project.name
     }
 }
