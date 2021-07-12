@@ -110,7 +110,9 @@ public class ASBeautifier extends AbstractASBase
     private char currentNonSpaceCh;
     private char currentNonLegalCh;
     private char prevNonLegalCh;
-    private boolean useProperInnerClassIndenting = true;
+    
+    // Don't fix stuff if we weren't asked to
+    private boolean useProperInnerClassIndenting = false;
 
     // variables set by ASFormatter - must be updated in activeBeautifierStack
     protected int inLineNumber;
